@@ -29,10 +29,6 @@ Full API documentation
 * [gridpoint_forecast](#gridpoint_forecast) - Returns a textual forecast for a 2.5km grid area
 * [gridpoint_forecast_hourly](#gridpoint_forecast_hourly) - Returns a textual hourly forecast for a 2.5km grid area
 * [gridpoint_stations](#gridpoint_stations) - Returns a list of observation stations usable for a given 2.5km grid area
-* [~~icons~~](#icons) - Returns a forecast icon. Icon services in API are deprecated. :warning: **Deprecated**
-* [~~icons_dual_condition~~](#icons_dual_condition) - Returns a forecast icon. Icon services in API are deprecated. :warning: **Deprecated**
-* [~~icons_summary~~](#icons_summary) - Returns a list of icon codes and textual descriptions. Icon services in API are deprecated. :warning: **Deprecated**
-* [~~satellite_thumbnails~~](#satellite_thumbnails) - Returns a thumbnail image for a satellite region. Image services in API are deprecated. :warning: **Deprecated**
 * [station_observation_list](#station_observation_list) - Returns a list of observations for a given station
 * [station_observation_latest](#station_observation_latest) - Returns the latest observation for a station
 * [station_observation_time](#station_observation_time) - Returns a single observation.
@@ -44,7 +40,6 @@ Full API documentation
 * [office_headline](#office_headline) - Returns a specific news headline for a given NWS office
 * [office_headlines](#office_headlines) - Returns a list of news headlines for a given NWS office
 * [point](#point) - Returns metadata about a given latitude/longitude point
-* [~~point_stations~~](#point_stations) - Returns a list of observation stations for a given point :warning: **Deprecated**
 * [radar_servers](#radar_servers) - Returns a list of radar servers
 * [radar_server](#radar_server) - Returns metadata about a given radar server
 * [radar_stations](#radar_stations) - Returns a list of radar stations
@@ -269,7 +264,7 @@ with NwsClient(
     user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
 ) as nc_client:
 
-    res = nc_client.alerts_active_area(area=models.AlertsActiveAreaArea.AL)
+    res = nc_client.alerts_active_area(area=models.Area.AL)
 
     # Handle response
     print(res)
@@ -280,7 +275,7 @@ with NwsClient(
 
 | Parameter                                                           | Type                                                                | Required                                                            | Description                                                         |
 | ------------------------------------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------- |
-| `area`                                                              | [models.AlertsActiveAreaArea](../../models/alertsactiveareaarea.md) | :heavy_check_mark:                                                  | State or marine area code                                           |
+| `area`                                                              | [models.Area](../../models/area.md)                                 | :heavy_check_mark:                                                  | State or marine area code                                           |
 | `retries`                                                           | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)    | :heavy_minus_sign:                                                  | Configuration to override the default retry behavior of the client. |
 
 ### Response
@@ -908,178 +903,6 @@ with NwsClient(
 | --------------- | --------------- | --------------- |
 | errors.APIError | 4XX, 5XX        | \*/\*           |
 
-## ~~icons~~
-
-Returns a forecast icon. Icon services in API are deprecated.
-
-> :warning: **DEPRECATED**: This will be removed in a future release, please migrate away from it as soon as possible.
-
-### Example Usage
-
-```python
-from nws_client import NwsClient
-import os
-
-
-with NwsClient(
-    user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
-) as nc_client:
-
-    res = nc_client.icons(set="<value>", time_of_day="<value>", first="<value>")
-
-    # Handle response
-    print(res)
-
-```
-
-### Parameters
-
-| Parameter                                                           | Type                                                                | Required                                                            | Description                                                         |
-| ------------------------------------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------- |
-| `set`                                                               | *str*                                                               | :heavy_check_mark:                                                  | .                                                                   |
-| `time_of_day`                                                       | *str*                                                               | :heavy_check_mark:                                                  | .                                                                   |
-| `first`                                                             | *str*                                                               | :heavy_check_mark:                                                  | .                                                                   |
-| `size`                                                              | [Optional[models.IconsSize]](../../models/iconssize.md)             | :heavy_minus_sign:                                                  | Font size                                                           |
-| `fontsize`                                                          | *Optional[int]*                                                     | :heavy_minus_sign:                                                  | Font size                                                           |
-| `retries`                                                           | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)    | :heavy_minus_sign:                                                  | Configuration to override the default retry behavior of the client. |
-
-### Response
-
-**[models.IconsResponse](../../models/iconsresponse.md)**
-
-### Errors
-
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.APIError | 4XX, 5XX        | \*/\*           |
-
-## ~~icons_dual_condition~~
-
-Returns a forecast icon. Icon services in API are deprecated.
-
-> :warning: **DEPRECATED**: This will be removed in a future release, please migrate away from it as soon as possible.
-
-### Example Usage
-
-```python
-from nws_client import NwsClient
-import os
-
-
-with NwsClient(
-    user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
-) as nc_client:
-
-    res = nc_client.icons_dual_condition(set="<value>", time_of_day="<value>", first="<value>", second="<value>")
-
-    # Handle response
-    print(res)
-
-```
-
-### Parameters
-
-| Parameter                                                                         | Type                                                                              | Required                                                                          | Description                                                                       |
-| --------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
-| `set`                                                                             | *str*                                                                             | :heavy_check_mark:                                                                | .                                                                                 |
-| `time_of_day`                                                                     | *str*                                                                             | :heavy_check_mark:                                                                | .                                                                                 |
-| `first`                                                                           | *str*                                                                             | :heavy_check_mark:                                                                | .                                                                                 |
-| `second`                                                                          | *str*                                                                             | :heavy_check_mark:                                                                | .                                                                                 |
-| `size`                                                                            | [Optional[models.IconsDualConditionSize]](../../models/iconsdualconditionsize.md) | :heavy_minus_sign:                                                                | Font size                                                                         |
-| `fontsize`                                                                        | *Optional[int]*                                                                   | :heavy_minus_sign:                                                                | Font size                                                                         |
-| `retries`                                                                         | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)                  | :heavy_minus_sign:                                                                | Configuration to override the default retry behavior of the client.               |
-
-### Response
-
-**[models.IconsDualConditionResponse](../../models/iconsdualconditionresponse.md)**
-
-### Errors
-
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.APIError | 4XX, 5XX        | \*/\*           |
-
-## ~~icons_summary~~
-
-Returns a list of icon codes and textual descriptions. Icon services in API are deprecated.
-
-> :warning: **DEPRECATED**: This will be removed in a future release, please migrate away from it as soon as possible.
-
-### Example Usage
-
-```python
-from nws_client import NwsClient
-import os
-
-
-with NwsClient(
-    user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
-) as nc_client:
-
-    res = nc_client.icons_summary()
-
-    # Handle response
-    print(res)
-
-```
-
-### Parameters
-
-| Parameter                                                           | Type                                                                | Required                                                            | Description                                                         |
-| ------------------------------------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------- |
-| `retries`                                                           | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)    | :heavy_minus_sign:                                                  | Configuration to override the default retry behavior of the client. |
-
-### Response
-
-**[models.IconsSummaryResponse](../../models/iconssummaryresponse.md)**
-
-### Errors
-
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.APIError | 4XX, 5XX        | \*/\*           |
-
-## ~~satellite_thumbnails~~
-
-Returns a thumbnail image for a satellite region. Image services in API are deprecated.
-
-> :warning: **DEPRECATED**: This will be removed in a future release, please migrate away from it as soon as possible.
-
-### Example Usage
-
-```python
-from nws_client import NwsClient, models
-import os
-
-
-with NwsClient(
-    user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
-) as nc_client:
-
-    res = nc_client.satellite_thumbnails(area=models.SatelliteThumbnailsArea.G)
-
-    # Handle response
-    print(res)
-
-```
-
-### Parameters
-
-| Parameter                                                                 | Type                                                                      | Required                                                                  | Description                                                               |
-| ------------------------------------------------------------------------- | ------------------------------------------------------------------------- | ------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
-| `area`                                                                    | [models.SatelliteThumbnailsArea](../../models/satellitethumbnailsarea.md) | :heavy_check_mark:                                                        | .                                                                         |
-| `retries`                                                                 | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)          | :heavy_minus_sign:                                                        | Configuration to override the default retry behavior of the client.       |
-
-### Response
-
-**[models.SatelliteThumbnailsResponse](../../models/satellitethumbnailsresponse.md)**
-
-### Errors
-
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.APIError | 4XX, 5XX        | \*/\*           |
-
 ## station_observation_list
 
 Returns a list of observations for a given station
@@ -1515,49 +1338,6 @@ with NwsClient(
 ### Response
 
 **[models.PointResponse](../../models/pointresponse.md)**
-
-### Errors
-
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.APIError | 4XX, 5XX        | \*/\*           |
-
-## ~~point_stations~~
-
-Returns a list of observation stations for a given point
-
-> :warning: **DEPRECATED**: This will be removed in a future release, please migrate away from it as soon as possible.
-
-### Example Usage
-
-```python
-from nws_client import NwsClient
-import os
-
-
-with NwsClient(
-    user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
-) as nc_client:
-
-    res = nc_client.point_stations(point="<value>")
-
-    assert res is not None
-
-    # Handle response
-    print(res)
-
-```
-
-### Parameters
-
-| Parameter                                                           | Type                                                                | Required                                                            | Description                                                         |
-| ------------------------------------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------- |
-| `point`                                                             | *str*                                                               | :heavy_check_mark:                                                  | Point (latitude, longitude)                                         |
-| `retries`                                                           | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)    | :heavy_minus_sign:                                                  | Configuration to override the default retry behavior of the client. |
-
-### Response
-
-**[models.PointStationsResponse](../../models/pointstationsresponse.md)**
 
 ### Errors
 

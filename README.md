@@ -223,10 +223,6 @@ with NwsClient(
 * [gridpoint_forecast](docs/sdks/nwsclient/README.md#gridpoint_forecast) - Returns a textual forecast for a 2.5km grid area
 * [gridpoint_forecast_hourly](docs/sdks/nwsclient/README.md#gridpoint_forecast_hourly) - Returns a textual hourly forecast for a 2.5km grid area
 * [gridpoint_stations](docs/sdks/nwsclient/README.md#gridpoint_stations) - Returns a list of observation stations usable for a given 2.5km grid area
-* [~~icons~~](docs/sdks/nwsclient/README.md#icons) - Returns a forecast icon. Icon services in API are deprecated. :warning: **Deprecated**
-* [~~icons_dual_condition~~](docs/sdks/nwsclient/README.md#icons_dual_condition) - Returns a forecast icon. Icon services in API are deprecated. :warning: **Deprecated**
-* [~~icons_summary~~](docs/sdks/nwsclient/README.md#icons_summary) - Returns a list of icon codes and textual descriptions. Icon services in API are deprecated. :warning: **Deprecated**
-* [~~satellite_thumbnails~~](docs/sdks/nwsclient/README.md#satellite_thumbnails) - Returns a thumbnail image for a satellite region. Image services in API are deprecated. :warning: **Deprecated**
 * [station_observation_list](docs/sdks/nwsclient/README.md#station_observation_list) - Returns a list of observations for a given station
 * [station_observation_latest](docs/sdks/nwsclient/README.md#station_observation_latest) - Returns the latest observation for a station
 * [station_observation_time](docs/sdks/nwsclient/README.md#station_observation_time) - Returns a single observation.
@@ -238,7 +234,6 @@ with NwsClient(
 * [office_headline](docs/sdks/nwsclient/README.md#office_headline) - Returns a specific news headline for a given NWS office
 * [office_headlines](docs/sdks/nwsclient/README.md#office_headlines) - Returns a list of news headlines for a given NWS office
 * [point](docs/sdks/nwsclient/README.md#point) - Returns metadata about a given latitude/longitude point
-* [~~point_stations~~](docs/sdks/nwsclient/README.md#point_stations) - Returns a list of observation stations for a given point :warning: **Deprecated**
 * [radar_servers](docs/sdks/nwsclient/README.md#radar_servers) - Returns a list of radar servers
 * [radar_server](docs/sdks/nwsclient/README.md#radar_server) - Returns metadata about a given radar server
 * [radar_stations](docs/sdks/nwsclient/README.md#radar_stations) - Returns a list of radar stations

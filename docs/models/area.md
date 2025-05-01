@@ -1,4 +1,4 @@
-# AlertsActiveAreaArea
+# Area
 
 State or marine area code
 

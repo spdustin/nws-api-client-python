@@ -1,12 +1,12 @@
 lockVersion: 2.0.0
 id: 52b1f0b7-2169-4145-80a9-5b7af99f87aa
 management:
-  docChecksum: c95d66586a725d0de6d150daa3ce2c42
+  docChecksum: b86444e2b1282bd26aca7422207eb895
   docVersion: 2.0.0
   speakeasyVersion: 1.541.2
   generationVersion: 2.595.4
-  releaseVersion: 0.0.2
-  configChecksum: a90cc57baadd80d34aaf1fe4be224b33
+  releaseVersion: 0.0.1
+  configChecksum: 2f4ed0033f365fe5c1f3e3b5545139d8
 features:
   python:
     acceptHeaders: 3.0.0
@@ -17,7 +17,6 @@ features:
     defaultEnabledRetries: 0.2.0
     deprecations: 3.0.2
     devContainers: 3.0.0
-    downloadStreams: 1.0.1
     enumUnions: 0.1.0
     envVarSecurityUsage: 0.3.2
     flattening: 3.1.1
@@ -57,7 +56,6 @@ generatedFiles:
   - docs/models/alertmessagetype.md
   - docs/models/alertmessagetypeparameter.md
   - docs/models/alertregiontype.md
-  - docs/models/alertsactiveareaarea.md
   - docs/models/alertsactivearearequest.md
   - docs/models/alertsactivearearesponse.md
   - docs/models/alertsactivearearesponseresult.md
@@ -87,6 +85,7 @@ generatedFiles:
   - docs/models/alertstypesresponseresult.md
   - docs/models/alerturgency.md
   - docs/models/alertxmlparameter.md
+  - docs/models/area.md
   - docs/models/areacode.md
   - docs/models/atgraph.md
   - docs/models/attribute.md
@@ -155,18 +154,6 @@ generatedFiles:
   - docs/models/hazards.md
   - docs/models/hazardsvalue1.md
   - docs/models/hazardsvalue2.md
-  - docs/models/icons.md
-  - docs/models/iconsdualconditionrequest.md
-  - docs/models/iconsdualconditionresponse.md
-  - docs/models/iconsdualconditionresponseresult.md
-  - docs/models/iconsdualconditionsize.md
-  - docs/models/iconsrequest.md
-  - docs/models/iconsresponse.md
-  - docs/models/iconsresponseresult.md
-  - docs/models/iconssize.md
-  - docs/models/iconssummaryresponse.md
-  - docs/models/iconssummaryresponsebody.md
-  - docs/models/iconssummaryresponseresult.md
   - docs/models/jsonldcontext.md
   - docs/models/jsonldcontextunion.md
   - docs/models/landregioncode.md
@@ -230,8 +217,6 @@ generatedFiles:
   - docs/models/pointrequest.md
   - docs/models/pointresponse.md
   - docs/models/pointresponseresult.md
-  - docs/models/pointstationsrequest.md
-  - docs/models/pointstationsresponse.md
   - docs/models/problemdetail.md
   - docs/models/productlocationsresponse.md
   - docs/models/productlocationsresponseresult.md
@@ -282,10 +267,6 @@ generatedFiles:
   - docs/models/relativelocationgeojsontype.md
   - docs/models/relativelocationjsonld.md
   - docs/models/response.md
-  - docs/models/satellitethumbnailsarea.md
-  - docs/models/satellitethumbnailsrequest.md
-  - docs/models/satellitethumbnailsresponse.md
-  - docs/models/satellitethumbnailsresponseresult.md
   - docs/models/security.md
   - docs/models/sigmet.md
   - docs/models/sigmetcollectiongeojson.md
@@ -304,7 +285,6 @@ generatedFiles:
   - docs/models/sigmetsbyatsurequest.md
   - docs/models/sigmetsbyatsuresponse.md
   - docs/models/sigmetsbyatsuresponseresult.md
-  - docs/models/sizes.md
   - docs/models/state.md
   - docs/models/stateenum.md
   - docs/models/stateterritorycode.md
@@ -437,9 +417,6 @@ generatedFiles:
   - src/nws_client/models/gridpointgeojson.py
   - src/nws_client/models/gridpointop.py
   - src/nws_client/models/gridpointquantitativevaluelayer.py
-  - src/nws_client/models/icons_summaryop.py
-  - src/nws_client/models/iconsdualconditionop.py
-  - src/nws_client/models/iconsop.py
   - src/nws_client/models/jsonldcontext_union.py
   - src/nws_client/models/landregioncode.py
   - src/nws_client/models/location_productsop.py
@@ -468,7 +445,6 @@ generatedFiles:
   - src/nws_client/models/officeop.py
   - src/nws_client/models/paginationinfo.py
   - src/nws_client/models/point.py
-  - src/nws_client/models/point_stationsop.py
   - src/nws_client/models/pointgeojson.py
   - src/nws_client/models/pointjsonld.py
   - src/nws_client/models/pointop.py
@@ -492,7 +468,6 @@ generatedFiles:
   - src/nws_client/models/relativelocation.py
   - src/nws_client/models/relativelocationgeojson.py
   - src/nws_client/models/relativelocationjsonld.py
-  - src/nws_client/models/satellite_thumbnailsop.py
   - src/nws_client/models/security.py
   - src/nws_client/models/sigmet.py
   - src/nws_client/models/sigmetcollectiongeojson.py
@@ -501,7 +476,6 @@ generatedFiles:
   - src/nws_client/models/sigmetqueryop.py
   - src/nws_client/models/sigmetsbyatsubydateop.py
   - src/nws_client/models/sigmetsbyatsuop.py
-  - src/nws_client/models/sizes.py
   - src/nws_client/models/stateterritorycode.py
   - src/nws_client/models/station_observation_latestop.py
   - src/nws_client/models/station_observation_listop.py

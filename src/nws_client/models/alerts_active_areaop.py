@@ -14,7 +14,7 @@ from typing import Dict, List, Union
 from typing_extensions import Annotated, TypeAliasType, TypedDict
 
 
-class AlertsActiveAreaArea(str, Enum):
+class Area(str, Enum):
     r"""State or marine area code"""
 
     AL = "AL"
@@ -94,14 +94,13 @@ class AlertsActiveAreaArea(str, Enum):
 
 
 class AlertsActiveAreaRequestTypedDict(TypedDict):
-    area: AlertsActiveAreaArea
+    area: Area
     r"""State or marine area code"""
 
 
 class AlertsActiveAreaRequest(BaseModel):
     area: Annotated[
-        AlertsActiveAreaArea,
-        FieldMetadata(path=PathParamMetadata(style="simple", explode=False)),
+        Area, FieldMetadata(path=PathParamMetadata(style="simple", explode=False))
     ]
     r"""State or marine area code"""
 
