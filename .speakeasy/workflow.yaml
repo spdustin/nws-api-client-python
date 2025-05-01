@@ -3,7 +3,7 @@ speakeasyVersion: latest
 sources:
     weather.gov API:
         inputs:
-            - location: ../openapi.yaml
+            - location: ./openapi.yaml
         registry:
             location: registry.speakeasyapi.dev/spdustin/weather/weather-gov-api
 targets:
