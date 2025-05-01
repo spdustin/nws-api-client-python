@@ -1,0 +1,15 @@
+# ZoneListRequest
+
+
+## Fields
+
+| Field                                                                | Type                                                                 | Required                                                             | Description                                                          |
+| -------------------------------------------------------------------- | -------------------------------------------------------------------- | -------------------------------------------------------------------- | -------------------------------------------------------------------- |
+| `id`                                                                 | List[*str*]                                                          | :heavy_minus_sign:                                                   | Zone ID (forecast or county)                                         |
+| `area`                                                               | List[[models.AreaCode](../models/areacode.md)]                       | :heavy_minus_sign:                                                   | State/marine area code                                               |
+| `region`                                                             | List[[models.RegionCode](../models/regioncode.md)]                   | :heavy_minus_sign:                                                   | Region code                                                          |
+| `type`                                                               | List[[models.NWSZoneType](../models/nwszonetype.md)]                 | :heavy_minus_sign:                                                   | Zone type                                                            |
+| `point`                                                              | *Optional[str]*                                                      | :heavy_minus_sign:                                                   | Point (latitude,longitude)                                           |
+| `include_geometry`                                                   | *Optional[bool]*                                                     | :heavy_minus_sign:                                                   | Include geometry in results (true/false)                             |
+| `limit`                                                              | *Optional[int]*                                                      | :heavy_minus_sign:                                                   | Limit                                                                |
+| `effective`                                                          | [date](https://docs.python.org/3/library/datetime.html#date-objects) | :heavy_minus_sign:                                                   | Effective date/time                                                  |

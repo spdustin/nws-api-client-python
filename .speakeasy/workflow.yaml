@@ -1,0 +1,18 @@
+workflowVersion: 1.0.0
+speakeasyVersion: latest
+sources:
+    weather.gov API:
+        inputs:
+            - location: ../openapi.yaml
+        registry:
+            location: registry.speakeasyapi.dev/spdustin/weather/weather-gov-api
+targets:
+    nws-client:
+        target: python
+        source: weather.gov API
+        codeSamples:
+            registry:
+                location: registry.speakeasyapi.dev/spdustin/weather/weather-gov-api-python-code-samples
+            labelOverride:
+                fixedValue: Python (SDK)
+            blocking: false

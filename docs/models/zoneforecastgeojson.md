@@ -1,0 +1,14 @@
+# ZoneForecastGeoJSON
+
+A GeoJSON feature. Please refer to IETF RFC 7946 for information on the GeoJSON format.
+
+
+## Fields
+
+| Field                                                                                           | Type                                                                                            | Required                                                                                        | Description                                                                                     |
+| ----------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| `at_context`                                                                                    | [Optional[models.JSONLdContextUnion]](../models/jsonldcontextunion.md)                          | :heavy_minus_sign:                                                                              | N/A                                                                                             |
+| `id`                                                                                            | *Optional[str]*                                                                                 | :heavy_minus_sign:                                                                              | N/A                                                                                             |
+| `type`                                                                                          | [models.ZoneForecastGeoJSONType](../models/zoneforecastgeojsontype.md)                          | :heavy_check_mark:                                                                              | N/A                                                                                             |
+| `geometry`                                                                                      | [Nullable[models.GeoJSONGeometry]](../models/geojsongeometry.md)                                | :heavy_check_mark:                                                                              | A GeoJSON geometry object. Please refer to IETF RFC 7946 for information on the GeoJSON format. |
+| `properties`                                                                                    | [models.ZoneForecast](../models/zoneforecast.md)                                                | :heavy_check_mark:                                                                              | An object representing a zone area forecast.                                                    |

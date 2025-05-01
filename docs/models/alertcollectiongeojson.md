@@ -1,0 +1,15 @@
+# AlertCollectionGeoJSON
+
+A GeoJSON feature collection. Please refer to IETF RFC 7946 for information on the GeoJSON format.
+
+
+## Fields
+
+| Field                                                                                    | Type                                                                                     | Required                                                                                 | Description                                                                              |
+| ---------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| `at_context`                                                                             | [Optional[models.JSONLdContextUnion]](../models/jsonldcontextunion.md)                   | :heavy_minus_sign:                                                                       | N/A                                                                                      |
+| `type`                                                                                   | [models.AlertCollectionGeoJSONType](../models/alertcollectiongeojsontype.md)             | :heavy_check_mark:                                                                       | N/A                                                                                      |
+| `features`                                                                               | List[[models.AlertCollectionGeoJSONFeature](../models/alertcollectiongeojsonfeature.md)] | :heavy_check_mark:                                                                       | N/A                                                                                      |
+| `title`                                                                                  | *Optional[str]*                                                                          | :heavy_minus_sign:                                                                       | A title describing the alert collection                                                  |
+| `updated`                                                                                | [date](https://docs.python.org/3/library/datetime.html#date-objects)                     | :heavy_minus_sign:                                                                       | The last time a change occurred to this collection                                       |
+| `pagination`                                                                             | [Optional[models.PaginationInfo]](../models/paginationinfo.md)                           | :heavy_minus_sign:                                                                       | Links for retrieving more data from paged data sets                                      |

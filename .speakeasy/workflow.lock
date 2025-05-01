@@ -1,0 +1,36 @@
+speakeasyVersion: 1.541.2
+sources:
+    weather.gov API:
+        sourceNamespace: weather-gov-api
+        sourceRevisionDigest: sha256:067b5126ec944ea2ef726fcf7fba0fc8622ff22860e0aefcaf4f3a8111422853
+        sourceBlobDigest: sha256:51895829d9c4ea514557ac20695008f421041151df23877208ff7c27dbbe3805
+        tags:
+            - latest
+            - 2.0.0
+targets:
+    nws-client:
+        source: weather.gov API
+        sourceNamespace: weather-gov-api
+        sourceRevisionDigest: sha256:067b5126ec944ea2ef726fcf7fba0fc8622ff22860e0aefcaf4f3a8111422853
+        sourceBlobDigest: sha256:51895829d9c4ea514557ac20695008f421041151df23877208ff7c27dbbe3805
+        codeSamplesNamespace: weather-gov-api-python-code-samples
+        codeSamplesRevisionDigest: sha256:7afb75558d32385c68a633ac4e4abcaefc6fcd2cc32970002f2936c8b62648a1
+workflow:
+    workflowVersion: 1.0.0
+    speakeasyVersion: latest
+    sources:
+        weather.gov API:
+            inputs:
+                - location: ../openapi.yaml
+            registry:
+                location: registry.speakeasyapi.dev/spdustin/weather/weather-gov-api
+    targets:
+        nws-client:
+            target: python
+            source: weather.gov API
+            codeSamples:
+                registry:
+                    location: registry.speakeasyapi.dev/spdustin/weather/weather-gov-api-python-code-samples
+                labelOverride:
+                    fixedValue: Python (SDK)
+                blocking: false

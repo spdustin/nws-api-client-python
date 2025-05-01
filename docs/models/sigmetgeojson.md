@@ -1,0 +1,14 @@
+# SigmetGeoJSON
+
+A GeoJSON feature. Please refer to IETF RFC 7946 for information on the GeoJSON format.
+
+
+## Fields
+
+| Field                                                                                           | Type                                                                                            | Required                                                                                        | Description                                                                                     |
+| ----------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| `at_context`                                                                                    | [Optional[models.JSONLdContextUnion]](../models/jsonldcontextunion.md)                          | :heavy_minus_sign:                                                                              | N/A                                                                                             |
+| `id`                                                                                            | *Optional[str]*                                                                                 | :heavy_minus_sign:                                                                              | N/A                                                                                             |
+| `type`                                                                                          | [models.SigmetGeoJSONType](../models/sigmetgeojsontype.md)                                      | :heavy_check_mark:                                                                              | N/A                                                                                             |
+| `geometry`                                                                                      | [Nullable[models.GeoJSONGeometry]](../models/geojsongeometry.md)                                | :heavy_check_mark:                                                                              | A GeoJSON geometry object. Please refer to IETF RFC 7946 for information on the GeoJSON format. |
+| `properties`                                                                                    | [models.Sigmet](../models/sigmet.md)                                                            | :heavy_check_mark:                                                                              | N/A                                                                                             |

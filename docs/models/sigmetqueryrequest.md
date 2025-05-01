@@ -1,0 +1,12 @@
+# SigmetQueryRequest
+
+
+## Fields
+
+| Field                                                                        | Type                                                                         | Required                                                                     | Description                                                                  |
+| ---------------------------------------------------------------------------- | ---------------------------------------------------------------------------- | ---------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| `start`                                                                      | [date](https://docs.python.org/3/library/datetime.html#date-objects)         | :heavy_minus_sign:                                                           | Start time                                                                   |
+| `end`                                                                        | [date](https://docs.python.org/3/library/datetime.html#date-objects)         | :heavy_minus_sign:                                                           | End time                                                                     |
+| `date_`                                                                      | [datetime](https://docs.python.org/3/library/datetime.html#datetime-objects) | :heavy_minus_sign:                                                           | Date (YYYY-MM-DD format)                                                     |
+| `atsu`                                                                       | *Optional[str]*                                                              | :heavy_minus_sign:                                                           | ATSU identifier                                                              |
+| `sequence`                                                                   | *Optional[str]*                                                              | :heavy_minus_sign:                                                           | SIGMET sequence number                                                       |
