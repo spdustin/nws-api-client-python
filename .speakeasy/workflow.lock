@@ -2,20 +2,19 @@ speakeasyVersion: 1.542.0
 sources:
     weather.gov API:
         sourceNamespace: weather-gov-api
-        sourceRevisionDigest: sha256:98822dc3428d3f68d31e502f90936c030a3aae6dd3ee0b11b501bc2402f5613a
-        sourceBlobDigest: sha256:58b6206b623d7a52cb96a937bb60c99570a9718ff00a69b5f23eb88baf41727e
+        sourceRevisionDigest: sha256:4aed580328e5fa820e1fac1afcce5428a4556c82028a106dbff5ec4c8c5205c0
+        sourceBlobDigest: sha256:d7d73a8b60c97e31d6356e9568c6775c9f76d104b2d7a12ac44a126a410fbf2a
         tags:
             - latest
-            - speakeasy-sdk-regen-1746149352
             - 2.0.0
 targets:
     nws-api-client:
         source: weather.gov API
         sourceNamespace: weather-gov-api
-        sourceRevisionDigest: sha256:98822dc3428d3f68d31e502f90936c030a3aae6dd3ee0b11b501bc2402f5613a
-        sourceBlobDigest: sha256:58b6206b623d7a52cb96a937bb60c99570a9718ff00a69b5f23eb88baf41727e
+        sourceRevisionDigest: sha256:4aed580328e5fa820e1fac1afcce5428a4556c82028a106dbff5ec4c8c5205c0
+        sourceBlobDigest: sha256:d7d73a8b60c97e31d6356e9568c6775c9f76d104b2d7a12ac44a126a410fbf2a
         codeSamplesNamespace: weather-gov-api-python-code-samples
-        codeSamplesRevisionDigest: sha256:9ee407ed152a2b02723e0dc19ad349f561fdaa38a299d42a892fdd8fbcfa6ec2
+        codeSamplesRevisionDigest: sha256:5bcd8a59765d2bd848ab228814c290c259e8ed9dfd9388357b1603550335f470
 workflow:
     workflowVersion: 1.0.0
     speakeasyVersion: latest

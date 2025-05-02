@@ -1230,6 +1230,10 @@ paths:
     get:
       description: Returns a list of valid text product issuance locations for a given product type
       operationId: products_type_locations
+      x-speakeasy-usage-example:
+        title: Get Locations for a Text Product Type
+        description: Get a list of locations that issue a particular forecast text product (like "AFD" for "Area Forecast Discussion")
+        position: 2
       responses:
         "200":
           description: success
@@ -1252,6 +1256,7 @@ paths:
         in: path
         description: .
         required: true
+        example: AFD
         schema:
           type: string
   /products/locations/{locationId}/types:

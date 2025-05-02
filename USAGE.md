@@ -1,4 +1,8 @@
 <!-- Start SDK Example Usage [usage] -->
+### Get Locations for a Text Product Type
+
+Get a list of locations that issue a particular forecast text product (like "AFD" for "Area Forecast Discussion")
+
 ```python
 # Synchronous Example
 from nws_api_client import NwsClient
@@ -9,7 +13,7 @@ with NwsClient(
     user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
 ) as nws_client:
 
-    res = nws_client.alerts_query()
+    res = nws_client.products_type_locations(type_id="AFD")
 
     # Handle response
     print(res)
@@ -30,7 +34,7 @@ async def main():
         user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
     ) as nws_client:
 
-        res = await nws_client.alerts_query_async()
+        res = await nws_client.products_type_locations_async(type_id="AFD")
 
         # Handle response
         print(res)

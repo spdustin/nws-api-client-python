@@ -1,12 +1,12 @@
 lockVersion: 2.0.0
 id: 52b1f0b7-2169-4145-80a9-5b7af99f87aa
 management:
-  docChecksum: 90ef18853e465cdd3b44d4f136f95d7a
+  docChecksum: c09323a7c22e470a9666c6f73b5a570b
   docVersion: 2.0.0
   speakeasyVersion: 1.542.0
   generationVersion: 2.596.2
-  releaseVersion: 0.9.0
-  configChecksum: fa0e61f2beecb723d487b8da7409bdcc
+  releaseVersion: 0.10.1
+  configChecksum: 85c08998fd432985c5ed83eddef83f58
   repoURL: https://github.com/spdustin/nws-api-client-python.git
   installationURL: https://github.com/spdustin/nws-api-client-python.git
   published: true
@@ -22,6 +22,7 @@ features:
     devContainers: 3.0.0
     enumUnions: 0.1.0
     envVarSecurityUsage: 0.3.2
+    examples: 3.0.1
     flattening: 3.1.1
     globalSecurity: 3.0.3
     globalSecurityCallbacks: 1.0.0
@@ -1052,6 +1053,13 @@ examples:
           application/ld+json: {}
         default:
           application/problem+json: {"type": "urn:noaa:nws:api:UnexpectedProblem", "title": "Unexpected Problem", "status": 500, "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "key": "<value>"}
+    "":
+      parameters:
+        path:
+          typeId: "AFD"
+      responses:
+        default:
+          application/problem+json: {"type": "about:blank", "title": "Unexpected Problem", "status": 500, "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "key": "<value>"}
   location_products:
     speakeasy-default-location-products:
       parameters:

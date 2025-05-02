@@ -1843,7 +1843,7 @@ with NwsClient(
     user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
 ) as nws_client:
 
-    res = nws_client.products_type_locations(type_id="<id>")
+    res = nws_client.products_type_locations(type_id="AFD")
 
     # Handle response
     print(res)
@@ -1852,10 +1852,10 @@ with NwsClient(
 
 ### Parameters
 
-| Parameter                                                           | Type                                                                | Required                                                            | Description                                                         |
-| ------------------------------------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------- |
-| `type_id`                                                           | *str*                                                               | :heavy_check_mark:                                                  | .                                                                   |
-| `retries`                                                           | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)    | :heavy_minus_sign:                                                  | Configuration to override the default retry behavior of the client. |
+| Parameter                                                           | Type                                                                | Required                                                            | Description                                                         | Example                                                             |
+| ------------------------------------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------- |
+| `type_id`                                                           | *str*                                                               | :heavy_check_mark:                                                  | .                                                                   | AFD                                                                 |
+| `retries`                                                           | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)    | :heavy_minus_sign:                                                  | Configuration to override the default retry behavior of the client. |                                                                     |
 
 ### Response
 

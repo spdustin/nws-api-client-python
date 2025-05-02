@@ -3,22 +3,15 @@
 Type-safe and developer-friendly Python client for the National Weather Service API.
 
 > [!INFO]
-> This first pass required changing the "official" OpenAPI spec. Deprecated endpoints were removed, a few `anyOf` (various `enum`s)schemas were merged to a single `enum`, and a few other minor changes.
+> This first pass, built with Speakeasy, required changing the "official" NWS OpenAPI spec. Deprecated endpoints were removed, a few `anyOf` (various `enum`s)schemas were merged to a single `enum`, and a few other minor changes.
 
-<div align="left">
-    <a href="https://www.speakeasy.com/?utm_source=nws-api-client&utm_campaign=python"><img src="https://custom-icon-badges.demolab.com/badge/-Built%20By%20Speakeasy-212015?style=for-the-badge&logoColor=FBE331&logo=speakeasy&labelColor=545454" /></a>
-    <a href="https://opensource.org/licenses/MIT">
-        <img src="https://img.shields.io/badge/License-MIT-blue.svg" style="width: 100px; height: 28px;" />
-    </a>
-</div>
+> [!NOTE]
+> The National Weather Service would like to know who is using their API. Please include a user agent with all API requests where value = your company name and email (a contactable email address). This is the same as the HTTP header 'User-Agent'. They'd also like to be able to contact you if there's an issue with your use of the API.
 
 <!-- Start Summary [summary] -->
 ## Summary
 
-weather.gov API
-
-> [!NOTE]
-> The National Weather Service would like to know who is using their API. Please include a user agent with all API requests where value = your company name and email (a contactable email address). This is the same as the HTTP header 'User-Agent'. They'd also like to be able to contact you if there's an issue with your use of the API.
+weather.gov API: weather.gov API
 
 For more information about the API: [Full API documentation](https://www.weather.gov/documentation/services-web-api)
 <!-- End Summary [summary] -->
@@ -28,7 +21,6 @@ For more information about the API: [Full API documentation](https://www.weather
 <!-- $toc-max-depth=2 -->
 * [nws-api-client](#nws-api-client)
   * [SDK Installation](#sdk-installation)
-  * [IDE Support](#ide-support)
   * [SDK Example Usage](#sdk-example-usage)
   * [Authentication](#authentication)
   * [Available Resources and Operations](#available-resources-and-operations)
@@ -44,16 +36,15 @@ For more information about the API: [Full API documentation](https://www.weather
 
 <!-- End Table of Contents [toc] -->
 
-<!-- Start SDK Installation [installation] -->  
+
 ## SDK Installation
 
-### uv
+> [!NOTE]
+> **Python version upgrade policy**
+>
+> Once a Python version reaches its [official end of life date](https://devguide.python.org/versions/), a 3-month grace period is provided for users to upgrade. Following this grace period, the minimum python version supported in the SDK will be updated.
 
-[uv](https://docs.astral.sh/uv/) is the Python package manager I recommend.
-
-```bash
-uv add nws-api-client
-```
+The SDK can be installed with either *pip* or *poetry* package managers.
 
 ### PIP
 
@@ -101,22 +92,17 @@ sdk = NwsClient(
 
 Once that is saved to a file, you can run it with `uv run script.py` where
 `script.py` can be replaced with the actual file name.
-<!-- End SDK Installation [installation] -->
+<!-- No SDK Installation [installation] -->
 
-<!-- Start IDE Support [idesupport] -->
-## IDE Support
 
-### PyCharm
-
-Generally, the SDK will work well with most IDEs out of the box. However, when using PyCharm, you can enjoy much better integration with Pydantic by installing an additional plugin.
-
-- [PyCharm Pydantic Plugin](https://docs.pydantic.dev/latest/integrations/pycharm/)
-<!-- End IDE Support [idesupport] -->
+<!-- No IDE Support [idesupport] -->
 
 <!-- Start SDK Example Usage [usage] -->
 ## SDK Example Usage
 
-### Example
+### Get Locations for a Text Product Type
+
+Get a list of locations that issue a particular forecast text product (like "AFD" for "Area Forecast Discussion")
 
 ```python
 # Synchronous Example
@@ -124,19 +110,11 @@ from nws_api_client import NwsClient
 import os
 
 
-# The National Weather Service would like to know who is
-# using their API. Please include a user agent with all
-# API requests where value = your company name and email
-# (a contactable email address). This is the same as the
-# HTTP header 'User-Agent'. They'd also like to be able
-# to contact you if there's an issue with your API usage.
 with NwsClient(
     user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
 ) as nws_client:
 
-    res = nws_client.alerts_query()
-
-    assert res is not None
+    res = nws_client.products_type_locations(type_id="AFD")
 
     # Handle response
     print(res)
@@ -152,19 +130,12 @@ from nws_api_client import NwsClient
 import os
 
 async def main():
-    # The National Weather Service would like to know who is
-    # using their API. Please include a user agent with all
-    # API requests where value = your company name and email
-    # (a contactable email address). This is the same as the
-    # HTTP header 'User-Agent'. They'd also like to be able
-    # to contact you if there's an issue with your API usage.
+
     async with NwsClient(
         user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
     ) as nws_client:
 
-        res = await nws_client.alerts_query_async()
-
-        assert res is not None
+        res = await nws_client.products_type_locations_async(type_id="AFD")
 
         # Handle response
         print(res)
@@ -178,8 +149,6 @@ asyncio.run(main())
 
 ### Per-Client Security Schemes
 
-The National Weather Service does *not* require obtaining an API key to use their API. However, they would like to know who is # using their API. Please include a user agent with all # API requests where value = your company name and email # (a contactable email address). This is the same as the # HTTP header 'User-Agent'. They'd also like to be able # to contact you if there's an issue with your API usage.
-
 This SDK supports the following security scheme globally:
 
 | Name         | Type   | Scheme  | Environment Variable   |
@@ -191,19 +160,12 @@ To authenticate with the API the `user_agent` parameter must be set when initial
 from nws_api_client import NwsClient
 import os
 
-# The National Weather Service would like to know who is
-# using their API. Please include a user agent with all
-# API requests where value = your company name and email
-# (a contactable email address). This is the same as the
-# HTTP header 'User-Agent'. They'd also like to be able
-# to contact you if there's an issue with your API usage.
+
 with NwsClient(
     user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
 ) as nws_client:
 
     res = nws_client.alerts_query()
-
-    assert res is not None
 
     # Handle response
     print(res)
@@ -294,8 +256,6 @@ with NwsClient(
     res = nws_client.alerts_query(,
         RetryConfig("backoff", BackoffStrategy(1, 50, 1.1, 100), False))
 
-    assert res is not None
-
     # Handle response
     print(res)
 
@@ -307,20 +267,13 @@ from nws_api_client import NwsClient
 from nws_api_client.utils import BackoffStrategy, RetryConfig
 import os
 
-# The National Weather Service would like to know who is
-# using their API. Please include a user agent with all
-# API requests where value = your company name and email
-# (a contactable email address). This is the same as the
-# HTTP header 'User-Agent'. They'd also like to be able
-# to contact you if there's an issue with your API usage.
+
 with NwsClient(
     retry_config=RetryConfig("backoff", BackoffStrategy(1, 50, 1.1, 100), False),
     user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
 ) as nws_client:
 
     res = nws_client.alerts_query()
-
-    assert res is not None
 
     # Handle response
     print(res)
@@ -354,12 +307,7 @@ When custom error responses are specified for an operation, the SDK may also rai
 from nws_api_client import NwsClient, errors
 import os
 
-# The National Weather Service would like to know who is
-# using their API. Please include a user agent with all
-# API requests where value = your company name and email
-# (a contactable email address). This is the same as the
-# HTTP header 'User-Agent'. They'd also like to be able
-# to contact you if there's an issue with your API usage.
+
 with NwsClient(
     user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
 ) as nws_client:
@@ -367,8 +315,6 @@ with NwsClient(
     try:
 
         res = nws_client.alerts_query()
-
-        assert res is not None
 
         # Handle response
         print(res)
@@ -389,20 +335,13 @@ The default server can be overridden globally by passing a URL to the `server_ur
 from nws_api_client import NwsClient
 import os
 
-# The National Weather Service would like to know who is
-# using their API. Please include a user agent with all
-# API requests where value = your company name and email
-# (a contactable email address). This is the same as the
-# HTTP header 'User-Agent'. They'd also like to be able
-# to contact you if there's an issue with your API usage.
+
 with NwsClient(
     server_url="https://api.weather.gov",
     user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
 ) as nws_client:
 
     res = nws_client.alerts_query()
-
-    assert res is not None
 
     # Handle response
     print(res)
