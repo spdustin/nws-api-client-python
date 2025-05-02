@@ -228,7 +228,6 @@ paths:
           $ref: "#/components/responses/AlertCollection"
         default:
           $ref: "#/components/responses/Error"
-
   /alerts/active/region/{region}:
     get:
       description: Returns active alerts for the given marine region
@@ -546,7 +545,6 @@ paths:
     parameters:
       - $ref: "#/components/parameters/GridpointWFO"
       - $ref: "#/components/parameters/GridpointPoint"
-
   /gridpoints/{wfo}/{point}/forecast/hourly:
     get:
       description: Returns a textual hourly forecast for a 2.5km grid area
@@ -751,7 +749,6 @@ paths:
           $ref: "#/components/responses/Error"
         default:
           $ref: "#/components/responses/Error"
-
   /offices/{officeId}/headlines/{headlineId}:
     get:
       description: Returns a specific news headline for a given NWS office
@@ -2102,7 +2099,6 @@ components:
     AreaCode:
       description: |
         State, territory, and marine area codes.
-
         Marine area code as defined in NWS Directive 10-302:
         * AM: Western North Atlantic Ocean and along U.S. East Coast south of Currituck Beach Light NC following the coastline into Gulf of Mexico to Ocean Reef FL including the Caribbean
         * AN: Western North Atlantic Ocean and along U.S. East Coast from Canadian border south to Currituck Beach Light NC
@@ -2119,7 +2115,6 @@ components:
         * PS: South Central Pacific Ocean including American Samoa waters
         * PZ: Eastern North Pacific Ocean and along U.S. West Coast from Canadian border to Mexican border
         * SL: St. Lawrence River above St. Regis
-
       type: string
       enum:
         - AL
@@ -2862,7 +2857,6 @@ components:
           example: P1Y2M10DT2H30M/2008-05-11T15:30:00Z
       description: |
         A time interval in ISO 8601 format. This can be one of:
-
             1. Start and end time
             2. Start time and duration
             3. Duration and end time

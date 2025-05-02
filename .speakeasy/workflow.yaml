@@ -4,6 +4,12 @@ sources:
     weather.gov API:
         inputs:
             - location: ./openapi.yaml
+        overlays:
+            - location: ./openapi_overlay.yaml
+            - location: ./openapi_error_overlay.yaml
+        transformations:
+            - removeUnused: true
+            - cleanup: true
         registry:
             location: registry.speakeasyapi.dev/spdustin/weather/weather-gov-api
 targets:
