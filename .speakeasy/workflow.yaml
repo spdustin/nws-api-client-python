@@ -10,6 +10,9 @@ targets:
     nws-client:
         target: python
         source: weather.gov API
+        publish:
+            pypi:
+                token: $pypi_token
         codeSamples:
             registry:
                 location: registry.speakeasyapi.dev/spdustin/weather/weather-gov-api-python-code-samples
