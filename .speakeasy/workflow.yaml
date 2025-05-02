@@ -7,7 +7,7 @@ sources:
         registry:
             location: registry.speakeasyapi.dev/spdustin/weather/weather-gov-api
 targets:
-    nws-client:
+    nws-api-client:
         target: python
         source: weather.gov API
         publish:

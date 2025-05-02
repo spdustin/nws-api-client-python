@@ -9,7 +9,7 @@ sources:
             - speakeasy-sdk-regen-1746149352
             - 2.0.0
 targets:
-    nws-client:
+    nws-api-client:
         source: weather.gov API
         sourceNamespace: weather-gov-api
         sourceRevisionDigest: sha256:98822dc3428d3f68d31e502f90936c030a3aae6dd3ee0b11b501bc2402f5613a
@@ -26,7 +26,7 @@ workflow:
             registry:
                 location: registry.speakeasyapi.dev/spdustin/weather/weather-gov-api
     targets:
-        nws-client:
+        nws-api-client:
             target: python
             source: weather.gov API
             publish:
