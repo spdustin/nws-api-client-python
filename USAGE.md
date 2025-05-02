@@ -11,8 +11,6 @@ with NwsClient(
 
     res = nws_client.alerts_query()
 
-    assert res is not None
-
     # Handle response
     print(res)
 ```
@@ -33,8 +31,6 @@ async def main():
     ) as nws_client:
 
         res = await nws_client.alerts_query_async()
-
-        assert res is not None
 
         # Handle response
         print(res)

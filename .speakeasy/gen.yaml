@@ -47,6 +47,7 @@ python:
   inputModelSuffix: input
   maxMethodParams: 999
   methodArguments: infer-optional-args
+  moduleName: ""
   outputModelSuffix: output
   packageName: nws-api-client
   pytestTimeout: 0

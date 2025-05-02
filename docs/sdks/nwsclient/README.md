@@ -79,8 +79,6 @@ with NwsClient(
 
     res = nws_client.alerts_query()
 
-    assert res is not None
-
     # Handle response
     print(res)
 
@@ -135,8 +133,6 @@ with NwsClient(
 ) as nws_client:
 
     res = nws_client.alerts_active()
-
-    assert res is not None
 
     # Handle response
     print(res)

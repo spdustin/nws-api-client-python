@@ -1,33 +1,37 @@
-speakeasyVersion: 1.541.2
+speakeasyVersion: 1.542.0
 sources:
     weather.gov API:
         sourceNamespace: weather-gov-api
-        sourceRevisionDigest: sha256:1d8b16037a5791de8153b0135d5acff4ee5f14752de9c3afde66cafa63d83bc7
-        sourceBlobDigest: sha256:b321e3a9d3876d54b2dcf140ee7dbcc26e7bc53043d77ff2209b11b6f1015117
+        sourceRevisionDigest: sha256:98822dc3428d3f68d31e502f90936c030a3aae6dd3ee0b11b501bc2402f5613a
+        sourceBlobDigest: sha256:58b6206b623d7a52cb96a937bb60c99570a9718ff00a69b5f23eb88baf41727e
         tags:
             - latest
+            - speakeasy-sdk-regen-1746149352
             - 2.0.0
 targets:
     nws-client:
         source: weather.gov API
         sourceNamespace: weather-gov-api
-        sourceRevisionDigest: sha256:1d8b16037a5791de8153b0135d5acff4ee5f14752de9c3afde66cafa63d83bc7
-        sourceBlobDigest: sha256:b321e3a9d3876d54b2dcf140ee7dbcc26e7bc53043d77ff2209b11b6f1015117
+        sourceRevisionDigest: sha256:98822dc3428d3f68d31e502f90936c030a3aae6dd3ee0b11b501bc2402f5613a
+        sourceBlobDigest: sha256:58b6206b623d7a52cb96a937bb60c99570a9718ff00a69b5f23eb88baf41727e
         codeSamplesNamespace: weather-gov-api-python-code-samples
-        codeSamplesRevisionDigest: sha256:f5411988aad4a950e3fecb0dadc743abe4132b41239f8511b14d039e625eb3df
+        codeSamplesRevisionDigest: sha256:9ee407ed152a2b02723e0dc19ad349f561fdaa38a299d42a892fdd8fbcfa6ec2
 workflow:
     workflowVersion: 1.0.0
     speakeasyVersion: latest
     sources:
         weather.gov API:
             inputs:
-                - location: ../openapi.yaml
+                - location: ./openapi.yaml
             registry:
                 location: registry.speakeasyapi.dev/spdustin/weather/weather-gov-api
     targets:
         nws-client:
             target: python
             source: weather.gov API
+            publish:
+                pypi:
+                    token: $pypi_token
             codeSamples:
                 registry:
                     location: registry.speakeasyapi.dev/spdustin/weather/weather-gov-api-python-code-samples

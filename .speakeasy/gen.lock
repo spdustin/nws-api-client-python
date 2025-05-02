@@ -1,19 +1,22 @@
 lockVersion: 2.0.0
 id: 52b1f0b7-2169-4145-80a9-5b7af99f87aa
 management:
-  docChecksum: b86444e2b1282bd26aca7422207eb895
+  docChecksum: 90ef18853e465cdd3b44d4f136f95d7a
   docVersion: 2.0.0
-  speakeasyVersion: 1.541.2
-  generationVersion: 2.595.4
-  releaseVersion: 0.0.1
-  configChecksum: bf6b761327d283fe9be225634642a53b
+  speakeasyVersion: 1.542.0
+  generationVersion: 2.596.2
+  releaseVersion: 0.9.0
+  configChecksum: fa0e61f2beecb723d487b8da7409bdcc
+  repoURL: https://github.com/spdustin/nws-api-client-python.git
+  installationURL: https://github.com/spdustin/nws-api-client-python.git
+  published: true
 features:
   python:
     acceptHeaders: 3.0.0
     additionalDependencies: 1.0.0
     additionalProperties: 1.0.1
     constsAndDefaults: 1.0.5
-    core: 5.16.0
+    core: 5.17.0
     defaultEnabledRetries: 0.2.0
     deprecations: 3.0.2
     devContainers: 3.0.0

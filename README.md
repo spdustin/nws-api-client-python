@@ -1,6 +1,6 @@
-# nws-client
+# nws-api-client
 
-Developer-friendly & type-safe Python SDK specifically catered to leverage *nws-client* API.
+Type-safe and developer-friendly Python client for the National Weather Service API.
 
 <div align="left">
     <a href="https://www.speakeasy.com/?utm_source=nws-api-client&utm_campaign=python"><img src="https://custom-icon-badges.demolab.com/badge/-Built%20By%20Speakeasy-212015?style=for-the-badge&logoColor=FBE331&logo=speakeasy&labelColor=545454" /></a>
@@ -12,7 +12,7 @@ Developer-friendly & type-safe Python SDK specifically catered to leverage *nws-
 <!-- Start Summary [summary] -->
 ## Summary
 
-weather.gov API: weather.gov API
+weather.gov API
 
 > [!NOTE]
 > The National Weather Service would like to know who is using their API. Please include a user agent with all API requests where value = your company name and email (a contactable email address). This is the same as the HTTP header 'User-Agent'. They'd also like to be able to contact you if there's an issue with your use of the API.
@@ -23,7 +23,7 @@ For more information about the API: [Full API documentation](https://www.weather
 <!-- Start Table of Contents [toc] -->
 ## Table of Contents
 <!-- $toc-max-depth=2 -->
-* [nws-client](#nws-client)
+* [nws-api-client](#nws-api-client)
   * [SDK Installation](#sdk-installation)
   * [IDE Support](#ide-support)
   * [SDK Example Usage](#sdk-example-usage)
@@ -40,6 +40,9 @@ For more information about the API: [Full API documentation](https://www.weather
   * [Contributions](#contributions)
 
 <!-- End Table of Contents [toc] -->
+
+<!-- Start SDK Installation [installation] -->  
+## SDK Installation
 
 ### uv
 
@@ -545,4 +548,4 @@ looking for the latest version.
 While I value open-source contributions to this SDK, this library is *currently* generated programmatically. Any manual changes added to internal files will be overwritten on the next generation. 
 We look forward to hearing your feedback. Feel free to open a PR or an issue with a proof of concept and we'll do our best to include it in a future release. 
 
-### Initial SDK Created by [Speakeasy](https://www.speakeasy.com/?utm_source=nws-client&utm_campaign=python)
+### Initial SDK Created by [Speakeasy](https://www.speakeasy.com/?utm_source=nws-api-client&utm_campaign=python)
