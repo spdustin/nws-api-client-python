@@ -1,15 +1,15 @@
 <!-- Start SDK Example Usage [usage] -->
 ```python
 # Synchronous Example
-from nws_client import NwsClient
+from nws_api_client import NwsClient
 import os
 
 
 with NwsClient(
     user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
-) as nc_client:
+) as nws_client:
 
-    res = nc_client.alerts_query()
+    res = nws_client.alerts_query()
 
     assert res is not None
 
@@ -23,16 +23,16 @@ The same SDK client can also be used to make asychronous requests by importing a
 ```python
 # Asynchronous Example
 import asyncio
-from nws_client import NwsClient
+from nws_api_client import NwsClient
 import os
 
 async def main():
 
     async with NwsClient(
         user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
-    ) as nc_client:
+    ) as nws_client:
 
-        res = await nc_client.alerts_query_async()
+        res = await nws_client.alerts_query_async()
 
         assert res is not None
 

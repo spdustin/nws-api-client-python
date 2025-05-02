@@ -9,11 +9,6 @@ Developer-friendly & type-safe Python SDK specifically catered to leverage *nws-
     </a>
 </div>
 
-
-<br /><br />
-> [!IMPORTANT]
-> This SDK is not yet ready for production use. To complete setup please follow the steps outlined in your [workspace](https://app.speakeasy.com/org/spdustin/weather). Delete this section before > publishing to a package manager.
-
 <!-- Start Summary [summary] -->
 ## Summary
 
@@ -78,7 +73,7 @@ poetry add git+<UNSET>.git
 You can use this SDK in a Python shell with [uv](https://docs.astral.sh/uv/) and the `uvx` command that comes with it like so:
 
 ```shell
-uvx --from nws-client python
+uvx --from nws-api-client python
 ```
 
 It's also possible to write a standalone Python script without needing to set up a whole project like so:
@@ -88,11 +83,11 @@ It's also possible to write a standalone Python script without needing to set up
 # /// script
 # requires-python = ">=3.9"
 # dependencies = [
-#     "nws-client",
+#     "nws-api-client",
 # ]
 # ///
 
-from nws_client import NwsClient
+from nws_api_client import NwsClient
 
 sdk = NwsClient(
   # SDK arguments
@@ -122,15 +117,15 @@ Generally, the SDK will work well with most IDEs out of the box. However, when u
 
 ```python
 # Synchronous Example
-from nws_client import NwsClient
+from nws_api_client import NwsClient
 import os
 
 
 with NwsClient(
     user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
-) as nc_client:
+) as nws_client:
 
-    res = nc_client.alerts_query()
+    res = nws_client.alerts_query()
 
     assert res is not None
 
@@ -144,16 +139,16 @@ The same SDK client can also be used to make asychronous requests by importing a
 ```python
 # Asynchronous Example
 import asyncio
-from nws_client import NwsClient
+from nws_api_client import NwsClient
 import os
 
 async def main():
 
     async with NwsClient(
         user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
-    ) as nc_client:
+    ) as nws_client:
 
-        res = await nc_client.alerts_query_async()
+        res = await nws_client.alerts_query_async()
 
         assert res is not None
 
@@ -177,15 +172,15 @@ This SDK supports the following security scheme globally:
 
 To authenticate with the API the `user_agent` parameter must be set when initializing the SDK client instance. For example:
 ```python
-from nws_client import NwsClient
+from nws_api_client import NwsClient
 import os
 
 
 with NwsClient(
     user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
-) as nc_client:
+) as nws_client:
 
-    res = nc_client.alerts_query()
+    res = nws_client.alerts_query()
 
     assert res is not None
 
@@ -266,16 +261,16 @@ Some of the endpoints in this SDK support retries. If you use the SDK without an
 
 To change the default retry strategy for a single API call, simply provide a `RetryConfig` object to the call:
 ```python
-from nws_client import NwsClient
-from nws_client.utils import BackoffStrategy, RetryConfig
+from nws_api_client import NwsClient
+from nws_api_client.utils import BackoffStrategy, RetryConfig
 import os
 
 
 with NwsClient(
     user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
-) as nc_client:
+) as nws_client:
 
-    res = nc_client.alerts_query(,
+    res = nws_client.alerts_query(,
         RetryConfig("backoff", BackoffStrategy(1, 50, 1.1, 100), False))
 
     assert res is not None
@@ -287,17 +282,17 @@ with NwsClient(
 
 If you'd like to override the default retry strategy for all operations that support retries, you can use the `retry_config` optional parameter when initializing the SDK:
 ```python
-from nws_client import NwsClient
-from nws_client.utils import BackoffStrategy, RetryConfig
+from nws_api_client import NwsClient
+from nws_api_client.utils import BackoffStrategy, RetryConfig
 import os
 
 
 with NwsClient(
     retry_config=RetryConfig("backoff", BackoffStrategy(1, 50, 1.1, 100), False),
     user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
-) as nc_client:
+) as nws_client:
 
-    res = nc_client.alerts_query()
+    res = nws_client.alerts_query()
 
     assert res is not None
 
@@ -330,17 +325,17 @@ When custom error responses are specified for an operation, the SDK may also rai
 ### Example
 
 ```python
-from nws_client import NwsClient, errors
+from nws_api_client import NwsClient, errors
 import os
 
 
 with NwsClient(
     user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
-) as nc_client:
+) as nws_client:
     res = None
     try:
 
-        res = nc_client.alerts_query()
+        res = nws_client.alerts_query()
 
         assert res is not None
 
@@ -360,16 +355,16 @@ with NwsClient(
 
 The default server can be overridden globally by passing a URL to the `server_url: str` optional parameter when initializing the SDK client instance. For example:
 ```python
-from nws_client import NwsClient
+from nws_api_client import NwsClient
 import os
 
 
 with NwsClient(
     server_url="https://api.weather.gov",
     user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
-) as nc_client:
+) as nws_client:
 
-    res = nc_client.alerts_query()
+    res = nws_client.alerts_query()
 
     assert res is not None
 
@@ -388,7 +383,7 @@ This allows you to wrap the client with your own custom logic, such as adding cu
 
 For example, you could specify a header for every request that this sdk makes as follows:
 ```python
-from nws_client import NwsClient
+from nws_api_client import NwsClient
 import httpx
 
 http_client = httpx.Client(headers={"x-custom-header": "someValue"})
@@ -397,8 +392,8 @@ s = NwsClient(client=http_client)
 
 or you could wrap the client with your own custom logic:
 ```python
-from nws_client import NwsClient
-from nws_client.httpclient import AsyncHttpClient
+from nws_api_client import NwsClient
+from nws_api_client.httpclient import AsyncHttpClient
 import httpx
 
 class CustomClient(AsyncHttpClient):
@@ -468,13 +463,13 @@ The `NwsClient` class implements the context manager protocol and registers a fi
 [context-manager]: https://docs.python.org/3/reference/datamodel.html#context-managers
 
 ```python
-from nws_client import NwsClient
+from nws_api_client import NwsClient
 import os
 def main():
 
     with NwsClient(
         user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
-    ) as nc_client:
+    ) as nws_client:
         # Rest of application here...
 
 
@@ -483,7 +478,7 @@ async def amain():
 
     async with NwsClient(
         user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
-    ) as nc_client:
+    ) as nws_client:
         # Rest of application here...
 ```
 <!-- End Resource Management [resource-management] -->
@@ -495,11 +490,11 @@ You can setup your SDK to emit debug logs for SDK requests and responses.
 
 You can pass your own logger class directly into your SDK.
 ```python
-from nws_client import NwsClient
+from nws_api_client import NwsClient
 import logging
 
 logging.basicConfig(level=logging.DEBUG)
-s = NwsClient(debug_logger=logging.getLogger("nws_client"))
+s = NwsClient(debug_logger=logging.getLogger("nws_api_client"))
 ```
 
 You can also enable a default debug logger by setting an environment variable `NWSCLIENT_DEBUG` to true.

@@ -48,7 +48,7 @@ python:
   maxMethodParams: 999
   methodArguments: infer-optional-args
   outputModelSuffix: output
-  packageName: nws-client
+  packageName: nws-api-client
   pytestTimeout: 0
   responseFormat: flat
   templateVersion: v2

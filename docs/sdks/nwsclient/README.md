@@ -69,15 +69,15 @@ Returns all alerts
 ### Example Usage
 
 ```python
-from nws_client import NwsClient
+from nws_api_client import NwsClient
 import os
 
 
 with NwsClient(
     user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
-) as nc_client:
+) as nws_client:
 
-    res = nc_client.alerts_query()
+    res = nws_client.alerts_query()
 
     assert res is not None
 
@@ -126,15 +126,15 @@ Returns all currently active alerts
 ### Example Usage
 
 ```python
-from nws_client import NwsClient
+from nws_api_client import NwsClient
 import os
 
 
 with NwsClient(
     user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
-) as nc_client:
+) as nws_client:
 
-    res = nc_client.alerts_active()
+    res = nws_client.alerts_active()
 
     assert res is not None
 
@@ -179,15 +179,15 @@ Returns info on the number of active alerts
 ### Example Usage
 
 ```python
-from nws_client import NwsClient
+from nws_api_client import NwsClient
 import os
 
 
 with NwsClient(
     user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
-) as nc_client:
+) as nws_client:
 
-    res = nc_client.alerts_active_count()
+    res = nws_client.alerts_active_count()
 
     # Handle response
     print(res)
@@ -217,15 +217,15 @@ Returns active alerts for the given NWS public zone or county
 ### Example Usage
 
 ```python
-from nws_client import NwsClient
+from nws_api_client import NwsClient
 import os
 
 
 with NwsClient(
     user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
-) as nc_client:
+) as nws_client:
 
-    res = nc_client.alerts_active_zone(zone_id="<id>")
+    res = nws_client.alerts_active_zone(zone_id="<id>")
 
     # Handle response
     print(res)
@@ -256,15 +256,15 @@ Returns active alerts for the given area (state or marine area)
 ### Example Usage
 
 ```python
-from nws_client import NwsClient, models
+from nws_api_client import NwsClient, models
 import os
 
 
 with NwsClient(
     user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
-) as nc_client:
+) as nws_client:
 
-    res = nc_client.alerts_active_area(area=models.Area.AL)
+    res = nws_client.alerts_active_area(area=models.Area.AL)
 
     # Handle response
     print(res)
@@ -295,15 +295,15 @@ Returns active alerts for the given marine region
 ### Example Usage
 
 ```python
-from nws_client import NwsClient, models
+from nws_api_client import NwsClient, models
 import os
 
 
 with NwsClient(
     user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
-) as nc_client:
+) as nws_client:
 
-    res = nc_client.alerts_active_region(region=models.MarineRegionCode.GM)
+    res = nws_client.alerts_active_region(region=models.MarineRegionCode.GM)
 
     # Handle response
     print(res)
@@ -334,15 +334,15 @@ Returns a list of alert types
 ### Example Usage
 
 ```python
-from nws_client import NwsClient
+from nws_api_client import NwsClient
 import os
 
 
 with NwsClient(
     user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
-) as nc_client:
+) as nws_client:
 
-    res = nc_client.alerts_types()
+    res = nws_client.alerts_types()
 
     # Handle response
     print(res)
@@ -372,15 +372,15 @@ Returns a specific alert
 ### Example Usage
 
 ```python
-from nws_client import NwsClient
+from nws_api_client import NwsClient
 import os
 
 
 with NwsClient(
     user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
-) as nc_client:
+) as nws_client:
 
-    res = nc_client.alerts_single(id="<id>")
+    res = nws_client.alerts_single(id="<id>")
 
     # Handle response
     print(res)
@@ -411,15 +411,15 @@ Returns metadata about a Center Weather Service Unit
 ### Example Usage
 
 ```python
-from nws_client import NwsClient, models
+from nws_api_client import NwsClient, models
 import os
 
 
 with NwsClient(
     user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
-) as nc_client:
+) as nws_client:
 
-    res = nc_client.cwsu(cwsu_id=models.NWSCenterWeatherServiceUnitID.ZNY)
+    res = nws_client.cwsu(cwsu_id=models.NWSCenterWeatherServiceUnitID.ZNY)
 
     # Handle response
     print(res)
@@ -450,15 +450,15 @@ Returns a list of Center Weather Advisories from a CWSU
 ### Example Usage
 
 ```python
-from nws_client import NwsClient, models
+from nws_api_client import NwsClient, models
 import os
 
 
 with NwsClient(
     user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
-) as nc_client:
+) as nws_client:
 
-    res = nc_client.cwas(cwsu_id=models.NWSCenterWeatherServiceUnitID.ZMA)
+    res = nws_client.cwas(cwsu_id=models.NWSCenterWeatherServiceUnitID.ZMA)
 
     # Handle response
     print(res)
@@ -490,15 +490,15 @@ Returns a list of Center Weather Advisories from a CWSU
 
 ```python
 from datetime import date
-from nws_client import NwsClient, models
+from nws_api_client import NwsClient, models
 import os
 
 
 with NwsClient(
     user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
-) as nc_client:
+) as nws_client:
 
-    res = nc_client.cwa(cwsu_id=models.NWSCenterWeatherServiceUnitID.ZAB, date_=date.fromisoformat("2024-05-15"), sequence=342163)
+    res = nws_client.cwa(cwsu_id=models.NWSCenterWeatherServiceUnitID.ZAB, date_=date.fromisoformat("2024-05-15"), sequence=342163)
 
     # Handle response
     print(res)
@@ -531,15 +531,15 @@ Returns a list of SIGMET/AIRMETs
 ### Example Usage
 
 ```python
-from nws_client import NwsClient
+from nws_api_client import NwsClient
 import os
 
 
 with NwsClient(
     user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
-) as nc_client:
+) as nws_client:
 
-    res = nc_client.sigmet_query()
+    res = nws_client.sigmet_query()
 
     # Handle response
     print(res)
@@ -574,15 +574,15 @@ Returns a list of SIGMET/AIRMETs for the specified ATSU
 ### Example Usage
 
 ```python
-from nws_client import NwsClient
+from nws_api_client import NwsClient
 import os
 
 
 with NwsClient(
     user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
-) as nc_client:
+) as nws_client:
 
-    res = nc_client.sigmets_by_atsu(atsu="<value>")
+    res = nws_client.sigmets_by_atsu(atsu="<value>")
 
     # Handle response
     print(res)
@@ -614,15 +614,15 @@ Returns a list of SIGMET/AIRMETs for the specified ATSU for the specified date
 
 ```python
 from datetime import date
-from nws_client import NwsClient
+from nws_api_client import NwsClient
 import os
 
 
 with NwsClient(
     user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
-) as nc_client:
+) as nws_client:
 
-    res = nc_client.sigmets_by_atsu_by_date(atsu="<value>", date_=date.fromisoformat("2024-02-27"))
+    res = nws_client.sigmets_by_atsu_by_date(atsu="<value>", date_=date.fromisoformat("2024-02-27"))
 
     # Handle response
     print(res)
@@ -655,15 +655,15 @@ Returns a specific SIGMET/AIRMET
 
 ```python
 from datetime import date
-from nws_client import NwsClient
+from nws_api_client import NwsClient
 import os
 
 
 with NwsClient(
     user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
-) as nc_client:
+) as nws_client:
 
-    res = nc_client.sigmet(atsu="<value>", date_=date.fromisoformat("2024-03-15"), time="<value>")
+    res = nws_client.sigmet(atsu="<value>", date_=date.fromisoformat("2024-03-15"), time="<value>")
 
     # Handle response
     print(res)
@@ -696,15 +696,15 @@ Returns glossary terms
 ### Example Usage
 
 ```python
-from nws_client import NwsClient
+from nws_api_client import NwsClient
 import os
 
 
 with NwsClient(
     user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
-) as nc_client:
+) as nws_client:
 
-    res = nc_client.glossary()
+    res = nws_client.glossary()
 
     # Handle response
     print(res)
@@ -734,15 +734,15 @@ Returns raw numerical forecast data for a 2.5km grid area
 ### Example Usage
 
 ```python
-from nws_client import NwsClient, models
+from nws_api_client import NwsClient, models
 import os
 
 
 with NwsClient(
     user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
-) as nc_client:
+) as nws_client:
 
-    res = nc_client.gridpoint(wfo=models.NWSForecastOfficeID.CYS, point=[
+    res = nws_client.gridpoint(wfo=models.NWSForecastOfficeID.CYS, point=[
         734140,
         33787,
     ])
@@ -777,15 +777,15 @@ Returns a textual forecast for a 2.5km grid area
 ### Example Usage
 
 ```python
-from nws_client import NwsClient, models
+from nws_api_client import NwsClient, models
 import os
 
 
 with NwsClient(
     user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
-) as nc_client:
+) as nws_client:
 
-    res = nc_client.gridpoint_forecast(wfo=models.NWSForecastOfficeID.AFG, point=[
+    res = nws_client.gridpoint_forecast(wfo=models.NWSForecastOfficeID.AFG, point=[
         199671,
     ])
 
@@ -821,15 +821,15 @@ Returns a textual hourly forecast for a 2.5km grid area
 ### Example Usage
 
 ```python
-from nws_client import NwsClient, models
+from nws_api_client import NwsClient, models
 import os
 
 
 with NwsClient(
     user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
-) as nc_client:
+) as nws_client:
 
-    res = nc_client.gridpoint_forecast_hourly(wfo=models.NWSForecastOfficeID.CRP, point=[
+    res = nws_client.gridpoint_forecast_hourly(wfo=models.NWSForecastOfficeID.CRP, point=[
         476077,
         18384,
     ])
@@ -866,15 +866,15 @@ Returns a list of observation stations usable for a given 2.5km grid area
 ### Example Usage
 
 ```python
-from nws_client import NwsClient, models
+from nws_api_client import NwsClient, models
 import os
 
 
 with NwsClient(
     user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
-) as nc_client:
+) as nws_client:
 
-    res = nc_client.gridpoint_stations(wfo=models.NWSForecastOfficeID.LZK, point=[
+    res = nws_client.gridpoint_stations(wfo=models.NWSForecastOfficeID.LZK, point=[
         661110,
     ])
 
@@ -910,15 +910,15 @@ Returns a list of observations for a given station
 ### Example Usage
 
 ```python
-from nws_client import NwsClient
+from nws_api_client import NwsClient
 import os
 
 
 with NwsClient(
     user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
-) as nc_client:
+) as nws_client:
 
-    res = nc_client.station_observation_list(station_id="<id>")
+    res = nws_client.station_observation_list(station_id="<id>")
 
     # Handle response
     print(res)
@@ -952,15 +952,15 @@ Returns the latest observation for a station
 ### Example Usage
 
 ```python
-from nws_client import NwsClient
+from nws_api_client import NwsClient
 import os
 
 
 with NwsClient(
     user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
-) as nc_client:
+) as nws_client:
 
-    res = nc_client.station_observation_latest(station_id="<id>")
+    res = nws_client.station_observation_latest(station_id="<id>")
 
     # Handle response
     print(res)
@@ -992,16 +992,16 @@ Returns a single observation.
 ### Example Usage
 
 ```python
-from nws_client import NwsClient
-from nws_client.utils import parse_datetime
+from nws_api_client import NwsClient
+from nws_api_client.utils import parse_datetime
 import os
 
 
 with NwsClient(
     user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
-) as nc_client:
+) as nws_client:
 
-    res = nc_client.station_observation_time(station_id="<id>", time=parse_datetime("2024-09-26T15:08:58.988Z"))
+    res = nws_client.station_observation_time(station_id="<id>", time=parse_datetime("2024-09-26T15:08:58.988Z"))
 
     # Handle response
     print(res)
@@ -1033,15 +1033,15 @@ Returns Terminal Aerodrome Forecasts for the specified airport station.
 ### Example Usage
 
 ```python
-from nws_client import NwsClient
+from nws_api_client import NwsClient
 import os
 
 
 with NwsClient(
     user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
-) as nc_client:
+) as nws_client:
 
-    res = nc_client.tafs(station_id="<id>")
+    res = nws_client.tafs(station_id="<id>")
 
     # Handle response
     print(res)
@@ -1073,15 +1073,15 @@ Returns a single Terminal Aerodrome Forecast.
 
 ```python
 from datetime import date
-from nws_client import NwsClient
+from nws_api_client import NwsClient
 import os
 
 
 with NwsClient(
     user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
-) as nc_client:
+) as nws_client:
 
-    res = nc_client.taf(station_id="<id>", date_=date.fromisoformat("2023-06-14"), time="<value>")
+    res = nws_client.taf(station_id="<id>", date_=date.fromisoformat("2023-06-14"), time="<value>")
 
     # Handle response
     print(res)
@@ -1114,15 +1114,15 @@ Returns a list of observation stations.
 ### Example Usage
 
 ```python
-from nws_client import NwsClient
+from nws_api_client import NwsClient
 import os
 
 
 with NwsClient(
     user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
-) as nc_client:
+) as nws_client:
 
-    res = nc_client.obs_stations()
+    res = nws_client.obs_stations()
 
     # Handle response
     print(res)
@@ -1156,15 +1156,15 @@ Returns metadata about a given observation station
 ### Example Usage
 
 ```python
-from nws_client import NwsClient
+from nws_api_client import NwsClient
 import os
 
 
 with NwsClient(
     user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
-) as nc_client:
+) as nws_client:
 
-    res = nc_client.obs_station(station_id="<id>")
+    res = nws_client.obs_station(station_id="<id>")
 
     # Handle response
     print(res)
@@ -1195,15 +1195,15 @@ Returns metadata about a NWS forecast office
 ### Example Usage
 
 ```python
-from nws_client import NwsClient, models
+from nws_api_client import NwsClient, models
 import os
 
 
 with NwsClient(
     user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
-) as nc_client:
+) as nws_client:
 
-    res = nc_client.office(office_id=models.NWSOfficeID.MFR)
+    res = nws_client.office(office_id=models.NWSOfficeID.MFR)
 
     # Handle response
     print(res)
@@ -1234,15 +1234,15 @@ Returns a specific news headline for a given NWS office
 ### Example Usage
 
 ```python
-from nws_client import NwsClient, models
+from nws_api_client import NwsClient, models
 import os
 
 
 with NwsClient(
     user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
-) as nc_client:
+) as nws_client:
 
-    res = nc_client.office_headline(office_id=models.NWSOfficeID.SEW, headline_id="<id>")
+    res = nws_client.office_headline(office_id=models.NWSOfficeID.SEW, headline_id="<id>")
 
     # Handle response
     print(res)
@@ -1274,15 +1274,15 @@ Returns a list of news headlines for a given NWS office
 ### Example Usage
 
 ```python
-from nws_client import NwsClient, models
+from nws_api_client import NwsClient, models
 import os
 
 
 with NwsClient(
     user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
-) as nc_client:
+) as nws_client:
 
-    res = nc_client.office_headlines(office_id=models.NWSOfficeID.ALY)
+    res = nws_client.office_headlines(office_id=models.NWSOfficeID.ALY)
 
     # Handle response
     print(res)
@@ -1313,15 +1313,15 @@ Returns metadata about a given latitude/longitude point
 ### Example Usage
 
 ```python
-from nws_client import NwsClient
+from nws_api_client import NwsClient
 import os
 
 
 with NwsClient(
     user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
-) as nc_client:
+) as nws_client:
 
-    res = nc_client.point(point="<value>")
+    res = nws_client.point(point="<value>")
 
     # Handle response
     print(res)
@@ -1352,15 +1352,15 @@ Returns a list of radar servers
 ### Example Usage
 
 ```python
-from nws_client import NwsClient
+from nws_api_client import NwsClient
 import os
 
 
 with NwsClient(
     user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
-) as nc_client:
+) as nws_client:
 
-    res = nc_client.radar_servers()
+    res = nws_client.radar_servers()
 
     # Handle response
     print(res)
@@ -1391,15 +1391,15 @@ Returns metadata about a given radar server
 ### Example Usage
 
 ```python
-from nws_client import NwsClient
+from nws_api_client import NwsClient
 import os
 
 
 with NwsClient(
     user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
-) as nc_client:
+) as nws_client:
 
-    res = nc_client.radar_server(id="<id>")
+    res = nws_client.radar_server(id="<id>")
 
     # Handle response
     print(res)
@@ -1431,15 +1431,15 @@ Returns a list of radar stations
 ### Example Usage
 
 ```python
-from nws_client import NwsClient
+from nws_api_client import NwsClient
 import os
 
 
 with NwsClient(
     user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
-) as nc_client:
+) as nws_client:
 
-    res = nc_client.radar_stations()
+    res = nws_client.radar_stations()
 
     # Handle response
     print(res)
@@ -1472,15 +1472,15 @@ Returns metadata about a given radar station
 ### Example Usage
 
 ```python
-from nws_client import NwsClient
+from nws_api_client import NwsClient
 import os
 
 
 with NwsClient(
     user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
-) as nc_client:
+) as nws_client:
 
-    res = nc_client.radar_station(station_id="<id>")
+    res = nws_client.radar_station(station_id="<id>")
 
     # Handle response
     print(res)
@@ -1513,15 +1513,15 @@ Returns metadata about a given radar station alarms
 ### Example Usage
 
 ```python
-from nws_client import NwsClient
+from nws_api_client import NwsClient
 import os
 
 
 with NwsClient(
     user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
-) as nc_client:
+) as nws_client:
 
-    res = nc_client.radar_station_alarms(station_id="<id>")
+    res = nws_client.radar_station_alarms(station_id="<id>")
 
     # Handle response
     print(res)
@@ -1552,15 +1552,15 @@ Returns metadata about a given radar queue
 ### Example Usage
 
 ```python
-from nws_client import NwsClient
+from nws_api_client import NwsClient
 import os
 
 
 with NwsClient(
     user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
-) as nc_client:
+) as nws_client:
 
-    res = nc_client.radar_queue(host="polite-mythology.org", arrived="2007-03-01T13:00:00Z/2008-05-11T15:30:00Z", created="2007-03-01T13:00:00Z/2008-05-11T15:30:00Z", published="2007-03-01T13:00:00Z/2008-05-11T15:30:00Z")
+    res = nws_client.radar_queue(host="polite-mythology.org", arrived="2007-03-01T13:00:00Z/2008-05-11T15:30:00Z", created="2007-03-01T13:00:00Z/2008-05-11T15:30:00Z", published="2007-03-01T13:00:00Z/2008-05-11T15:30:00Z")
 
     # Handle response
     print(res)
@@ -1599,15 +1599,15 @@ Returns metadata about a given radar wind profiler
 ### Example Usage
 
 ```python
-from nws_client import NwsClient
+from nws_api_client import NwsClient
 import os
 
 
 with NwsClient(
     user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
-) as nc_client:
+) as nws_client:
 
-    res = nc_client.radar_profiler(station_id="<id>", time="2007-03-01T13:00:00Z/2008-05-11T15:30:00Z", interval="P2DT12H")
+    res = nws_client.radar_profiler(station_id="<id>", time="2007-03-01T13:00:00Z/2008-05-11T15:30:00Z", interval="P2DT12H")
 
     # Handle response
     print(res)
@@ -1640,15 +1640,15 @@ Returns a list of text products
 ### Example Usage
 
 ```python
-from nws_client import NwsClient
+from nws_api_client import NwsClient
 import os
 
 
 with NwsClient(
     user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
-) as nc_client:
+) as nws_client:
 
-    res = nc_client.products_query()
+    res = nws_client.products_query()
 
     # Handle response
     print(res)
@@ -1685,15 +1685,15 @@ Returns a list of valid text product issuance locations
 ### Example Usage
 
 ```python
-from nws_client import NwsClient
+from nws_api_client import NwsClient
 import os
 
 
 with NwsClient(
     user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
-) as nc_client:
+) as nws_client:
 
-    res = nc_client.product_locations()
+    res = nws_client.product_locations()
 
     # Handle response
     print(res)
@@ -1723,15 +1723,15 @@ Returns a list of valid text product types and codes
 ### Example Usage
 
 ```python
-from nws_client import NwsClient
+from nws_api_client import NwsClient
 import os
 
 
 with NwsClient(
     user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
-) as nc_client:
+) as nws_client:
 
-    res = nc_client.product_types()
+    res = nws_client.product_types()
 
     # Handle response
     print(res)
@@ -1761,15 +1761,15 @@ Returns a specific text product
 ### Example Usage
 
 ```python
-from nws_client import NwsClient
+from nws_api_client import NwsClient
 import os
 
 
 with NwsClient(
     user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
-) as nc_client:
+) as nws_client:
 
-    res = nc_client.product(product_id="<id>")
+    res = nws_client.product(product_id="<id>")
 
     # Handle response
     print(res)
@@ -1800,15 +1800,15 @@ Returns a list of text products of a given type
 ### Example Usage
 
 ```python
-from nws_client import NwsClient
+from nws_api_client import NwsClient
 import os
 
 
 with NwsClient(
     user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
-) as nc_client:
+) as nws_client:
 
-    res = nc_client.products_type(type_id="<id>")
+    res = nws_client.products_type(type_id="<id>")
 
     # Handle response
     print(res)
@@ -1839,15 +1839,15 @@ Returns a list of valid text product issuance locations for a given product type
 ### Example Usage
 
 ```python
-from nws_client import NwsClient
+from nws_api_client import NwsClient
 import os
 
 
 with NwsClient(
     user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
-) as nc_client:
+) as nws_client:
 
-    res = nc_client.products_type_locations(type_id="<id>")
+    res = nws_client.products_type_locations(type_id="<id>")
 
     # Handle response
     print(res)
@@ -1878,15 +1878,15 @@ Returns a list of valid text product types for a given issuance location
 ### Example Usage
 
 ```python
-from nws_client import NwsClient
+from nws_api_client import NwsClient
 import os
 
 
 with NwsClient(
     user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
-) as nc_client:
+) as nws_client:
 
-    res = nc_client.location_products(location_id="<id>")
+    res = nws_client.location_products(location_id="<id>")
 
     # Handle response
     print(res)
@@ -1917,15 +1917,15 @@ Returns a list of text products of a given type for a given issuance location
 ### Example Usage
 
 ```python
-from nws_client import NwsClient
+from nws_api_client import NwsClient
 import os
 
 
 with NwsClient(
     user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
-) as nc_client:
+) as nws_client:
 
-    res = nc_client.products_type_location(type_id="<id>", location_id="<id>")
+    res = nws_client.products_type_location(type_id="<id>", location_id="<id>")
 
     # Handle response
     print(res)
@@ -1957,15 +1957,15 @@ Returns a list of zones
 ### Example Usage
 
 ```python
-from nws_client import NwsClient
+from nws_api_client import NwsClient
 import os
 
 
 with NwsClient(
     user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
-) as nc_client:
+) as nws_client:
 
-    res = nc_client.zone_list()
+    res = nws_client.zone_list()
 
     # Handle response
     print(res)
@@ -2003,15 +2003,15 @@ Returns a list of zones of a given type
 ### Example Usage
 
 ```python
-from nws_client import NwsClient, models
+from nws_api_client import NwsClient, models
 import os
 
 
 with NwsClient(
     user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
-) as nc_client:
+) as nws_client:
 
-    res = nc_client.zone_list_type(type_path_parameter=models.NWSZoneType.LAND)
+    res = nws_client.zone_list_type(type_path_parameter=models.NWSZoneType.LAND)
 
     # Handle response
     print(res)
@@ -2050,15 +2050,15 @@ Returns metadata about a given zone
 ### Example Usage
 
 ```python
-from nws_client import NwsClient, models
+from nws_api_client import NwsClient, models
 import os
 
 
 with NwsClient(
     user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
-) as nc_client:
+) as nws_client:
 
-    res = nc_client.zone(type_=models.NWSZoneType.MARINE, zone_id="<id>")
+    res = nws_client.zone(type_=models.NWSZoneType.MARINE, zone_id="<id>")
 
     # Handle response
     print(res)
@@ -2091,15 +2091,15 @@ Returns the current zone forecast for a given zone
 ### Example Usage
 
 ```python
-from nws_client import NwsClient
+from nws_api_client import NwsClient
 import os
 
 
 with NwsClient(
     user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
-) as nc_client:
+) as nws_client:
 
-    res = nc_client.zone_forecast(type_="<value>", zone_id="<id>")
+    res = nws_client.zone_forecast(type_="<value>", zone_id="<id>")
 
     # Handle response
     print(res)
@@ -2131,15 +2131,15 @@ Returns a list of observations for a given zone
 ### Example Usage
 
 ```python
-from nws_client import NwsClient
+from nws_api_client import NwsClient
 import os
 
 
 with NwsClient(
     user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
-) as nc_client:
+) as nws_client:
 
-    res = nc_client.zone_obs(zone_id="<id>")
+    res = nws_client.zone_obs(zone_id="<id>")
 
     # Handle response
     print(res)
@@ -2173,15 +2173,15 @@ Returns a list of observation stations for a given zone
 ### Example Usage
 
 ```python
-from nws_client import NwsClient
+from nws_api_client import NwsClient
 import os
 
 
 with NwsClient(
     user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
-) as nc_client:
+) as nws_client:
 
-    res = nc_client.zone_stations(zone_id="<id>")
+    res = nws_client.zone_stations(zone_id="<id>")
 
     # Handle response
     print(res)

@@ -2,7 +2,7 @@ speakeasyVersion: 1.541.2
 sources:
     weather.gov API:
         sourceNamespace: weather-gov-api
-        sourceRevisionDigest: sha256:5aaf139d51eb15ba8318f436ca8d9b85cbc05712574defc73429d2b4a2ea0e2e
+        sourceRevisionDigest: sha256:1d8b16037a5791de8153b0135d5acff4ee5f14752de9c3afde66cafa63d83bc7
         sourceBlobDigest: sha256:b321e3a9d3876d54b2dcf140ee7dbcc26e7bc53043d77ff2209b11b6f1015117
         tags:
             - latest
@@ -11,10 +11,10 @@ targets:
     nws-client:
         source: weather.gov API
         sourceNamespace: weather-gov-api
-        sourceRevisionDigest: sha256:5aaf139d51eb15ba8318f436ca8d9b85cbc05712574defc73429d2b4a2ea0e2e
+        sourceRevisionDigest: sha256:1d8b16037a5791de8153b0135d5acff4ee5f14752de9c3afde66cafa63d83bc7
         sourceBlobDigest: sha256:b321e3a9d3876d54b2dcf140ee7dbcc26e7bc53043d77ff2209b11b6f1015117
         codeSamplesNamespace: weather-gov-api-python-code-samples
-        codeSamplesRevisionDigest: sha256:9a2cbc58e026728a91e1368b89823b07af543ec9e4e3334a2a7007968c82dc9e
+        codeSamplesRevisionDigest: sha256:f5411988aad4a950e3fecb0dadc743abe4132b41239f8511b14d039e625eb3df
 workflow:
     workflowVersion: 1.0.0
     speakeasyVersion: latest
