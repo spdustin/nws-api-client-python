@@ -37,8 +37,6 @@ paths:
       responses:
         "200":
           $ref: "#/components/responses/AlertCollection"
-        "301":
-          description: Certain common queries may be redirected to discrete URLs
         default:
           $ref: "#/components/responses/Error"
   /alerts/active:
@@ -62,8 +60,6 @@ paths:
       responses:
         "200":
           $ref: "#/components/responses/AlertCollection"
-        "301":
-          description: Certain common queries may be redirected to discrete URLs
         default:
           $ref: "#/components/responses/Error"
   /alerts/active/count:
