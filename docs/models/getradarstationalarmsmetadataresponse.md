@@ -1,0 +1,9 @@
+# GetRadarStationAlarmsMetadataResponse
+
+
+## Fields
+
+| Field                                                                                                          | Type                                                                                                           | Required                                                                                                       | Description                                                                                                    |
+| -------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| `headers`                                                                                                      | Dict[str, List[*str*]]                                                                                         | :heavy_check_mark:                                                                                             | N/A                                                                                                            |
+| `result`                                                                                                       | [models.GetRadarStationAlarmsMetadataResponseResult](../models/getradarstationalarmsmetadataresponseresult.md) | :heavy_check_mark:                                                                                             | N/A                                                                                                            |

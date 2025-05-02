@@ -1,6 +1,6 @@
 [project]
 name = "nws-api-client"
-version = "0.10.1"
+version = "0.10.2"
 description = "Typed Python client for the National Weather Service API"
 authors = [{ name = "Dustin Miller" },]
 readme = "README-PYPI.md"

@@ -1,0 +1,9 @@
+# ListObservationsByStationResponse
+
+
+## Fields
+
+| Field                                                                                                  | Type                                                                                                   | Required                                                                                               | Description                                                                                            |
+| ------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------ |
+| `headers`                                                                                              | Dict[str, List[*str*]]                                                                                 | :heavy_check_mark:                                                                                     | N/A                                                                                                    |
+| `result`                                                                                               | [models.ListObservationsByStationResponseResult](../models/listobservationsbystationresponseresult.md) | :heavy_check_mark:                                                                                     | N/A                                                                                                    |

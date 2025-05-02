@@ -4,7 +4,7 @@ generation:
     enabled: true
     schemaPath: openapi.yaml
   sdkClassName: NwsClient
-  maintainOpenAPIOrder: true
+  maintainOpenAPIOrder: false
   usageSnippets:
     optionalPropertyRendering: withExample
   useClassNamesForArrayFields: true
@@ -19,7 +19,7 @@ generation:
     oAuth2ClientCredentialsEnabled: false
     oAuth2PasswordEnabled: false
 python:
-  version: 0.10.1
+  version: 0.10.2
   additionalDependencies:
     dev: {}
     main: {}
@@ -28,6 +28,8 @@ python:
   clientServerStatusCodesAsErrors: true
   defaultErrorName: APIError
   description: Typed Python client for the National Weather Service API
+  homepage: https://github.com/spdustin/nws-api-client-python
+  documentationUrl: https://github.com/spdustin/nws-api-client-python
   enableCustomCodeRegions: false
   enumFormat: enum
   envVarPrefix: NWSCLIENT

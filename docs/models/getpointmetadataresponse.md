@@ -1,0 +1,9 @@
+# GetPointMetadataResponse
+
+
+## Fields
+
+| Field                                                                                | Type                                                                                 | Required                                                                             | Description                                                                          |
+| ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------ |
+| `headers`                                                                            | Dict[str, List[*str*]]                                                               | :heavy_check_mark:                                                                   | N/A                                                                                  |
+| `result`                                                                             | [models.GetPointMetadataResponseResult](../models/getpointmetadataresponseresult.md) | :heavy_check_mark:                                                                   | N/A                                                                                  |

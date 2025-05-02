@@ -1,11 +1,21 @@
 openapi: 3.0.3
 info:
   title: weather.gov API
-  description: weather.gov API
+  description: OpenAPI Client SDK for National Weather Service API (NWS / weather.gov)
   version: 2.0.0
 servers:
   - url: https://api.weather.gov
     description: Production server
+x-speakeasy-retries:
+  strategy: backoff
+  backoff:
+    initialInterval: 500 # 500 milliseconds
+    maxInterval: 60000 # 60 seconds
+    maxElapsedTime: 3600000 # 1 hour
+    exponent: 1.5
+  statusCodes:
+    - 5XX
+  retryConnectionErrors: true
 tags:
   - name: alerts
     description: Operations related to alerts
@@ -28,46 +38,12 @@ tags:
   - name: zones
     description: Operations related to zones
 paths:
-  /alerts:
-    get:
-      description: Returns all alerts
-      tags:
-        - alerts
-      operationId: listAlerts
-      parameters:
-        - name: active
-          in: query
-          description: List only active alerts (use /alerts/active endpoints instead)
-          deprecated: true
-          schema:
-            type: boolean
-        - $ref: "#/components/parameters/QueryStartTime"
-        - $ref: "#/components/parameters/QueryEndTime"
-        - $ref: "#/components/parameters/AlertStatus"
-        - $ref: "#/components/parameters/AlertMessageType"
-        - $ref: "#/components/parameters/AlertEventName"
-        - $ref: "#/components/parameters/AlertCode"
-        - $ref: "#/components/parameters/AlertArea"
-        - $ref: "#/components/parameters/AlertPoint"
-        - $ref: "#/components/parameters/AlertRegion"
-        - $ref: "#/components/parameters/AlertRegionType"
-        - $ref: "#/components/parameters/AlertZone"
-        - $ref: "#/components/parameters/AlertUrgency"
-        - $ref: "#/components/parameters/AlertSeverity"
-        - $ref: "#/components/parameters/AlertCertainty"
-        - $ref: "#/components/parameters/Limit"
-        - $ref: "#/components/parameters/PaginationCursor"
-      responses:
-        "200":
-          $ref: "#/components/responses/AlertCollection"
-        default:
-          $ref: "#/components/responses/Error"
   /alerts/active:
     get:
       description: Returns all currently active alerts
       tags:
         - alerts
-      operationId: listActiveAlerts
+      operationId: list_active_alerts
       parameters:
         - $ref: "#/components/parameters/AlertStatus"
         - $ref: "#/components/parameters/AlertMessageType"
@@ -92,7 +68,7 @@ paths:
       description: Returns info on the number of active alerts
       tags:
         - alerts
-      operationId: listActiveAlertCounts
+      operationId: list_active_alert_counts
       responses:
         "200":
           description: A data structure showing the counts of active alerts broken down by various categories
@@ -146,7 +122,7 @@ paths:
       description: Returns active alerts for the given NWS public zone or county
       tags:
         - alerts
-      operationId: listActiveAlertsByZone
+      operationId: list_active_alerts_by_zone
       responses:
         "200":
           $ref: "#/components/responses/AlertCollection"
@@ -160,7 +136,7 @@ paths:
       description: Returns active alerts for the given area (state or marine area)
       tags:
         - alerts
-      operationId: listActiveAlertsByArea
+      operationId: list_active_alerts_by_area
       parameters:
         - name: area
           in: path
@@ -258,7 +234,7 @@ paths:
       description: Returns active alerts for the given marine region
       tags:
         - alerts
-      operationId: listActiveAlertsByRegion
+      operationId: list_active_alerts_by_region
       responses:
         "200":
           $ref: "#/components/responses/AlertCollection"
@@ -277,7 +253,7 @@ paths:
       description: Returns a list of alert types
       tags:
         - alerts
-      operationId: listAlertTypes
+      operationId: list_alert_types
       responses:
         "200":
           description: A list of recognized event types
@@ -306,7 +282,7 @@ paths:
       description: Returns a specific alert
       tags:
         - alerts
-      operationId: getAlert
+      operationId: get_alert
       responses:
         "200":
           description: An alert record
@@ -343,7 +319,7 @@ paths:
   /aviation/cwsus/{cwsuId}:
     get:
       description: Returns metadata about a Center Weather Service Unit
-      operationId: getCWSU
+      operationId: get_cwsu
       tags:
         - aviation
       parameters:
@@ -360,7 +336,7 @@ paths:
   /aviation/cwsus/{cwsuId}/cwas:
     get:
       description: Returns a list of Center Weather Advisories from a CWSU
-      operationId: listCWAs
+      operationId: list_cwas
       tags:
         - aviation
       parameters:
@@ -377,7 +353,7 @@ paths:
   /aviation/cwsus/{cwsuId}/cwas/{date}/{sequence}:
     get:
       description: Returns a list of Center Weather Advisories from a CWSU
-      operationId: listCWAsByDateAndSequence
+      operationId: list_cwas_by_date_and_sequence
       tags:
         - aviation
       parameters:
@@ -404,7 +380,7 @@ paths:
   /aviation/sigmets:
     get:
       description: Returns a list of SIGMET/AIRMETs
-      operationId: listSigmets
+      operationId: list_sigmets
       tags:
         - aviation
       parameters:
@@ -433,7 +409,7 @@ paths:
   /aviation/sigmets/{atsu}:
     get:
       description: Returns a list of SIGMET/AIRMETs for the specified ATSU
-      operationId: listSigmetsByATSU
+      operationId: list_sigmets_by_atsu
       tags:
         - aviation
       parameters:
@@ -450,7 +426,7 @@ paths:
   /aviation/sigmets/{atsu}/{date}:
     get:
       description: Returns a list of SIGMET/AIRMETs for the specified ATSU for the specified date
-      operationId: listSigmetsByATSUAndDate
+      operationId: list_sigmets_by_atsu_and_date
       tags:
         - aviation
       parameters:
@@ -468,7 +444,7 @@ paths:
   /aviation/sigmets/{atsu}/{date}/{time}:
     get:
       description: Returns a specific SIGMET/AIRMET
-      operationId: getSigmet
+      operationId: get_sigmet
       tags:
         - aviation
       parameters:
@@ -489,7 +465,7 @@ paths:
   /glossary:
     get:
       description: Returns glossary terms
-      operationId: listTerms
+      operationId: list_terms
       tags:
         - glossary
       responses:
@@ -527,7 +503,7 @@ paths:
   /gridpoints/{wfo}/{point}:
     get:
       description: Returns raw numerical forecast data for a 2.5km grid area
-      operationId: getGridpointRawForecast
+      operationId: get_gridpoint_raw_forecast
       tags:
         - gridpoints
       parameters: []
@@ -556,7 +532,7 @@ paths:
   /gridpoints/{wfo}/{point}/forecast:
     get:
       description: Returns a textual forecast for a 2.5km grid area
-      operationId: getGridpointForecast
+      operationId: get_gridpoint_forecast
       tags:
         - gridpoints
       parameters:
@@ -574,7 +550,7 @@ paths:
   /gridpoints/{wfo}/{point}/forecast/hourly:
     get:
       description: Returns a textual hourly forecast for a 2.5km grid area
-      operationId: getGridpointHourlyForecast
+      operationId: get_gridpoint_hourly_forecast
       tags:
         - gridpoints
       parameters:
@@ -591,7 +567,7 @@ paths:
   /gridpoints/{wfo}/{point}/stations:
     get:
       description: Returns a list of observation stations usable for a given 2.5km grid area
-      operationId: listGridpointStations
+      operationId: list_observation_stations_by_gridpoint
       tags:
         - gridpoints
       responses:
@@ -608,7 +584,7 @@ paths:
   /stations/{stationId}/observations:
     get:
       description: Returns a list of observations for a given station
-      operationId: listObservationsByStation
+      operationId: list_observations_by_station
       tags:
         - observationstations
       parameters:
@@ -631,7 +607,7 @@ paths:
   /stations/{stationId}/observations/latest:
     get:
       description: Returns the latest observation for a station
-      operationId: getLatestObservationByStation
+      operationId: get_latest_observation_by_station
       tags:
         - observationstations
       parameters:
@@ -650,7 +626,7 @@ paths:
   /stations/{stationId}/observations/{time}:
     get:
       description: Returns a single observation.
-      operationId: getObservationByStation
+      operationId: get_observation_by_station
       tags:
         - observationstations
       parameters:
@@ -671,7 +647,7 @@ paths:
   /stations/{stationId}/tafs:
     get:
       description: Returns Terminal Aerodrome Forecasts for the specified airport station.
-      operationId: listTAFs
+      operationId: list_tafs
       tags:
         - observationstations
       parameters:
@@ -687,7 +663,7 @@ paths:
   /stations/{stationId}/tafs/{date}/{time}:
     get:
       description: Returns a single Terminal Aerodrome Forecast.
-      operationId: getTAF
+      operationId: get_taf
       tags:
         - observationstations
       parameters:
@@ -705,7 +681,7 @@ paths:
   /stations:
     get:
       description: Returns a list of observation stations.
-      operationId: listObservationStations
+      operationId: list_observation_stations
       tags:
         - observationstations
       parameters:
@@ -737,7 +713,7 @@ paths:
   /stations/{stationId}:
     get:
       description: Returns metadata about a given observation station
-      operationId: getObservationStation
+      operationId: get_observation_station_metadata
       tags:
         - observationstations
       responses:
@@ -765,7 +741,7 @@ paths:
   /offices/{officeId}:
     get:
       description: Returns metadata about a NWS forecast office
-      operationId: getOffice
+      operationId: get_office_metadata
       tags:
         - offices
       parameters:
@@ -779,7 +755,7 @@ paths:
   /offices/{officeId}/headlines/{headlineId}:
     get:
       description: Returns a specific news headline for a given NWS office
-      operationId: getHeadline
+      operationId: get_office_headline
       tags:
         - offices
       responses:
@@ -811,7 +787,7 @@ paths:
   /offices/{officeId}/headlines:
     get:
       description: Returns a list of news headlines for a given NWS office
-      operationId: listHeadlines
+      operationId: list_office_headlines
       tags:
         - offices
       responses:
@@ -835,7 +811,7 @@ paths:
   /points/{point}:
     get:
       description: Returns metadata about a given latitude/longitude point
-      operationId: getPointMetadata
+      operationId: get_point_metadata
       tags:
         - points
       responses:
@@ -863,7 +839,7 @@ paths:
   /radar/servers:
     get:
       description: Returns a list of radar servers
-      operationId: listRadarServers
+      operationId: list_radar_servers
       tags:
         - radar
       parameters:
@@ -890,7 +866,7 @@ paths:
   /radar/servers/{id}:
     get:
       description: Returns metadata about a given radar server
-      operationId: getRadarServer
+      operationId: get_radar_server_metadata
       tags:
         - radar
       parameters:
@@ -924,7 +900,7 @@ paths:
   /radar/stations:
     get:
       description: Returns a list of radar stations
-      operationId: listRadarStations
+      operationId: list_radar_stations
       tags:
         - radar
       parameters:
@@ -968,7 +944,7 @@ paths:
   /radar/stations/{stationId}:
     get:
       description: Returns metadata about a given radar station
-      operationId: getRadarStation
+      operationId: get_radar_station_metadata
       tags:
         - radar
       parameters:
@@ -1009,7 +985,7 @@ paths:
   /radar/stations/{stationId}/alarms:
     get:
       description: Returns metadata about a given radar station alarms
-      operationId: getRadarStationAlarms
+      operationId: get_radar_station_alarms_metadata
       tags:
         - radar
       responses:
@@ -1038,7 +1014,7 @@ paths:
   /radar/queues/{host}:
     get:
       description: Returns metadata about a given radar queue
-      operationId: getRadarQueue
+      operationId: get_radar_queue_metadata
       tags:
         - radar
       parameters:
@@ -1110,7 +1086,7 @@ paths:
   /radar/profilers/{stationId}:
     get:
       description: Returns metadata about a given radar wind profiler
-      operationId: getRadarWindProfiler
+      operationId: get_radar_wind_profiler_metadata
       tags:
         - radar
       parameters:
@@ -1149,7 +1125,7 @@ paths:
   /products:
     get:
       description: Returns a list of text products
-      operationId: listProducts
+      operationId: list_products
       tags:
         - products
       parameters:
@@ -1230,7 +1206,7 @@ paths:
   /products/locations:
     get:
       description: Returns a list of valid text product issuance locations
-      operationId: listProductLocations
+      operationId: list_product_locations
       tags:
         - products
       responses:
@@ -1253,7 +1229,7 @@ paths:
   /products/types:
     get:
       description: Returns a list of valid text product types and codes
-      operationId: listProductTypes
+      operationId: list_product_types
       tags:
         - products
       responses:
@@ -1276,7 +1252,7 @@ paths:
   /products/{productId}:
     get:
       description: Returns a specific text product
-      operationId: getProduct
+      operationId: get_product_by_id
       tags:
         - products
       responses:
@@ -1306,7 +1282,7 @@ paths:
   /products/types/{typeId}:
     get:
       description: Returns a list of text products of a given type
-      operationId: listProductsByType
+      operationId: list_products_by_type
       tags:
         - products
       responses:
@@ -1336,7 +1312,7 @@ paths:
   /products/types/{typeId}/locations:
     get:
       description: Returns a list of valid text product issuance locations for a given product type
-      operationId: listLocationsByProductType
+      operationId: list_locations_by_product_type
       tags:
         - products
       x-speakeasy-usage-example:
@@ -1371,7 +1347,7 @@ paths:
   /products/locations/{locationId}/types:
     get:
       description: Returns a list of valid text product types for a given issuance location
-      operationId: listProductTypesByLocation
+      operationId: list_product_types_by_location
       tags:
         - products
       responses:
@@ -1401,7 +1377,7 @@ paths:
   /products/types/{typeId}/locations/{locationId}:
     get:
       description: Returns a list of text products of a given type for a given issuance location
-      operationId: listProductsByTypeAndLocation
+      operationId: list_products_by_type_and_location
       tags:
         - products
       responses:
@@ -1437,7 +1413,7 @@ paths:
   /zones:
     get:
       description: Returns a list of zones
-      operationId: listZones
+      operationId: list_zones
       tags:
         - zones
       parameters:
@@ -1521,7 +1497,7 @@ paths:
   /zones/{type}:
     get:
       description: Returns a list of zones of a given type
-      operationId: listZonesByType
+      operationId: list_zones_by_type
       tags:
         - zones
       parameters:
@@ -1612,7 +1588,7 @@ paths:
   /zones/{type}/{zoneId}:
     get:
       description: Returns metadata about a given zone
-      operationId: getZoneMetadata
+      operationId: get_zone_metadata
       tags:
         - zones
       parameters:
@@ -1652,7 +1628,7 @@ paths:
   /zones/{type}/{zoneId}/forecast:
     get:
       description: Returns the current zone forecast for a given zone
-      operationId: getZoneForecast
+      operationId: get_zone_forecast
       tags:
         - zones
       responses:
@@ -1686,7 +1662,7 @@ paths:
   /zones/forecast/{zoneId}/observations:
     get:
       description: Returns a list of observations for a given zone
-      operationId: listZoneObservations
+      operationId: list_observations_by_zone
       tags:
         - zones
       parameters:
@@ -1733,7 +1709,7 @@ paths:
   /zones/forecast/{zoneId}/stations:
     get:
       description: Returns a list of observation stations for a given zone
-      operationId: listStationsbyZone
+      operationId: list_observation_stations_by_zone
       tags:
         - zones
       responses:

@@ -1,0 +1,9 @@
+# GetRadarWindProfilerMetadataResponse
+
+
+## Fields
+
+| Field                                                                                                        | Type                                                                                                         | Required                                                                                                     | Description                                                                                                  |
+| ------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------ |
+| `headers`                                                                                                    | Dict[str, List[*str*]]                                                                                       | :heavy_check_mark:                                                                                           | N/A                                                                                                          |
+| `result`                                                                                                     | [models.GetRadarWindProfilerMetadataResponseResult](../models/getradarwindprofilermetadataresponseresult.md) | :heavy_check_mark:                                                                                           | N/A                                                                                                          |
