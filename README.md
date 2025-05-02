@@ -2,6 +2,9 @@
 
 Type-safe and developer-friendly Python client for the National Weather Service API.
 
+> [!INFO]
+> This first pass required changing the "official" OpenAPI spec. Deprecated endpoints were removed, a few `anyOf` (various `enum`s)schemas were merged to a single `enum`, and a few other minor changes.
+
 <div align="left">
     <a href="https://www.speakeasy.com/?utm_source=nws-api-client&utm_campaign=python"><img src="https://custom-icon-badges.demolab.com/badge/-Built%20By%20Speakeasy-212015?style=for-the-badge&logoColor=FBE331&logo=speakeasy&labelColor=545454" /></a>
     <a href="https://opensource.org/licenses/MIT">
