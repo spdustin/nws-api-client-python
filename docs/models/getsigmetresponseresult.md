@@ -3,12 +3,6 @@
 
 ## Supported Types
 
-### `models.SigmetGeoJSON`
-
-```python
-value: models.SigmetGeoJSON = /* values here */
-```
-
 ### `bytes`
 
 ```python
@@ -19,5 +13,11 @@ value: bytes = /* values here */
 
 ```python
 value: models.ProblemDetail = /* values here */
+```
+
+### `models.SigmetGeoJSON`
+
+```python
+value: models.SigmetGeoJSON = /* values here */
 ```
 

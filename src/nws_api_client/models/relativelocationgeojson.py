@@ -19,10 +19,10 @@ class RelativeLocationGeoJSONType(str, Enum):
 class RelativeLocationGeoJSONTypedDict(TypedDict):
     r"""A GeoJSON feature. Please refer to IETF RFC 7946 for information on the GeoJSON format."""
 
-    type: RelativeLocationGeoJSONType
     geometry: Nullable[GeoJSONGeometryTypedDict]
     r"""A GeoJSON geometry object. Please refer to IETF RFC 7946 for information on the GeoJSON format."""
     properties: RelativeLocationTypedDict
+    type: RelativeLocationGeoJSONType
     at_context: NotRequired[JSONLdContextUnionTypedDict]
     id: NotRequired[str]
 
@@ -30,12 +30,12 @@ class RelativeLocationGeoJSONTypedDict(TypedDict):
 class RelativeLocationGeoJSON(BaseModel):
     r"""A GeoJSON feature. Please refer to IETF RFC 7946 for information on the GeoJSON format."""
 
-    type: RelativeLocationGeoJSONType
-
     geometry: Nullable[GeoJSONGeometry]
     r"""A GeoJSON geometry object. Please refer to IETF RFC 7946 for information on the GeoJSON format."""
 
     properties: RelativeLocation
+
+    type: RelativeLocationGeoJSONType
 
     at_context: Annotated[
         Optional[JSONLdContextUnion], pydantic.Field(alias="@context")

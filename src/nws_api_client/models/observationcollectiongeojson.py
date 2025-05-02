@@ -10,10 +10,6 @@ from typing import List, Optional
 from typing_extensions import Annotated, NotRequired, TypedDict
 
 
-class ObservationCollectionGeoJSONType(str, Enum):
-    FEATURE_COLLECTION = "FeatureCollection"
-
-
 class ObservationCollectionGeoJSONFeatureTypedDict(TypedDict):
     properties: NotRequired[ObservationTypedDict]
 
@@ -22,20 +18,24 @@ class ObservationCollectionGeoJSONFeature(BaseModel):
     properties: Optional[Observation] = None
 
 
+class ObservationCollectionGeoJSONType(str, Enum):
+    FEATURE_COLLECTION = "FeatureCollection"
+
+
 class ObservationCollectionGeoJSONTypedDict(TypedDict):
     r"""A GeoJSON feature collection. Please refer to IETF RFC 7946 for information on the GeoJSON format."""
 
-    type: ObservationCollectionGeoJSONType
     features: List[ObservationCollectionGeoJSONFeatureTypedDict]
+    type: ObservationCollectionGeoJSONType
     at_context: NotRequired[JSONLdContextUnionTypedDict]
 
 
 class ObservationCollectionGeoJSON(BaseModel):
     r"""A GeoJSON feature collection. Please refer to IETF RFC 7946 for information on the GeoJSON format."""
 
-    type: ObservationCollectionGeoJSONType
-
     features: List[ObservationCollectionGeoJSONFeature]
+
+    type: ObservationCollectionGeoJSONType
 
     at_context: Annotated[
         Optional[JSONLdContextUnion], pydantic.Field(alias="@context")

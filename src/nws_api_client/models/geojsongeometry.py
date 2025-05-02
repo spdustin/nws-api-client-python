@@ -12,16 +12,16 @@ class TypeMultiPolygon(str, Enum):
 
 
 class GeoJSONMultiPolygonTypedDict(TypedDict):
-    type: TypeMultiPolygon
     coordinates: List[List[List[List[float]]]]
+    type: TypeMultiPolygon
     bbox: NotRequired[List[float]]
     r"""A GeoJSON bounding box. Please refer to IETF RFC 7946 for information on the GeoJSON format."""
 
 
 class GeoJSONMultiPolygon(BaseModel):
-    type: TypeMultiPolygon
-
     coordinates: List[List[List[List[float]]]]
+
+    type: TypeMultiPolygon
 
     bbox: Optional[List[float]] = None
     r"""A GeoJSON bounding box. Please refer to IETF RFC 7946 for information on the GeoJSON format."""
@@ -32,16 +32,16 @@ class TypeMultiLineString(str, Enum):
 
 
 class GeoJSONMultiLineStringTypedDict(TypedDict):
-    type: TypeMultiLineString
     coordinates: List[List[List[float]]]
+    type: TypeMultiLineString
     bbox: NotRequired[List[float]]
     r"""A GeoJSON bounding box. Please refer to IETF RFC 7946 for information on the GeoJSON format."""
 
 
 class GeoJSONMultiLineString(BaseModel):
-    type: TypeMultiLineString
-
     coordinates: List[List[List[float]]]
+
+    type: TypeMultiLineString
 
     bbox: Optional[List[float]] = None
     r"""A GeoJSON bounding box. Please refer to IETF RFC 7946 for information on the GeoJSON format."""
@@ -52,16 +52,16 @@ class TypeMultiPoint(str, Enum):
 
 
 class GeoJSONMultiPointTypedDict(TypedDict):
-    type: TypeMultiPoint
     coordinates: List[List[float]]
+    type: TypeMultiPoint
     bbox: NotRequired[List[float]]
     r"""A GeoJSON bounding box. Please refer to IETF RFC 7946 for information on the GeoJSON format."""
 
 
 class GeoJSONMultiPoint(BaseModel):
-    type: TypeMultiPoint
-
     coordinates: List[List[float]]
+
+    type: TypeMultiPoint
 
     bbox: Optional[List[float]] = None
     r"""A GeoJSON bounding box. Please refer to IETF RFC 7946 for information on the GeoJSON format."""
@@ -72,18 +72,18 @@ class TypePolygon(str, Enum):
 
 
 class GeoJSONPolygonTypedDict(TypedDict):
-    type: TypePolygon
     coordinates: List[List[List[float]]]
     r"""A GeoJSON polygon. Please refer to IETF RFC 7946 for information on the GeoJSON format."""
+    type: TypePolygon
     bbox: NotRequired[List[float]]
     r"""A GeoJSON bounding box. Please refer to IETF RFC 7946 for information on the GeoJSON format."""
 
 
 class GeoJSONPolygon(BaseModel):
-    type: TypePolygon
-
     coordinates: List[List[List[float]]]
     r"""A GeoJSON polygon. Please refer to IETF RFC 7946 for information on the GeoJSON format."""
+
+    type: TypePolygon
 
     bbox: Optional[List[float]] = None
     r"""A GeoJSON bounding box. Please refer to IETF RFC 7946 for information on the GeoJSON format."""
@@ -94,18 +94,18 @@ class TypeLineString(str, Enum):
 
 
 class GeoJSONLineStringTypedDict(TypedDict):
-    type: TypeLineString
     coordinates: List[List[float]]
     r"""A GeoJSON line string. Please refer to IETF RFC 7946 for information on the GeoJSON format."""
+    type: TypeLineString
     bbox: NotRequired[List[float]]
     r"""A GeoJSON bounding box. Please refer to IETF RFC 7946 for information on the GeoJSON format."""
 
 
 class GeoJSONLineString(BaseModel):
-    type: TypeLineString
-
     coordinates: List[List[float]]
     r"""A GeoJSON line string. Please refer to IETF RFC 7946 for information on the GeoJSON format."""
+
+    type: TypeLineString
 
     bbox: Optional[List[float]] = None
     r"""A GeoJSON bounding box. Please refer to IETF RFC 7946 for information on the GeoJSON format."""
@@ -116,18 +116,18 @@ class TypePoint(str, Enum):
 
 
 class GeoJSONPointTypedDict(TypedDict):
-    type: TypePoint
     coordinates: List[float]
     r"""A GeoJSON coordinate. Please refer to IETF RFC 7946 for information on the GeoJSON format."""
+    type: TypePoint
     bbox: NotRequired[List[float]]
     r"""A GeoJSON bounding box. Please refer to IETF RFC 7946 for information on the GeoJSON format."""
 
 
 class GeoJSONPoint(BaseModel):
-    type: TypePoint
-
     coordinates: List[float]
     r"""A GeoJSON coordinate. Please refer to IETF RFC 7946 for information on the GeoJSON format."""
+
+    type: TypePoint
 
     bbox: Optional[List[float]] = None
     r"""A GeoJSON bounding box. Please refer to IETF RFC 7946 for information on the GeoJSON format."""

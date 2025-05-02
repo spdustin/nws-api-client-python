@@ -23,23 +23,23 @@ class ObservationStationAtType(str, Enum):
 
 class ObservationStationTypedDict(TypedDict):
     at_context: NotRequired[JSONLdContextUnionTypedDict]
-    geometry: NotRequired[Nullable[str]]
-    r"""A geometry represented in Well-Known Text (WKT) format."""
     at_id: NotRequired[str]
     at_type: NotRequired[ObservationStationAtType]
+    county: NotRequired[str]
+    r"""A link to the NWS county zone containing this station."""
     elevation: NotRequired[QuantitativeValueTypedDict]
     r"""A structured value representing a measurement and its unit of measure. This object is a slighly modified version of the schema.org definition at https://schema.org/QuantitativeValue
 
     """
-    station_identifier: NotRequired[str]
-    name: NotRequired[str]
-    time_zone: NotRequired[str]
-    forecast: NotRequired[str]
-    r"""A link to the NWS public forecast zone containing this station."""
-    county: NotRequired[str]
-    r"""A link to the NWS county zone containing this station."""
     fire_weather_zone: NotRequired[str]
     r"""A link to the NWS fire weather forecast zone containing this station."""
+    forecast: NotRequired[str]
+    r"""A link to the NWS public forecast zone containing this station."""
+    geometry: NotRequired[Nullable[str]]
+    r"""A geometry represented in Well-Known Text (WKT) format."""
+    name: NotRequired[str]
+    station_identifier: NotRequired[str]
+    time_zone: NotRequired[str]
 
 
 class ObservationStation(BaseModel):
@@ -47,53 +47,53 @@ class ObservationStation(BaseModel):
         Optional[JSONLdContextUnion], pydantic.Field(alias="@context")
     ] = None
 
-    geometry: OptionalNullable[str] = UNSET
-    r"""A geometry represented in Well-Known Text (WKT) format."""
-
     at_id: Annotated[Optional[str], pydantic.Field(alias="@id")] = None
 
     at_type: Annotated[
         Optional[ObservationStationAtType], pydantic.Field(alias="@type")
     ] = None
 
+    county: Optional[str] = None
+    r"""A link to the NWS county zone containing this station."""
+
     elevation: Optional[QuantitativeValue] = None
     r"""A structured value representing a measurement and its unit of measure. This object is a slighly modified version of the schema.org definition at https://schema.org/QuantitativeValue
 
     """
-
-    station_identifier: Annotated[
-        Optional[str], pydantic.Field(alias="stationIdentifier")
-    ] = None
-
-    name: Optional[str] = None
-
-    time_zone: Annotated[Optional[str], pydantic.Field(alias="timeZone")] = None
-
-    forecast: Optional[str] = None
-    r"""A link to the NWS public forecast zone containing this station."""
-
-    county: Optional[str] = None
-    r"""A link to the NWS county zone containing this station."""
 
     fire_weather_zone: Annotated[
         Optional[str], pydantic.Field(alias="fireWeatherZone")
     ] = None
     r"""A link to the NWS fire weather forecast zone containing this station."""
 
+    forecast: Optional[str] = None
+    r"""A link to the NWS public forecast zone containing this station."""
+
+    geometry: OptionalNullable[str] = UNSET
+    r"""A geometry represented in Well-Known Text (WKT) format."""
+
+    name: Optional[str] = None
+
+    station_identifier: Annotated[
+        Optional[str], pydantic.Field(alias="stationIdentifier")
+    ] = None
+
+    time_zone: Annotated[Optional[str], pydantic.Field(alias="timeZone")] = None
+
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):
         optional_fields = [
             "@context",
-            "geometry",
             "@id",
             "@type",
-            "elevation",
-            "stationIdentifier",
-            "name",
-            "timeZone",
-            "forecast",
             "county",
+            "elevation",
             "fireWeatherZone",
+            "forecast",
+            "geometry",
+            "name",
+            "stationIdentifier",
+            "timeZone",
         ]
         nullable_fields = ["geometry"]
         null_default_fields = []

@@ -34,13 +34,13 @@ class GetZoneForecastRequest(BaseModel):
 
 GetZoneForecastResponseResultTypedDict = TypeAliasType(
     "GetZoneForecastResponseResultTypedDict",
-    Union[ZoneForecastGeoJSONTypedDict, ZoneForecastTypedDict, ProblemDetailTypedDict],
+    Union[ZoneForecastTypedDict, ZoneForecastGeoJSONTypedDict, ProblemDetailTypedDict],
 )
 
 
 GetZoneForecastResponseResult = TypeAliasType(
     "GetZoneForecastResponseResult",
-    Union[ZoneForecastGeoJSON, ZoneForecast, ProblemDetail],
+    Union[ZoneForecast, ZoneForecastGeoJSON, ProblemDetail],
 )
 
 

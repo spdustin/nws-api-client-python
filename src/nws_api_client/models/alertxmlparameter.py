@@ -7,11 +7,11 @@ from typing_extensions import NotRequired, TypedDict
 
 
 class AlertXMLParameterTypedDict(TypedDict):
-    value_name: NotRequired[str]
     value: NotRequired[str]
+    value_name: NotRequired[str]
 
 
 class AlertXMLParameter(BaseModel):
-    value_name: Optional[str] = None
-
     value: Optional[str] = None
+
+    value_name: Optional[str] = None

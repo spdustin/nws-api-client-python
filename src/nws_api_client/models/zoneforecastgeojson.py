@@ -19,11 +19,11 @@ class ZoneForecastGeoJSONType(str, Enum):
 class ZoneForecastGeoJSONTypedDict(TypedDict):
     r"""A GeoJSON feature. Please refer to IETF RFC 7946 for information on the GeoJSON format."""
 
-    type: ZoneForecastGeoJSONType
     geometry: Nullable[GeoJSONGeometryTypedDict]
     r"""A GeoJSON geometry object. Please refer to IETF RFC 7946 for information on the GeoJSON format."""
     properties: ZoneForecastTypedDict
     r"""An object representing a zone area forecast."""
+    type: ZoneForecastGeoJSONType
     at_context: NotRequired[JSONLdContextUnionTypedDict]
     id: NotRequired[str]
 
@@ -31,13 +31,13 @@ class ZoneForecastGeoJSONTypedDict(TypedDict):
 class ZoneForecastGeoJSON(BaseModel):
     r"""A GeoJSON feature. Please refer to IETF RFC 7946 for information on the GeoJSON format."""
 
-    type: ZoneForecastGeoJSONType
-
     geometry: Nullable[GeoJSONGeometry]
     r"""A GeoJSON geometry object. Please refer to IETF RFC 7946 for information on the GeoJSON format."""
 
     properties: ZoneForecast
     r"""An object representing a zone area forecast."""
+
+    type: ZoneForecastGeoJSONType
 
     at_context: Annotated[
         Optional[JSONLdContextUnion], pydantic.Field(alias="@context")

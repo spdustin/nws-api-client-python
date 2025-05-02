@@ -32,12 +32,14 @@ class QualityControl(str, Enum):
 class QuantitativeValueTypedDict(TypedDict):
     r"""A structured value representing a measurement and its unit of measure. This object is a slighly modified version of the schema.org definition at https://schema.org/QuantitativeValue"""
 
-    value: NotRequired[Nullable[float]]
-    r"""A measured value"""
     max_value: NotRequired[float]
     r"""The maximum value of a range of measured values"""
     min_value: NotRequired[float]
     r"""The minimum value of a range of measured values"""
+    quality_control: NotRequired[QualityControl]
+    r"""For values in observation records, the quality control flag from the MADIS system. The definitions of these flags can be found at https://madis.ncep.noaa.gov/madis_sfc_qc_notes.shtml
+
+    """
     unit_code: NotRequired[str]
     r"""A string denoting a unit of measure, expressed in the format \"{unit}\" or \"{namespace}:{unit}\".
     Units with the namespace \"wmo\" or \"wmoUnit\" are defined in the World Meteorological Organization Codes Registry at http://codes.wmo.int/common/unit and should be canonically resolvable to http://codes.wmo.int/common/unit/{unit}.
@@ -46,23 +48,25 @@ class QuantitativeValueTypedDict(TypedDict):
     Namespaced units are considered deprecated. We will be aligning API to use the same standards as GML/IWXXM in the future.
 
     """
-    quality_control: NotRequired[QualityControl]
-    r"""For values in observation records, the quality control flag from the MADIS system. The definitions of these flags can be found at https://madis.ncep.noaa.gov/madis_sfc_qc_notes.shtml
-
-    """
+    value: NotRequired[Nullable[float]]
+    r"""A measured value"""
 
 
 class QuantitativeValue(BaseModel):
     r"""A structured value representing a measurement and its unit of measure. This object is a slighly modified version of the schema.org definition at https://schema.org/QuantitativeValue"""
-
-    value: OptionalNullable[float] = UNSET
-    r"""A measured value"""
 
     max_value: Annotated[Optional[float], pydantic.Field(alias="maxValue")] = None
     r"""The maximum value of a range of measured values"""
 
     min_value: Annotated[Optional[float], pydantic.Field(alias="minValue")] = None
     r"""The minimum value of a range of measured values"""
+
+    quality_control: Annotated[
+        Optional[QualityControl], pydantic.Field(alias="qualityControl")
+    ] = None
+    r"""For values in observation records, the quality control flag from the MADIS system. The definitions of these flags can be found at https://madis.ncep.noaa.gov/madis_sfc_qc_notes.shtml
+
+    """
 
     unit_code: Annotated[Optional[str], pydantic.Field(alias="unitCode")] = None
     r"""A string denoting a unit of measure, expressed in the format \"{unit}\" or \"{namespace}:{unit}\".
@@ -73,21 +77,17 @@ class QuantitativeValue(BaseModel):
 
     """
 
-    quality_control: Annotated[
-        Optional[QualityControl], pydantic.Field(alias="qualityControl")
-    ] = None
-    r"""For values in observation records, the quality control flag from the MADIS system. The definitions of these flags can be found at https://madis.ncep.noaa.gov/madis_sfc_qc_notes.shtml
-
-    """
+    value: OptionalNullable[float] = UNSET
+    r"""A measured value"""
 
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):
         optional_fields = [
-            "value",
             "maxValue",
             "minValue",
-            "unitCode",
             "qualityControl",
+            "unitCode",
+            "value",
         ]
         nullable_fields = ["value"]
         null_default_fields = []

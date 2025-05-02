@@ -17,23 +17,23 @@ from typing_extensions import Annotated, NotRequired, TypedDict
 
 
 class PeriodTypedDict(TypedDict):
-    number: int
-    r"""A sequential identifier number."""
-    name: str
-    r"""A textual description of the period."""
     detailed_forecast: str
     r"""A detailed textual forecast for the period."""
+    name: str
+    r"""A textual description of the period."""
+    number: int
+    r"""A sequential identifier number."""
 
 
 class Period(BaseModel):
-    number: int
-    r"""A sequential identifier number."""
+    detailed_forecast: Annotated[str, pydantic.Field(alias="detailedForecast")]
+    r"""A detailed textual forecast for the period."""
 
     name: str
     r"""A textual description of the period."""
 
-    detailed_forecast: Annotated[str, pydantic.Field(alias="detailedForecast")]
-    r"""A detailed textual forecast for the period."""
+    number: int
+    r"""A sequential identifier number."""
 
 
 class ZoneForecastTypedDict(TypedDict):
@@ -42,12 +42,12 @@ class ZoneForecastTypedDict(TypedDict):
     at_context: NotRequired[JSONLdContextUnionTypedDict]
     geometry: NotRequired[Nullable[str]]
     r"""A geometry represented in Well-Known Text (WKT) format."""
-    zone: NotRequired[str]
-    r"""An API link to the zone this forecast is for."""
-    updated: NotRequired[datetime]
-    r"""The time this zone forecast product was published."""
     periods: NotRequired[List[PeriodTypedDict]]
     r"""An array of forecast periods."""
+    updated: NotRequired[datetime]
+    r"""The time this zone forecast product was published."""
+    zone: NotRequired[str]
+    r"""An API link to the zone this forecast is for."""
 
 
 class ZoneForecast(BaseModel):
@@ -60,18 +60,18 @@ class ZoneForecast(BaseModel):
     geometry: OptionalNullable[str] = UNSET
     r"""A geometry represented in Well-Known Text (WKT) format."""
 
-    zone: Optional[str] = None
-    r"""An API link to the zone this forecast is for."""
+    periods: Optional[List[Period]] = None
+    r"""An array of forecast periods."""
 
     updated: Optional[datetime] = None
     r"""The time this zone forecast product was published."""
 
-    periods: Optional[List[Period]] = None
-    r"""An array of forecast periods."""
+    zone: Optional[str] = None
+    r"""An API link to the zone this forecast is for."""
 
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):
-        optional_fields = ["@context", "geometry", "zone", "updated", "periods"]
+        optional_fields = ["@context", "geometry", "periods", "updated", "zone"]
         nullable_fields = ["geometry"]
         null_default_fields = []
 

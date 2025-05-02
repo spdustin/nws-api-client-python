@@ -36,29 +36,29 @@ State = TypeAliasType("State", Union[StateTerritoryCode, StateEnum])
 
 class ZoneTypedDict(TypedDict):
     at_context: NotRequired[JSONLdContextUnionTypedDict]
-    geometry: NotRequired[Nullable[str]]
-    r"""A geometry represented in Well-Known Text (WKT) format."""
     at_id: NotRequired[str]
     at_type: NotRequired[ZoneAtType]
+    awips_location_identifier: NotRequired[str]
+    cwa: NotRequired[List[NWSForecastOfficeID]]
+    effective_date: NotRequired[datetime]
+    expiration_date: NotRequired[datetime]
+    forecast_office: NotRequired[str]
+    forecast_offices: NotRequired[List[str]]
+    geometry: NotRequired[Nullable[str]]
+    r"""A geometry represented in Well-Known Text (WKT) format."""
+    grid_identifier: NotRequired[str]
     id: NotRequired[str]
     r"""UGC identifier for a NWS forecast zone or county.
     The first two letters will correspond to either a state code or marine area code (see #/components/schemas/AreaCode for lists of valid letter combinations).
     The third letter will be Z for public/fire zone or C for county.
 
     """
-    type: NotRequired[NWSZoneType]
     name: NotRequired[str]
-    effective_date: NotRequired[datetime]
-    expiration_date: NotRequired[datetime]
-    state: NotRequired[Nullable[StateTypedDict]]
-    forecast_office: NotRequired[str]
-    grid_identifier: NotRequired[str]
-    awips_location_identifier: NotRequired[str]
-    cwa: NotRequired[List[NWSForecastOfficeID]]
-    forecast_offices: NotRequired[List[str]]
-    time_zone: NotRequired[List[str]]
     observation_stations: NotRequired[List[str]]
     radar_station: NotRequired[Nullable[str]]
+    state: NotRequired[Nullable[StateTypedDict]]
+    time_zone: NotRequired[List[str]]
+    type: NotRequired[NWSZoneType]
 
 
 class Zone(BaseModel):
@@ -66,41 +66,9 @@ class Zone(BaseModel):
         Optional[JSONLdContextUnion], pydantic.Field(alias="@context")
     ] = None
 
-    geometry: OptionalNullable[str] = UNSET
-    r"""A geometry represented in Well-Known Text (WKT) format."""
-
     at_id: Annotated[Optional[str], pydantic.Field(alias="@id")] = None
 
     at_type: Annotated[Optional[ZoneAtType], pydantic.Field(alias="@type")] = None
-
-    id: Optional[str] = None
-    r"""UGC identifier for a NWS forecast zone or county.
-    The first two letters will correspond to either a state code or marine area code (see #/components/schemas/AreaCode for lists of valid letter combinations).
-    The third letter will be Z for public/fire zone or C for county.
-
-    """
-
-    type: Optional[NWSZoneType] = None
-
-    name: Optional[str] = None
-
-    effective_date: Annotated[
-        Optional[datetime], pydantic.Field(alias="effectiveDate")
-    ] = None
-
-    expiration_date: Annotated[
-        Optional[datetime], pydantic.Field(alias="expirationDate")
-    ] = None
-
-    state: OptionalNullable[State] = UNSET
-
-    forecast_office: Annotated[
-        Optional[str], pydantic.Field(alias="forecastOffice")
-    ] = None
-
-    grid_identifier: Annotated[
-        Optional[str], pydantic.Field(alias="gridIdentifier")
-    ] = None
 
     awips_location_identifier: Annotated[
         Optional[str], pydantic.Field(alias="awipsLocationIdentifier")
@@ -113,6 +81,18 @@ class Zone(BaseModel):
         ),
     ] = None
 
+    effective_date: Annotated[
+        Optional[datetime], pydantic.Field(alias="effectiveDate")
+    ] = None
+
+    expiration_date: Annotated[
+        Optional[datetime], pydantic.Field(alias="expirationDate")
+    ] = None
+
+    forecast_office: Annotated[
+        Optional[str], pydantic.Field(alias="forecastOffice")
+    ] = None
+
     forecast_offices: Annotated[
         Optional[List[str]],
         pydantic.Field(
@@ -121,7 +101,21 @@ class Zone(BaseModel):
         ),
     ] = None
 
-    time_zone: Annotated[Optional[List[str]], pydantic.Field(alias="timeZone")] = None
+    geometry: OptionalNullable[str] = UNSET
+    r"""A geometry represented in Well-Known Text (WKT) format."""
+
+    grid_identifier: Annotated[
+        Optional[str], pydantic.Field(alias="gridIdentifier")
+    ] = None
+
+    id: Optional[str] = None
+    r"""UGC identifier for a NWS forecast zone or county.
+    The first two letters will correspond to either a state code or marine area code (see #/components/schemas/AreaCode for lists of valid letter combinations).
+    The third letter will be Z for public/fire zone or C for county.
+
+    """
+
+    name: Optional[str] = None
 
     observation_stations: Annotated[
         Optional[List[str]], pydantic.Field(alias="observationStations")
@@ -131,29 +125,35 @@ class Zone(BaseModel):
         OptionalNullable[str], pydantic.Field(alias="radarStation")
     ] = UNSET
 
+    state: OptionalNullable[State] = UNSET
+
+    time_zone: Annotated[Optional[List[str]], pydantic.Field(alias="timeZone")] = None
+
+    type: Optional[NWSZoneType] = None
+
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):
         optional_fields = [
             "@context",
-            "geometry",
             "@id",
             "@type",
-            "id",
-            "type",
-            "name",
-            "effectiveDate",
-            "expirationDate",
-            "state",
-            "forecastOffice",
-            "gridIdentifier",
             "awipsLocationIdentifier",
             "cwa",
+            "effectiveDate",
+            "expirationDate",
+            "forecastOffice",
             "forecastOffices",
-            "timeZone",
+            "geometry",
+            "gridIdentifier",
+            "id",
+            "name",
             "observationStations",
             "radarStation",
+            "state",
+            "timeZone",
+            "type",
         ]
-        nullable_fields = ["geometry", "state", "radarStation"]
+        nullable_fields = ["geometry", "radarStation", "state"]
         null_default_fields = []
 
         serialized = handler(self)

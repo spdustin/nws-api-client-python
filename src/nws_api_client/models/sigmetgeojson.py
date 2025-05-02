@@ -19,10 +19,10 @@ class SigmetGeoJSONType(str, Enum):
 class SigmetGeoJSONTypedDict(TypedDict):
     r"""A GeoJSON feature. Please refer to IETF RFC 7946 for information on the GeoJSON format."""
 
-    type: SigmetGeoJSONType
     geometry: Nullable[GeoJSONGeometryTypedDict]
     r"""A GeoJSON geometry object. Please refer to IETF RFC 7946 for information on the GeoJSON format."""
     properties: SigmetTypedDict
+    type: SigmetGeoJSONType
     at_context: NotRequired[JSONLdContextUnionTypedDict]
     id: NotRequired[str]
 
@@ -30,12 +30,12 @@ class SigmetGeoJSONTypedDict(TypedDict):
 class SigmetGeoJSON(BaseModel):
     r"""A GeoJSON feature. Please refer to IETF RFC 7946 for information on the GeoJSON format."""
 
-    type: SigmetGeoJSONType
-
     geometry: Nullable[GeoJSONGeometry]
     r"""A GeoJSON geometry object. Please refer to IETF RFC 7946 for information on the GeoJSON format."""
 
     properties: Sigmet
+
+    type: SigmetGeoJSONType
 
     at_context: Annotated[
         Optional[JSONLdContextUnion], pydantic.Field(alias="@context")

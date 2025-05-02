@@ -3,6 +3,12 @@
 
 ## Supported Types
 
+### `bytes`
+
+```python
+value: bytes = /* values here */
+```
+
 ### `models.GridpointForecastGeoJSON`
 
 ```python
@@ -13,12 +19,6 @@ value: models.GridpointForecastGeoJSON = /* values here */
 
 ```python
 value: models.GridpointForecastJSONLd = /* values here */
-```
-
-### `bytes`
-
-```python
-value: bytes = /* values here */
 ```
 
 ### `models.ProblemDetail`

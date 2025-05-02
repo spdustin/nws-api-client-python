@@ -25,79 +25,51 @@ class ObservationAtType(str, Enum):
 
 
 class CloudLayerTypedDict(TypedDict):
+    amount: MetarSkyCoverage
     base: QuantitativeValueTypedDict
     r"""A structured value representing a measurement and its unit of measure. This object is a slighly modified version of the schema.org definition at https://schema.org/QuantitativeValue
 
     """
-    amount: MetarSkyCoverage
 
 
 class CloudLayer(BaseModel):
+    amount: MetarSkyCoverage
+
     base: QuantitativeValue
     r"""A structured value representing a measurement and its unit of measure. This object is a slighly modified version of the schema.org definition at https://schema.org/QuantitativeValue
 
     """
 
-    amount: MetarSkyCoverage
-
 
 class ObservationTypedDict(TypedDict):
     at_context: NotRequired[JSONLdContextUnionTypedDict]
-    geometry: NotRequired[Nullable[str]]
-    r"""A geometry represented in Well-Known Text (WKT) format."""
     at_id: NotRequired[str]
     at_type: NotRequired[ObservationAtType]
-    elevation: NotRequired[QuantitativeValueTypedDict]
-    r"""A structured value representing a measurement and its unit of measure. This object is a slighly modified version of the schema.org definition at https://schema.org/QuantitativeValue
-
-    """
-    station: NotRequired[str]
-    timestamp: NotRequired[datetime]
-    raw_message: NotRequired[str]
-    text_description: NotRequired[str]
-    icon: NotRequired[Nullable[str]]
-    present_weather: NotRequired[List[MetarPhenomenonTypedDict]]
-    temperature: NotRequired[QuantitativeValueTypedDict]
-    r"""A structured value representing a measurement and its unit of measure. This object is a slighly modified version of the schema.org definition at https://schema.org/QuantitativeValue
-
-    """
-    dewpoint: NotRequired[QuantitativeValueTypedDict]
-    r"""A structured value representing a measurement and its unit of measure. This object is a slighly modified version of the schema.org definition at https://schema.org/QuantitativeValue
-
-    """
-    wind_direction: NotRequired[QuantitativeValueTypedDict]
-    r"""A structured value representing a measurement and its unit of measure. This object is a slighly modified version of the schema.org definition at https://schema.org/QuantitativeValue
-
-    """
-    wind_speed: NotRequired[QuantitativeValueTypedDict]
-    r"""A structured value representing a measurement and its unit of measure. This object is a slighly modified version of the schema.org definition at https://schema.org/QuantitativeValue
-
-    """
-    wind_gust: NotRequired[QuantitativeValueTypedDict]
-    r"""A structured value representing a measurement and its unit of measure. This object is a slighly modified version of the schema.org definition at https://schema.org/QuantitativeValue
-
-    """
     barometric_pressure: NotRequired[QuantitativeValueTypedDict]
     r"""A structured value representing a measurement and its unit of measure. This object is a slighly modified version of the schema.org definition at https://schema.org/QuantitativeValue
 
     """
-    sea_level_pressure: NotRequired[QuantitativeValueTypedDict]
+    cloud_layers: NotRequired[Nullable[List[CloudLayerTypedDict]]]
+    dewpoint: NotRequired[QuantitativeValueTypedDict]
     r"""A structured value representing a measurement and its unit of measure. This object is a slighly modified version of the schema.org definition at https://schema.org/QuantitativeValue
 
     """
-    visibility: NotRequired[QuantitativeValueTypedDict]
+    elevation: NotRequired[QuantitativeValueTypedDict]
     r"""A structured value representing a measurement and its unit of measure. This object is a slighly modified version of the schema.org definition at https://schema.org/QuantitativeValue
 
     """
+    geometry: NotRequired[Nullable[str]]
+    r"""A geometry represented in Well-Known Text (WKT) format."""
+    heat_index: NotRequired[QuantitativeValueTypedDict]
+    r"""A structured value representing a measurement and its unit of measure. This object is a slighly modified version of the schema.org definition at https://schema.org/QuantitativeValue
+
+    """
+    icon: NotRequired[Nullable[str]]
     max_temperature_last24_hours: NotRequired[QuantitativeValueTypedDict]
     r"""A structured value representing a measurement and its unit of measure. This object is a slighly modified version of the schema.org definition at https://schema.org/QuantitativeValue
 
     """
     min_temperature_last24_hours: NotRequired[QuantitativeValueTypedDict]
-    r"""A structured value representing a measurement and its unit of measure. This object is a slighly modified version of the schema.org definition at https://schema.org/QuantitativeValue
-
-    """
-    precipitation_last_hour: NotRequired[QuantitativeValueTypedDict]
     r"""A structured value representing a measurement and its unit of measure. This object is a slighly modified version of the schema.org definition at https://schema.org/QuantitativeValue
 
     """
@@ -109,7 +81,28 @@ class ObservationTypedDict(TypedDict):
     r"""A structured value representing a measurement and its unit of measure. This object is a slighly modified version of the schema.org definition at https://schema.org/QuantitativeValue
 
     """
+    precipitation_last_hour: NotRequired[QuantitativeValueTypedDict]
+    r"""A structured value representing a measurement and its unit of measure. This object is a slighly modified version of the schema.org definition at https://schema.org/QuantitativeValue
+
+    """
+    present_weather: NotRequired[List[MetarPhenomenonTypedDict]]
+    raw_message: NotRequired[str]
     relative_humidity: NotRequired[QuantitativeValueTypedDict]
+    r"""A structured value representing a measurement and its unit of measure. This object is a slighly modified version of the schema.org definition at https://schema.org/QuantitativeValue
+
+    """
+    sea_level_pressure: NotRequired[QuantitativeValueTypedDict]
+    r"""A structured value representing a measurement and its unit of measure. This object is a slighly modified version of the schema.org definition at https://schema.org/QuantitativeValue
+
+    """
+    station: NotRequired[str]
+    temperature: NotRequired[QuantitativeValueTypedDict]
+    r"""A structured value representing a measurement and its unit of measure. This object is a slighly modified version of the schema.org definition at https://schema.org/QuantitativeValue
+
+    """
+    text_description: NotRequired[str]
+    timestamp: NotRequired[datetime]
+    visibility: NotRequired[QuantitativeValueTypedDict]
     r"""A structured value representing a measurement and its unit of measure. This object is a slighly modified version of the schema.org definition at https://schema.org/QuantitativeValue
 
     """
@@ -117,11 +110,18 @@ class ObservationTypedDict(TypedDict):
     r"""A structured value representing a measurement and its unit of measure. This object is a slighly modified version of the schema.org definition at https://schema.org/QuantitativeValue
 
     """
-    heat_index: NotRequired[QuantitativeValueTypedDict]
+    wind_direction: NotRequired[QuantitativeValueTypedDict]
     r"""A structured value representing a measurement and its unit of measure. This object is a slighly modified version of the schema.org definition at https://schema.org/QuantitativeValue
 
     """
-    cloud_layers: NotRequired[Nullable[List[CloudLayerTypedDict]]]
+    wind_gust: NotRequired[QuantitativeValueTypedDict]
+    r"""A structured value representing a measurement and its unit of measure. This object is a slighly modified version of the schema.org definition at https://schema.org/QuantitativeValue
+
+    """
+    wind_speed: NotRequired[QuantitativeValueTypedDict]
+    r"""A structured value representing a measurement and its unit of measure. This object is a slighly modified version of the schema.org definition at https://schema.org/QuantitativeValue
+
+    """
 
 
 class Observation(BaseModel):
@@ -129,71 +129,11 @@ class Observation(BaseModel):
         Optional[JSONLdContextUnion], pydantic.Field(alias="@context")
     ] = None
 
-    geometry: OptionalNullable[str] = UNSET
-    r"""A geometry represented in Well-Known Text (WKT) format."""
-
     at_id: Annotated[Optional[str], pydantic.Field(alias="@id")] = None
 
     at_type: Annotated[Optional[ObservationAtType], pydantic.Field(alias="@type")] = (
         None
     )
-
-    elevation: Optional[QuantitativeValue] = None
-    r"""A structured value representing a measurement and its unit of measure. This object is a slighly modified version of the schema.org definition at https://schema.org/QuantitativeValue
-
-    """
-
-    station: Optional[str] = None
-
-    timestamp: Optional[datetime] = None
-
-    raw_message: Annotated[Optional[str], pydantic.Field(alias="rawMessage")] = None
-
-    text_description: Annotated[
-        Optional[str], pydantic.Field(alias="textDescription")
-    ] = None
-
-    icon: Annotated[
-        OptionalNullable[str],
-        pydantic.Field(
-            deprecated="warning: ** DEPRECATED ** - This will be removed in a future release, please migrate away from it as soon as possible."
-        ),
-    ] = UNSET
-
-    present_weather: Annotated[
-        Optional[List[MetarPhenomenon]], pydantic.Field(alias="presentWeather")
-    ] = None
-
-    temperature: Optional[QuantitativeValue] = None
-    r"""A structured value representing a measurement and its unit of measure. This object is a slighly modified version of the schema.org definition at https://schema.org/QuantitativeValue
-
-    """
-
-    dewpoint: Optional[QuantitativeValue] = None
-    r"""A structured value representing a measurement and its unit of measure. This object is a slighly modified version of the schema.org definition at https://schema.org/QuantitativeValue
-
-    """
-
-    wind_direction: Annotated[
-        Optional[QuantitativeValue], pydantic.Field(alias="windDirection")
-    ] = None
-    r"""A structured value representing a measurement and its unit of measure. This object is a slighly modified version of the schema.org definition at https://schema.org/QuantitativeValue
-
-    """
-
-    wind_speed: Annotated[
-        Optional[QuantitativeValue], pydantic.Field(alias="windSpeed")
-    ] = None
-    r"""A structured value representing a measurement and its unit of measure. This object is a slighly modified version of the schema.org definition at https://schema.org/QuantitativeValue
-
-    """
-
-    wind_gust: Annotated[
-        Optional[QuantitativeValue], pydantic.Field(alias="windGust")
-    ] = None
-    r"""A structured value representing a measurement and its unit of measure. This object is a slighly modified version of the schema.org definition at https://schema.org/QuantitativeValue
-
-    """
 
     barometric_pressure: Annotated[
         Optional[QuantitativeValue], pydantic.Field(alias="barometricPressure")
@@ -202,17 +142,36 @@ class Observation(BaseModel):
 
     """
 
-    sea_level_pressure: Annotated[
-        Optional[QuantitativeValue], pydantic.Field(alias="seaLevelPressure")
+    cloud_layers: Annotated[
+        OptionalNullable[List[CloudLayer]], pydantic.Field(alias="cloudLayers")
+    ] = UNSET
+
+    dewpoint: Optional[QuantitativeValue] = None
+    r"""A structured value representing a measurement and its unit of measure. This object is a slighly modified version of the schema.org definition at https://schema.org/QuantitativeValue
+
+    """
+
+    elevation: Optional[QuantitativeValue] = None
+    r"""A structured value representing a measurement and its unit of measure. This object is a slighly modified version of the schema.org definition at https://schema.org/QuantitativeValue
+
+    """
+
+    geometry: OptionalNullable[str] = UNSET
+    r"""A geometry represented in Well-Known Text (WKT) format."""
+
+    heat_index: Annotated[
+        Optional[QuantitativeValue], pydantic.Field(alias="heatIndex")
     ] = None
     r"""A structured value representing a measurement and its unit of measure. This object is a slighly modified version of the schema.org definition at https://schema.org/QuantitativeValue
 
     """
 
-    visibility: Optional[QuantitativeValue] = None
-    r"""A structured value representing a measurement and its unit of measure. This object is a slighly modified version of the schema.org definition at https://schema.org/QuantitativeValue
-
-    """
+    icon: Annotated[
+        OptionalNullable[str],
+        pydantic.Field(
+            deprecated="warning: ** DEPRECATED ** - This will be removed in a future release, please migrate away from it as soon as possible."
+        ),
+    ] = UNSET
 
     max_temperature_last24_hours: Annotated[
         Optional[QuantitativeValue], pydantic.Field(alias="maxTemperatureLast24Hours")
@@ -223,13 +182,6 @@ class Observation(BaseModel):
 
     min_temperature_last24_hours: Annotated[
         Optional[QuantitativeValue], pydantic.Field(alias="minTemperatureLast24Hours")
-    ] = None
-    r"""A structured value representing a measurement and its unit of measure. This object is a slighly modified version of the schema.org definition at https://schema.org/QuantitativeValue
-
-    """
-
-    precipitation_last_hour: Annotated[
-        Optional[QuantitativeValue], pydantic.Field(alias="precipitationLastHour")
     ] = None
     r"""A structured value representing a measurement and its unit of measure. This object is a slighly modified version of the schema.org definition at https://schema.org/QuantitativeValue
 
@@ -249,9 +201,47 @@ class Observation(BaseModel):
 
     """
 
+    precipitation_last_hour: Annotated[
+        Optional[QuantitativeValue], pydantic.Field(alias="precipitationLastHour")
+    ] = None
+    r"""A structured value representing a measurement and its unit of measure. This object is a slighly modified version of the schema.org definition at https://schema.org/QuantitativeValue
+
+    """
+
+    present_weather: Annotated[
+        Optional[List[MetarPhenomenon]], pydantic.Field(alias="presentWeather")
+    ] = None
+
+    raw_message: Annotated[Optional[str], pydantic.Field(alias="rawMessage")] = None
+
     relative_humidity: Annotated[
         Optional[QuantitativeValue], pydantic.Field(alias="relativeHumidity")
     ] = None
+    r"""A structured value representing a measurement and its unit of measure. This object is a slighly modified version of the schema.org definition at https://schema.org/QuantitativeValue
+
+    """
+
+    sea_level_pressure: Annotated[
+        Optional[QuantitativeValue], pydantic.Field(alias="seaLevelPressure")
+    ] = None
+    r"""A structured value representing a measurement and its unit of measure. This object is a slighly modified version of the schema.org definition at https://schema.org/QuantitativeValue
+
+    """
+
+    station: Optional[str] = None
+
+    temperature: Optional[QuantitativeValue] = None
+    r"""A structured value representing a measurement and its unit of measure. This object is a slighly modified version of the schema.org definition at https://schema.org/QuantitativeValue
+
+    """
+
+    text_description: Annotated[
+        Optional[str], pydantic.Field(alias="textDescription")
+    ] = None
+
+    timestamp: Optional[datetime] = None
+
+    visibility: Optional[QuantitativeValue] = None
     r"""A structured value representing a measurement and its unit of measure. This object is a slighly modified version of the schema.org definition at https://schema.org/QuantitativeValue
 
     """
@@ -263,50 +253,60 @@ class Observation(BaseModel):
 
     """
 
-    heat_index: Annotated[
-        Optional[QuantitativeValue], pydantic.Field(alias="heatIndex")
+    wind_direction: Annotated[
+        Optional[QuantitativeValue], pydantic.Field(alias="windDirection")
     ] = None
     r"""A structured value representing a measurement and its unit of measure. This object is a slighly modified version of the schema.org definition at https://schema.org/QuantitativeValue
 
     """
 
-    cloud_layers: Annotated[
-        OptionalNullable[List[CloudLayer]], pydantic.Field(alias="cloudLayers")
-    ] = UNSET
+    wind_gust: Annotated[
+        Optional[QuantitativeValue], pydantic.Field(alias="windGust")
+    ] = None
+    r"""A structured value representing a measurement and its unit of measure. This object is a slighly modified version of the schema.org definition at https://schema.org/QuantitativeValue
+
+    """
+
+    wind_speed: Annotated[
+        Optional[QuantitativeValue], pydantic.Field(alias="windSpeed")
+    ] = None
+    r"""A structured value representing a measurement and its unit of measure. This object is a slighly modified version of the schema.org definition at https://schema.org/QuantitativeValue
+
+    """
 
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):
         optional_fields = [
             "@context",
-            "geometry",
             "@id",
             "@type",
-            "elevation",
-            "station",
-            "timestamp",
-            "rawMessage",
-            "textDescription",
-            "icon",
-            "presentWeather",
-            "temperature",
-            "dewpoint",
-            "windDirection",
-            "windSpeed",
-            "windGust",
             "barometricPressure",
-            "seaLevelPressure",
-            "visibility",
+            "cloudLayers",
+            "dewpoint",
+            "elevation",
+            "geometry",
+            "heatIndex",
+            "icon",
             "maxTemperatureLast24Hours",
             "minTemperatureLast24Hours",
-            "precipitationLastHour",
             "precipitationLast3Hours",
             "precipitationLast6Hours",
+            "precipitationLastHour",
+            "presentWeather",
+            "rawMessage",
             "relativeHumidity",
+            "seaLevelPressure",
+            "station",
+            "temperature",
+            "textDescription",
+            "timestamp",
+            "visibility",
             "windChill",
-            "heatIndex",
-            "cloudLayers",
+            "windDirection",
+            "windGust",
+            "windSpeed",
         ]
-        nullable_fields = ["geometry", "icon", "cloudLayers"]
+        nullable_fields = ["cloudLayers", "geometry", "icon"]
         null_default_fields = []
 
         serialized = handler(self)

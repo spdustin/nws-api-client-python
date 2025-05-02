@@ -10,16 +10,16 @@ from typing_extensions import NotRequired, TypeAliasType, TypedDict
 class ListActiveAlertCountsResponseBodyTypedDict(TypedDict):
     r"""A data structure showing the counts of active alerts broken down by various categories"""
 
-    total: NotRequired[int]
-    r"""The total number of active alerts"""
+    areas: NotRequired[Dict[str, int]]
+    r"""Active alerts by area (state/territory)"""
     land: NotRequired[int]
     r"""The total number of active alerts affecting land zones"""
     marine: NotRequired[int]
     r"""The total number of active alerts affecting marine zones"""
     regions: NotRequired[Dict[str, int]]
     r"""Active alerts by marine region"""
-    areas: NotRequired[Dict[str, int]]
-    r"""Active alerts by area (state/territory)"""
+    total: NotRequired[int]
+    r"""The total number of active alerts"""
     zones: NotRequired[Dict[str, int]]
     r"""Active alerts by NWS public zone or county code"""
 
@@ -27,8 +27,8 @@ class ListActiveAlertCountsResponseBodyTypedDict(TypedDict):
 class ListActiveAlertCountsResponseBody(BaseModel):
     r"""A data structure showing the counts of active alerts broken down by various categories"""
 
-    total: Optional[int] = None
-    r"""The total number of active alerts"""
+    areas: Optional[Dict[str, int]] = None
+    r"""Active alerts by area (state/territory)"""
 
     land: Optional[int] = None
     r"""The total number of active alerts affecting land zones"""
@@ -39,8 +39,8 @@ class ListActiveAlertCountsResponseBody(BaseModel):
     regions: Optional[Dict[str, int]] = None
     r"""Active alerts by marine region"""
 
-    areas: Optional[Dict[str, int]] = None
-    r"""Active alerts by area (state/territory)"""
+    total: Optional[int] = None
+    r"""The total number of active alerts"""
 
     zones: Optional[Dict[str, int]] = None
     r"""Active alerts by NWS public zone or county code"""

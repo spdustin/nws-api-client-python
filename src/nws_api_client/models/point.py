@@ -42,27 +42,27 @@ PointRelativeLocation = TypeAliasType(
 
 class PointTypedDict(TypedDict):
     at_context: NotRequired[JSONLdContextUnionTypedDict]
-    geometry: NotRequired[Nullable[str]]
-    r"""A geometry represented in Well-Known Text (WKT) format."""
     at_id: NotRequired[str]
     at_type: NotRequired[PointAtType]
+    county: NotRequired[str]
     cwa: NotRequired[NWSForecastOfficeID]
     r"""Three-letter identifier for a NWS office."""
+    fire_weather_zone: NotRequired[str]
+    forecast: NotRequired[str]
+    forecast_grid_data: NotRequired[str]
+    forecast_hourly: NotRequired[str]
     forecast_office: NotRequired[str]
+    forecast_zone: NotRequired[str]
+    geometry: NotRequired[Nullable[str]]
+    r"""A geometry represented in Well-Known Text (WKT) format."""
     grid_id: NotRequired[NWSForecastOfficeID]
     r"""Three-letter identifier for a NWS office."""
     grid_x: NotRequired[int]
     grid_y: NotRequired[int]
-    forecast: NotRequired[str]
-    forecast_hourly: NotRequired[str]
-    forecast_grid_data: NotRequired[str]
     observation_stations: NotRequired[str]
-    relative_location: NotRequired[PointRelativeLocationTypedDict]
-    forecast_zone: NotRequired[str]
-    county: NotRequired[str]
-    fire_weather_zone: NotRequired[str]
-    time_zone: NotRequired[str]
     radar_station: NotRequired[str]
+    relative_location: NotRequired[PointRelativeLocationTypedDict]
+    time_zone: NotRequired[str]
 
 
 class Point(BaseModel):
@@ -70,19 +70,37 @@ class Point(BaseModel):
         Optional[JSONLdContextUnion], pydantic.Field(alias="@context")
     ] = None
 
-    geometry: OptionalNullable[str] = UNSET
-    r"""A geometry represented in Well-Known Text (WKT) format."""
-
     at_id: Annotated[Optional[str], pydantic.Field(alias="@id")] = None
 
     at_type: Annotated[Optional[PointAtType], pydantic.Field(alias="@type")] = None
 
+    county: Optional[str] = None
+
     cwa: Optional[NWSForecastOfficeID] = None
     r"""Three-letter identifier for a NWS office."""
+
+    fire_weather_zone: Annotated[
+        Optional[str], pydantic.Field(alias="fireWeatherZone")
+    ] = None
+
+    forecast: Optional[str] = None
+
+    forecast_grid_data: Annotated[
+        Optional[str], pydantic.Field(alias="forecastGridData")
+    ] = None
+
+    forecast_hourly: Annotated[
+        Optional[str], pydantic.Field(alias="forecastHourly")
+    ] = None
 
     forecast_office: Annotated[
         Optional[str], pydantic.Field(alias="forecastOffice")
     ] = None
+
+    forecast_zone: Annotated[Optional[str], pydantic.Field(alias="forecastZone")] = None
+
+    geometry: OptionalNullable[str] = UNSET
+    r"""A geometry represented in Well-Known Text (WKT) format."""
 
     grid_id: Annotated[
         Optional[NWSForecastOfficeID], pydantic.Field(alias="gridId")
@@ -93,58 +111,40 @@ class Point(BaseModel):
 
     grid_y: Annotated[Optional[int], pydantic.Field(alias="gridY")] = None
 
-    forecast: Optional[str] = None
-
-    forecast_hourly: Annotated[
-        Optional[str], pydantic.Field(alias="forecastHourly")
-    ] = None
-
-    forecast_grid_data: Annotated[
-        Optional[str], pydantic.Field(alias="forecastGridData")
-    ] = None
-
     observation_stations: Annotated[
         Optional[str], pydantic.Field(alias="observationStations")
     ] = None
+
+    radar_station: Annotated[Optional[str], pydantic.Field(alias="radarStation")] = None
 
     relative_location: Annotated[
         Optional[PointRelativeLocation], pydantic.Field(alias="relativeLocation")
     ] = None
 
-    forecast_zone: Annotated[Optional[str], pydantic.Field(alias="forecastZone")] = None
-
-    county: Optional[str] = None
-
-    fire_weather_zone: Annotated[
-        Optional[str], pydantic.Field(alias="fireWeatherZone")
-    ] = None
-
     time_zone: Annotated[Optional[str], pydantic.Field(alias="timeZone")] = None
-
-    radar_station: Annotated[Optional[str], pydantic.Field(alias="radarStation")] = None
 
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):
         optional_fields = [
             "@context",
-            "geometry",
             "@id",
             "@type",
+            "county",
             "cwa",
+            "fireWeatherZone",
+            "forecast",
+            "forecastGridData",
+            "forecastHourly",
             "forecastOffice",
+            "forecastZone",
+            "geometry",
             "gridId",
             "gridX",
             "gridY",
-            "forecast",
-            "forecastHourly",
-            "forecastGridData",
             "observationStations",
-            "relativeLocation",
-            "forecastZone",
-            "county",
-            "fireWeatherZone",
-            "timeZone",
             "radarStation",
+            "relativeLocation",
+            "timeZone",
         ]
         nullable_fields = ["geometry"]
         null_default_fields = []

@@ -7,9 +7,9 @@ Operations related to geographic points (lat,lon)
 
 ### Available Operations
 
-* [get_point_metadata](#get_point_metadata) - Returns metadata about a given latitude/longitude point
+* [get_metadata](#get_metadata) - Returns metadata about a given latitude/longitude point
 
-## get_point_metadata
+## get_metadata
 
 Returns metadata about a given latitude/longitude point
 
@@ -24,7 +24,7 @@ with NwsClient(
     user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
 ) as nws_client:
 
-    res = nws_client.points.get_point_metadata(point="<value>")
+    res = nws_client.points.get_metadata(point="<value>")
 
     # Handle response
     print(res)
@@ -44,6 +44,16 @@ with NwsClient(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.APIError | 4XX, 5XX        | \*/\*           |
+| Error Type                   | Status Code                  | Content Type                 |
+| ---------------------------- | ---------------------------- | ---------------------------- |
+| errors.NotFoundError         | 404                          | application/json             |
+| errors.UnauthorizedError     | 401, 403, 407                | application/json             |
+| errors.TimeoutErrorT         | 408                          | application/json             |
+| errors.RateLimitedError      | 429                          | application/json             |
+| errors.BadRequestError       | 400, 413, 414, 415, 422, 431 | application/json             |
+| errors.TimeoutErrorT         | 504                          | application/json             |
+| errors.NotFoundError         | 501, 505                     | application/json             |
+| errors.InternalServerError   | 500, 502, 503, 506, 507, 508 | application/json             |
+| errors.BadRequestError       | 510                          | application/json             |
+| errors.UnauthorizedError     | 511                          | application/json             |
+| errors.APIError              | 4XX, 5XX                     | \*/\*                        |

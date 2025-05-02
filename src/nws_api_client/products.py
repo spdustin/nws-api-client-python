@@ -7,45 +7,45 @@ from nws_api_client import errors, models, utils
 from nws_api_client._hooks import HookContext
 from nws_api_client.types import OptionalNullable, UNSET
 from nws_api_client.utils import get_security_from_env
-from typing import List, Mapping, Optional
+from typing import Any, List, Mapping, Optional
 
 
-class ListProductsAcceptEnum(str, Enum):
+class GetByIdAcceptEnum(str, Enum):
     APPLICATION_LD_PLUS_JSON = "application/ld+json"
     APPLICATION_PROBLEM_PLUS_JSON = "application/problem+json"
 
 
-class ListProductLocationsAcceptEnum(str, Enum):
+class GetLocationsByTypeAcceptEnum(str, Enum):
     APPLICATION_LD_PLUS_JSON = "application/ld+json"
     APPLICATION_PROBLEM_PLUS_JSON = "application/problem+json"
 
 
-class ListProductTypesAcceptEnum(str, Enum):
+class ListAcceptEnum(str, Enum):
     APPLICATION_LD_PLUS_JSON = "application/ld+json"
     APPLICATION_PROBLEM_PLUS_JSON = "application/problem+json"
 
 
-class GetProductByIdAcceptEnum(str, Enum):
+class ListByTypeAcceptEnum(str, Enum):
     APPLICATION_LD_PLUS_JSON = "application/ld+json"
     APPLICATION_PROBLEM_PLUS_JSON = "application/problem+json"
 
 
-class ListProductsByTypeAcceptEnum(str, Enum):
+class ListByTypeAndLocationAcceptEnum(str, Enum):
     APPLICATION_LD_PLUS_JSON = "application/ld+json"
     APPLICATION_PROBLEM_PLUS_JSON = "application/problem+json"
 
 
-class ListLocationsByProductTypeAcceptEnum(str, Enum):
+class ListLocationsAcceptEnum(str, Enum):
     APPLICATION_LD_PLUS_JSON = "application/ld+json"
     APPLICATION_PROBLEM_PLUS_JSON = "application/problem+json"
 
 
-class ListProductTypesByLocationAcceptEnum(str, Enum):
+class ListTypesAcceptEnum(str, Enum):
     APPLICATION_LD_PLUS_JSON = "application/ld+json"
     APPLICATION_PROBLEM_PLUS_JSON = "application/problem+json"
 
 
-class ListProductsByTypeAndLocationAcceptEnum(str, Enum):
+class ListTypesByLocationAcceptEnum(str, Enum):
     APPLICATION_LD_PLUS_JSON = "application/ld+json"
     APPLICATION_PROBLEM_PLUS_JSON = "application/problem+json"
 
@@ -53,7 +53,763 @@ class ListProductsByTypeAndLocationAcceptEnum(str, Enum):
 class Products(BaseSDK):
     r"""Operations related to products"""
 
-    def list_products(
+    def get_by_id(
+        self,
+        *,
+        product_id: str,
+        retries: OptionalNullable[utils.RetryConfig] = UNSET,
+        server_url: Optional[str] = None,
+        timeout_ms: Optional[int] = None,
+        accept_header_override: Optional[GetByIdAcceptEnum] = None,
+        http_headers: Optional[Mapping[str, str]] = None,
+    ) -> models.GetProductByIDResponse:
+        r"""Returns a specific text product
+
+        :param product_id: .
+        :param retries: Override the default retry configuration for this method
+        :param server_url: Override the default server URL for this method
+        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param accept_header_override: Override the default accept header for this method
+        :param http_headers: Additional headers to set or replace on requests.
+        """
+        base_url = None
+        url_variables = None
+        if timeout_ms is None:
+            timeout_ms = self.sdk_configuration.timeout_ms
+
+        if server_url is not None:
+            base_url = server_url
+        else:
+            base_url = self._get_url(base_url, url_variables)
+
+        request = models.GetProductByIDRequest(
+            product_id=product_id,
+        )
+
+        req = self._build_request(
+            method="GET",
+            path="/products/{productId}",
+            base_url=base_url,
+            url_variables=url_variables,
+            request=request,
+            request_body_required=False,
+            request_has_path_params=True,
+            request_has_query_params=True,
+            user_agent_header="user-agent",
+            accept_header_value=accept_header_override.value
+            if accept_header_override is not None
+            else "application/ld+json;q=1, application/problem+json;q=0",
+            http_headers=http_headers,
+            security=self.sdk_configuration.security,
+            timeout_ms=timeout_ms,
+        )
+
+        if retries == UNSET:
+            if self.sdk_configuration.retry_config is not UNSET:
+                retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(500, 60000, 1.5, 3600000), True
+                )
+
+        retry_config = None
+        if isinstance(retries, utils.RetryConfig):
+            retry_config = (retries, ["5XX"])
+
+        http_res = self.do_request(
+            hook_ctx=HookContext(
+                base_url=base_url or "",
+                operation_id="get_product_by_id",
+                oauth2_scopes=[],
+                security_source=get_security_from_env(
+                    self.sdk_configuration.security, models.Security
+                ),
+            ),
+            request=req,
+            error_status_codes=[
+                "400",
+                "401",
+                "403",
+                "404",
+                "407",
+                "408",
+                "413",
+                "414",
+                "415",
+                "422",
+                "429",
+                "431",
+                "4XX",
+                "500",
+                "501",
+                "502",
+                "503",
+                "504",
+                "505",
+                "506",
+                "507",
+                "508",
+                "510",
+                "511",
+                "5XX",
+            ],
+            retry_config=retry_config,
+        )
+
+        response_data: Any = None
+        if utils.match_response(http_res, "200", "application/ld+json"):
+            return models.GetProductByIDResponse(
+                result=utils.unmarshal_json(http_res.text, models.TextProduct),
+                headers=utils.get_response_headers(http_res.headers),
+            )
+        if utils.match_response(http_res, "404", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.NotFoundErrorData
+            )
+            raise errors.NotFoundError(data=response_data)
+        if utils.match_response(http_res, ["401", "403", "407"], "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.UnauthorizedErrorData
+            )
+            raise errors.UnauthorizedError(data=response_data)
+        if utils.match_response(http_res, "408", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.TimeoutErrorTData
+            )
+            raise errors.TimeoutErrorT(data=response_data)
+        if utils.match_response(http_res, "429", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.RateLimitedErrorData
+            )
+            raise errors.RateLimitedError(data=response_data)
+        if utils.match_response(
+            http_res, ["400", "413", "414", "415", "422", "431"], "application/json"
+        ):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.BadRequestErrorData
+            )
+            raise errors.BadRequestError(data=response_data)
+        if utils.match_response(http_res, "504", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.TimeoutErrorTData
+            )
+            raise errors.TimeoutErrorT(data=response_data)
+        if utils.match_response(http_res, ["501", "505"], "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.NotFoundErrorData
+            )
+            raise errors.NotFoundError(data=response_data)
+        if utils.match_response(
+            http_res, ["500", "502", "503", "506", "507", "508"], "application/json"
+        ):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.InternalServerErrorData
+            )
+            raise errors.InternalServerError(data=response_data)
+        if utils.match_response(http_res, "510", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.BadRequestErrorData
+            )
+            raise errors.BadRequestError(data=response_data)
+        if utils.match_response(http_res, "511", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.UnauthorizedErrorData
+            )
+            raise errors.UnauthorizedError(data=response_data)
+        if utils.match_response(http_res, "4XX", "*"):
+            http_res_text = utils.stream_to_text(http_res)
+            raise errors.APIError(
+                "API error occurred", http_res.status_code, http_res_text, http_res
+            )
+        if utils.match_response(http_res, "5XX", "*"):
+            http_res_text = utils.stream_to_text(http_res)
+            raise errors.APIError(
+                "API error occurred", http_res.status_code, http_res_text, http_res
+            )
+        if utils.match_response(http_res, "default", "application/problem+json"):
+            return models.GetProductByIDResponse(
+                result=utils.unmarshal_json(http_res.text, models.ProblemDetail),
+                headers=utils.get_response_headers(http_res.headers),
+            )
+
+        content_type = http_res.headers.get("Content-Type")
+        http_res_text = utils.stream_to_text(http_res)
+        raise errors.APIError(
+            f"Unexpected response received (code: {http_res.status_code}, type: {content_type})",
+            http_res.status_code,
+            http_res_text,
+            http_res,
+        )
+
+    async def get_by_id_async(
+        self,
+        *,
+        product_id: str,
+        retries: OptionalNullable[utils.RetryConfig] = UNSET,
+        server_url: Optional[str] = None,
+        timeout_ms: Optional[int] = None,
+        accept_header_override: Optional[GetByIdAcceptEnum] = None,
+        http_headers: Optional[Mapping[str, str]] = None,
+    ) -> models.GetProductByIDResponse:
+        r"""Returns a specific text product
+
+        :param product_id: .
+        :param retries: Override the default retry configuration for this method
+        :param server_url: Override the default server URL for this method
+        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param accept_header_override: Override the default accept header for this method
+        :param http_headers: Additional headers to set or replace on requests.
+        """
+        base_url = None
+        url_variables = None
+        if timeout_ms is None:
+            timeout_ms = self.sdk_configuration.timeout_ms
+
+        if server_url is not None:
+            base_url = server_url
+        else:
+            base_url = self._get_url(base_url, url_variables)
+
+        request = models.GetProductByIDRequest(
+            product_id=product_id,
+        )
+
+        req = self._build_request_async(
+            method="GET",
+            path="/products/{productId}",
+            base_url=base_url,
+            url_variables=url_variables,
+            request=request,
+            request_body_required=False,
+            request_has_path_params=True,
+            request_has_query_params=True,
+            user_agent_header="user-agent",
+            accept_header_value=accept_header_override.value
+            if accept_header_override is not None
+            else "application/ld+json;q=1, application/problem+json;q=0",
+            http_headers=http_headers,
+            security=self.sdk_configuration.security,
+            timeout_ms=timeout_ms,
+        )
+
+        if retries == UNSET:
+            if self.sdk_configuration.retry_config is not UNSET:
+                retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(500, 60000, 1.5, 3600000), True
+                )
+
+        retry_config = None
+        if isinstance(retries, utils.RetryConfig):
+            retry_config = (retries, ["5XX"])
+
+        http_res = await self.do_request_async(
+            hook_ctx=HookContext(
+                base_url=base_url or "",
+                operation_id="get_product_by_id",
+                oauth2_scopes=[],
+                security_source=get_security_from_env(
+                    self.sdk_configuration.security, models.Security
+                ),
+            ),
+            request=req,
+            error_status_codes=[
+                "400",
+                "401",
+                "403",
+                "404",
+                "407",
+                "408",
+                "413",
+                "414",
+                "415",
+                "422",
+                "429",
+                "431",
+                "4XX",
+                "500",
+                "501",
+                "502",
+                "503",
+                "504",
+                "505",
+                "506",
+                "507",
+                "508",
+                "510",
+                "511",
+                "5XX",
+            ],
+            retry_config=retry_config,
+        )
+
+        response_data: Any = None
+        if utils.match_response(http_res, "200", "application/ld+json"):
+            return models.GetProductByIDResponse(
+                result=utils.unmarshal_json(http_res.text, models.TextProduct),
+                headers=utils.get_response_headers(http_res.headers),
+            )
+        if utils.match_response(http_res, "404", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.NotFoundErrorData
+            )
+            raise errors.NotFoundError(data=response_data)
+        if utils.match_response(http_res, ["401", "403", "407"], "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.UnauthorizedErrorData
+            )
+            raise errors.UnauthorizedError(data=response_data)
+        if utils.match_response(http_res, "408", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.TimeoutErrorTData
+            )
+            raise errors.TimeoutErrorT(data=response_data)
+        if utils.match_response(http_res, "429", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.RateLimitedErrorData
+            )
+            raise errors.RateLimitedError(data=response_data)
+        if utils.match_response(
+            http_res, ["400", "413", "414", "415", "422", "431"], "application/json"
+        ):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.BadRequestErrorData
+            )
+            raise errors.BadRequestError(data=response_data)
+        if utils.match_response(http_res, "504", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.TimeoutErrorTData
+            )
+            raise errors.TimeoutErrorT(data=response_data)
+        if utils.match_response(http_res, ["501", "505"], "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.NotFoundErrorData
+            )
+            raise errors.NotFoundError(data=response_data)
+        if utils.match_response(
+            http_res, ["500", "502", "503", "506", "507", "508"], "application/json"
+        ):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.InternalServerErrorData
+            )
+            raise errors.InternalServerError(data=response_data)
+        if utils.match_response(http_res, "510", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.BadRequestErrorData
+            )
+            raise errors.BadRequestError(data=response_data)
+        if utils.match_response(http_res, "511", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.UnauthorizedErrorData
+            )
+            raise errors.UnauthorizedError(data=response_data)
+        if utils.match_response(http_res, "4XX", "*"):
+            http_res_text = await utils.stream_to_text_async(http_res)
+            raise errors.APIError(
+                "API error occurred", http_res.status_code, http_res_text, http_res
+            )
+        if utils.match_response(http_res, "5XX", "*"):
+            http_res_text = await utils.stream_to_text_async(http_res)
+            raise errors.APIError(
+                "API error occurred", http_res.status_code, http_res_text, http_res
+            )
+        if utils.match_response(http_res, "default", "application/problem+json"):
+            return models.GetProductByIDResponse(
+                result=utils.unmarshal_json(http_res.text, models.ProblemDetail),
+                headers=utils.get_response_headers(http_res.headers),
+            )
+
+        content_type = http_res.headers.get("Content-Type")
+        http_res_text = await utils.stream_to_text_async(http_res)
+        raise errors.APIError(
+            f"Unexpected response received (code: {http_res.status_code}, type: {content_type})",
+            http_res.status_code,
+            http_res_text,
+            http_res,
+        )
+
+    def get_locations_by_type(
+        self,
+        *,
+        type_id: str,
+        retries: OptionalNullable[utils.RetryConfig] = UNSET,
+        server_url: Optional[str] = None,
+        timeout_ms: Optional[int] = None,
+        accept_header_override: Optional[GetLocationsByTypeAcceptEnum] = None,
+        http_headers: Optional[Mapping[str, str]] = None,
+    ) -> models.ListLocationsByProductTypeResponse:
+        r"""Returns a list of valid text product issuance locations for a given product type
+
+        :param type_id: .
+        :param retries: Override the default retry configuration for this method
+        :param server_url: Override the default server URL for this method
+        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param accept_header_override: Override the default accept header for this method
+        :param http_headers: Additional headers to set or replace on requests.
+        """
+        base_url = None
+        url_variables = None
+        if timeout_ms is None:
+            timeout_ms = self.sdk_configuration.timeout_ms
+
+        if server_url is not None:
+            base_url = server_url
+        else:
+            base_url = self._get_url(base_url, url_variables)
+
+        request = models.ListLocationsByProductTypeRequest(
+            type_id=type_id,
+        )
+
+        req = self._build_request(
+            method="GET",
+            path="/products/types/{typeId}/locations",
+            base_url=base_url,
+            url_variables=url_variables,
+            request=request,
+            request_body_required=False,
+            request_has_path_params=True,
+            request_has_query_params=True,
+            user_agent_header="user-agent",
+            accept_header_value=accept_header_override.value
+            if accept_header_override is not None
+            else "application/ld+json;q=1, application/problem+json;q=0",
+            http_headers=http_headers,
+            security=self.sdk_configuration.security,
+            timeout_ms=timeout_ms,
+        )
+
+        if retries == UNSET:
+            if self.sdk_configuration.retry_config is not UNSET:
+                retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(500, 60000, 1.5, 3600000), True
+                )
+
+        retry_config = None
+        if isinstance(retries, utils.RetryConfig):
+            retry_config = (retries, ["5XX"])
+
+        http_res = self.do_request(
+            hook_ctx=HookContext(
+                base_url=base_url or "",
+                operation_id="list_locations_by_product_type",
+                oauth2_scopes=[],
+                security_source=get_security_from_env(
+                    self.sdk_configuration.security, models.Security
+                ),
+            ),
+            request=req,
+            error_status_codes=[
+                "400",
+                "401",
+                "403",
+                "404",
+                "407",
+                "408",
+                "413",
+                "414",
+                "415",
+                "422",
+                "429",
+                "431",
+                "4XX",
+                "500",
+                "501",
+                "502",
+                "503",
+                "504",
+                "505",
+                "506",
+                "507",
+                "508",
+                "510",
+                "511",
+                "5XX",
+            ],
+            retry_config=retry_config,
+        )
+
+        response_data: Any = None
+        if utils.match_response(http_res, "200", "application/ld+json"):
+            return models.ListLocationsByProductTypeResponse(
+                result=utils.unmarshal_json(
+                    http_res.text, models.TextProductLocationCollection
+                ),
+                headers=utils.get_response_headers(http_res.headers),
+            )
+        if utils.match_response(http_res, "404", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.NotFoundErrorData
+            )
+            raise errors.NotFoundError(data=response_data)
+        if utils.match_response(http_res, ["401", "403", "407"], "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.UnauthorizedErrorData
+            )
+            raise errors.UnauthorizedError(data=response_data)
+        if utils.match_response(http_res, "408", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.TimeoutErrorTData
+            )
+            raise errors.TimeoutErrorT(data=response_data)
+        if utils.match_response(http_res, "429", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.RateLimitedErrorData
+            )
+            raise errors.RateLimitedError(data=response_data)
+        if utils.match_response(
+            http_res, ["400", "413", "414", "415", "422", "431"], "application/json"
+        ):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.BadRequestErrorData
+            )
+            raise errors.BadRequestError(data=response_data)
+        if utils.match_response(http_res, "504", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.TimeoutErrorTData
+            )
+            raise errors.TimeoutErrorT(data=response_data)
+        if utils.match_response(http_res, ["501", "505"], "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.NotFoundErrorData
+            )
+            raise errors.NotFoundError(data=response_data)
+        if utils.match_response(
+            http_res, ["500", "502", "503", "506", "507", "508"], "application/json"
+        ):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.InternalServerErrorData
+            )
+            raise errors.InternalServerError(data=response_data)
+        if utils.match_response(http_res, "510", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.BadRequestErrorData
+            )
+            raise errors.BadRequestError(data=response_data)
+        if utils.match_response(http_res, "511", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.UnauthorizedErrorData
+            )
+            raise errors.UnauthorizedError(data=response_data)
+        if utils.match_response(http_res, "4XX", "*"):
+            http_res_text = utils.stream_to_text(http_res)
+            raise errors.APIError(
+                "API error occurred", http_res.status_code, http_res_text, http_res
+            )
+        if utils.match_response(http_res, "5XX", "*"):
+            http_res_text = utils.stream_to_text(http_res)
+            raise errors.APIError(
+                "API error occurred", http_res.status_code, http_res_text, http_res
+            )
+        if utils.match_response(http_res, "default", "application/problem+json"):
+            return models.ListLocationsByProductTypeResponse(
+                result=utils.unmarshal_json(http_res.text, models.ProblemDetail),
+                headers=utils.get_response_headers(http_res.headers),
+            )
+
+        content_type = http_res.headers.get("Content-Type")
+        http_res_text = utils.stream_to_text(http_res)
+        raise errors.APIError(
+            f"Unexpected response received (code: {http_res.status_code}, type: {content_type})",
+            http_res.status_code,
+            http_res_text,
+            http_res,
+        )
+
+    async def get_locations_by_type_async(
+        self,
+        *,
+        type_id: str,
+        retries: OptionalNullable[utils.RetryConfig] = UNSET,
+        server_url: Optional[str] = None,
+        timeout_ms: Optional[int] = None,
+        accept_header_override: Optional[GetLocationsByTypeAcceptEnum] = None,
+        http_headers: Optional[Mapping[str, str]] = None,
+    ) -> models.ListLocationsByProductTypeResponse:
+        r"""Returns a list of valid text product issuance locations for a given product type
+
+        :param type_id: .
+        :param retries: Override the default retry configuration for this method
+        :param server_url: Override the default server URL for this method
+        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param accept_header_override: Override the default accept header for this method
+        :param http_headers: Additional headers to set or replace on requests.
+        """
+        base_url = None
+        url_variables = None
+        if timeout_ms is None:
+            timeout_ms = self.sdk_configuration.timeout_ms
+
+        if server_url is not None:
+            base_url = server_url
+        else:
+            base_url = self._get_url(base_url, url_variables)
+
+        request = models.ListLocationsByProductTypeRequest(
+            type_id=type_id,
+        )
+
+        req = self._build_request_async(
+            method="GET",
+            path="/products/types/{typeId}/locations",
+            base_url=base_url,
+            url_variables=url_variables,
+            request=request,
+            request_body_required=False,
+            request_has_path_params=True,
+            request_has_query_params=True,
+            user_agent_header="user-agent",
+            accept_header_value=accept_header_override.value
+            if accept_header_override is not None
+            else "application/ld+json;q=1, application/problem+json;q=0",
+            http_headers=http_headers,
+            security=self.sdk_configuration.security,
+            timeout_ms=timeout_ms,
+        )
+
+        if retries == UNSET:
+            if self.sdk_configuration.retry_config is not UNSET:
+                retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(500, 60000, 1.5, 3600000), True
+                )
+
+        retry_config = None
+        if isinstance(retries, utils.RetryConfig):
+            retry_config = (retries, ["5XX"])
+
+        http_res = await self.do_request_async(
+            hook_ctx=HookContext(
+                base_url=base_url or "",
+                operation_id="list_locations_by_product_type",
+                oauth2_scopes=[],
+                security_source=get_security_from_env(
+                    self.sdk_configuration.security, models.Security
+                ),
+            ),
+            request=req,
+            error_status_codes=[
+                "400",
+                "401",
+                "403",
+                "404",
+                "407",
+                "408",
+                "413",
+                "414",
+                "415",
+                "422",
+                "429",
+                "431",
+                "4XX",
+                "500",
+                "501",
+                "502",
+                "503",
+                "504",
+                "505",
+                "506",
+                "507",
+                "508",
+                "510",
+                "511",
+                "5XX",
+            ],
+            retry_config=retry_config,
+        )
+
+        response_data: Any = None
+        if utils.match_response(http_res, "200", "application/ld+json"):
+            return models.ListLocationsByProductTypeResponse(
+                result=utils.unmarshal_json(
+                    http_res.text, models.TextProductLocationCollection
+                ),
+                headers=utils.get_response_headers(http_res.headers),
+            )
+        if utils.match_response(http_res, "404", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.NotFoundErrorData
+            )
+            raise errors.NotFoundError(data=response_data)
+        if utils.match_response(http_res, ["401", "403", "407"], "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.UnauthorizedErrorData
+            )
+            raise errors.UnauthorizedError(data=response_data)
+        if utils.match_response(http_res, "408", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.TimeoutErrorTData
+            )
+            raise errors.TimeoutErrorT(data=response_data)
+        if utils.match_response(http_res, "429", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.RateLimitedErrorData
+            )
+            raise errors.RateLimitedError(data=response_data)
+        if utils.match_response(
+            http_res, ["400", "413", "414", "415", "422", "431"], "application/json"
+        ):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.BadRequestErrorData
+            )
+            raise errors.BadRequestError(data=response_data)
+        if utils.match_response(http_res, "504", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.TimeoutErrorTData
+            )
+            raise errors.TimeoutErrorT(data=response_data)
+        if utils.match_response(http_res, ["501", "505"], "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.NotFoundErrorData
+            )
+            raise errors.NotFoundError(data=response_data)
+        if utils.match_response(
+            http_res, ["500", "502", "503", "506", "507", "508"], "application/json"
+        ):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.InternalServerErrorData
+            )
+            raise errors.InternalServerError(data=response_data)
+        if utils.match_response(http_res, "510", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.BadRequestErrorData
+            )
+            raise errors.BadRequestError(data=response_data)
+        if utils.match_response(http_res, "511", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.UnauthorizedErrorData
+            )
+            raise errors.UnauthorizedError(data=response_data)
+        if utils.match_response(http_res, "4XX", "*"):
+            http_res_text = await utils.stream_to_text_async(http_res)
+            raise errors.APIError(
+                "API error occurred", http_res.status_code, http_res_text, http_res
+            )
+        if utils.match_response(http_res, "5XX", "*"):
+            http_res_text = await utils.stream_to_text_async(http_res)
+            raise errors.APIError(
+                "API error occurred", http_res.status_code, http_res_text, http_res
+            )
+        if utils.match_response(http_res, "default", "application/problem+json"):
+            return models.ListLocationsByProductTypeResponse(
+                result=utils.unmarshal_json(http_res.text, models.ProblemDetail),
+                headers=utils.get_response_headers(http_res.headers),
+            )
+
+        content_type = http_res.headers.get("Content-Type")
+        http_res_text = await utils.stream_to_text_async(http_res)
+        raise errors.APIError(
+            f"Unexpected response received (code: {http_res.status_code}, type: {content_type})",
+            http_res.status_code,
+            http_res_text,
+            http_res,
+        )
+
+    def list(
         self,
         *,
         location: Optional[List[str]] = None,
@@ -66,7 +822,7 @@ class Products(BaseSDK):
         retries: OptionalNullable[utils.RetryConfig] = UNSET,
         server_url: Optional[str] = None,
         timeout_ms: Optional[int] = None,
-        accept_header_override: Optional[ListProductsAcceptEnum] = None,
+        accept_header_override: Optional[ListAcceptEnum] = None,
         http_headers: Optional[Mapping[str, str]] = None,
     ) -> models.ListProductsResponse:
         r"""Returns a list of text products
@@ -125,10 +881,14 @@ class Products(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(500, 60000, 1.5, 3600000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["5XX"])
 
         http_res = self.do_request(
             hook_ctx=HookContext(
@@ -140,10 +900,37 @@ class Products(BaseSDK):
                 ),
             ),
             request=req,
-            error_status_codes=["4XX", "5XX"],
+            error_status_codes=[
+                "400",
+                "401",
+                "403",
+                "404",
+                "407",
+                "408",
+                "413",
+                "414",
+                "415",
+                "422",
+                "429",
+                "431",
+                "4XX",
+                "500",
+                "501",
+                "502",
+                "503",
+                "504",
+                "505",
+                "506",
+                "507",
+                "508",
+                "510",
+                "511",
+                "5XX",
+            ],
             retry_config=retry_config,
         )
 
+        response_data: Any = None
         if utils.match_response(http_res, "200", "application/ld+json"):
             return models.ListProductsResponse(
                 result=utils.unmarshal_json(
@@ -151,6 +938,60 @@ class Products(BaseSDK):
                 ),
                 headers=utils.get_response_headers(http_res.headers),
             )
+        if utils.match_response(http_res, "404", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.NotFoundErrorData
+            )
+            raise errors.NotFoundError(data=response_data)
+        if utils.match_response(http_res, ["401", "403", "407"], "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.UnauthorizedErrorData
+            )
+            raise errors.UnauthorizedError(data=response_data)
+        if utils.match_response(http_res, "408", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.TimeoutErrorTData
+            )
+            raise errors.TimeoutErrorT(data=response_data)
+        if utils.match_response(http_res, "429", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.RateLimitedErrorData
+            )
+            raise errors.RateLimitedError(data=response_data)
+        if utils.match_response(
+            http_res, ["400", "413", "414", "415", "422", "431"], "application/json"
+        ):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.BadRequestErrorData
+            )
+            raise errors.BadRequestError(data=response_data)
+        if utils.match_response(http_res, "504", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.TimeoutErrorTData
+            )
+            raise errors.TimeoutErrorT(data=response_data)
+        if utils.match_response(http_res, ["501", "505"], "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.NotFoundErrorData
+            )
+            raise errors.NotFoundError(data=response_data)
+        if utils.match_response(
+            http_res, ["500", "502", "503", "506", "507", "508"], "application/json"
+        ):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.InternalServerErrorData
+            )
+            raise errors.InternalServerError(data=response_data)
+        if utils.match_response(http_res, "510", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.BadRequestErrorData
+            )
+            raise errors.BadRequestError(data=response_data)
+        if utils.match_response(http_res, "511", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.UnauthorizedErrorData
+            )
+            raise errors.UnauthorizedError(data=response_data)
         if utils.match_response(http_res, "4XX", "*"):
             http_res_text = utils.stream_to_text(http_res)
             raise errors.APIError(
@@ -176,7 +1017,7 @@ class Products(BaseSDK):
             http_res,
         )
 
-    async def list_products_async(
+    async def list_async(
         self,
         *,
         location: Optional[List[str]] = None,
@@ -189,7 +1030,7 @@ class Products(BaseSDK):
         retries: OptionalNullable[utils.RetryConfig] = UNSET,
         server_url: Optional[str] = None,
         timeout_ms: Optional[int] = None,
-        accept_header_override: Optional[ListProductsAcceptEnum] = None,
+        accept_header_override: Optional[ListAcceptEnum] = None,
         http_headers: Optional[Mapping[str, str]] = None,
     ) -> models.ListProductsResponse:
         r"""Returns a list of text products
@@ -248,10 +1089,14 @@ class Products(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(500, 60000, 1.5, 3600000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["5XX"])
 
         http_res = await self.do_request_async(
             hook_ctx=HookContext(
@@ -263,10 +1108,37 @@ class Products(BaseSDK):
                 ),
             ),
             request=req,
-            error_status_codes=["4XX", "5XX"],
+            error_status_codes=[
+                "400",
+                "401",
+                "403",
+                "404",
+                "407",
+                "408",
+                "413",
+                "414",
+                "415",
+                "422",
+                "429",
+                "431",
+                "4XX",
+                "500",
+                "501",
+                "502",
+                "503",
+                "504",
+                "505",
+                "506",
+                "507",
+                "508",
+                "510",
+                "511",
+                "5XX",
+            ],
             retry_config=retry_config,
         )
 
+        response_data: Any = None
         if utils.match_response(http_res, "200", "application/ld+json"):
             return models.ListProductsResponse(
                 result=utils.unmarshal_json(
@@ -274,6 +1146,60 @@ class Products(BaseSDK):
                 ),
                 headers=utils.get_response_headers(http_res.headers),
             )
+        if utils.match_response(http_res, "404", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.NotFoundErrorData
+            )
+            raise errors.NotFoundError(data=response_data)
+        if utils.match_response(http_res, ["401", "403", "407"], "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.UnauthorizedErrorData
+            )
+            raise errors.UnauthorizedError(data=response_data)
+        if utils.match_response(http_res, "408", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.TimeoutErrorTData
+            )
+            raise errors.TimeoutErrorT(data=response_data)
+        if utils.match_response(http_res, "429", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.RateLimitedErrorData
+            )
+            raise errors.RateLimitedError(data=response_data)
+        if utils.match_response(
+            http_res, ["400", "413", "414", "415", "422", "431"], "application/json"
+        ):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.BadRequestErrorData
+            )
+            raise errors.BadRequestError(data=response_data)
+        if utils.match_response(http_res, "504", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.TimeoutErrorTData
+            )
+            raise errors.TimeoutErrorT(data=response_data)
+        if utils.match_response(http_res, ["501", "505"], "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.NotFoundErrorData
+            )
+            raise errors.NotFoundError(data=response_data)
+        if utils.match_response(
+            http_res, ["500", "502", "503", "506", "507", "508"], "application/json"
+        ):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.InternalServerErrorData
+            )
+            raise errors.InternalServerError(data=response_data)
+        if utils.match_response(http_res, "510", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.BadRequestErrorData
+            )
+            raise errors.BadRequestError(data=response_data)
+        if utils.match_response(http_res, "511", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.UnauthorizedErrorData
+            )
+            raise errors.UnauthorizedError(data=response_data)
         if utils.match_response(http_res, "4XX", "*"):
             http_res_text = await utils.stream_to_text_async(http_res)
             raise errors.APIError(
@@ -299,612 +1225,14 @@ class Products(BaseSDK):
             http_res,
         )
 
-    def list_product_locations(
-        self,
-        *,
-        retries: OptionalNullable[utils.RetryConfig] = UNSET,
-        server_url: Optional[str] = None,
-        timeout_ms: Optional[int] = None,
-        accept_header_override: Optional[ListProductLocationsAcceptEnum] = None,
-        http_headers: Optional[Mapping[str, str]] = None,
-    ) -> models.ListProductLocationsResponse:
-        r"""Returns a list of valid text product issuance locations
-
-        :param retries: Override the default retry configuration for this method
-        :param server_url: Override the default server URL for this method
-        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
-        :param accept_header_override: Override the default accept header for this method
-        :param http_headers: Additional headers to set or replace on requests.
-        """
-        base_url = None
-        url_variables = None
-        if timeout_ms is None:
-            timeout_ms = self.sdk_configuration.timeout_ms
-
-        if server_url is not None:
-            base_url = server_url
-        else:
-            base_url = self._get_url(base_url, url_variables)
-        req = self._build_request(
-            method="GET",
-            path="/products/locations",
-            base_url=base_url,
-            url_variables=url_variables,
-            request=None,
-            request_body_required=False,
-            request_has_path_params=False,
-            request_has_query_params=True,
-            user_agent_header="user-agent",
-            accept_header_value=accept_header_override.value
-            if accept_header_override is not None
-            else "application/ld+json;q=1, application/problem+json;q=0",
-            http_headers=http_headers,
-            security=self.sdk_configuration.security,
-            timeout_ms=timeout_ms,
-        )
-
-        if retries == UNSET:
-            if self.sdk_configuration.retry_config is not UNSET:
-                retries = self.sdk_configuration.retry_config
-
-        retry_config = None
-        if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
-
-        http_res = self.do_request(
-            hook_ctx=HookContext(
-                base_url=base_url or "",
-                operation_id="list_product_locations",
-                oauth2_scopes=[],
-                security_source=get_security_from_env(
-                    self.sdk_configuration.security, models.Security
-                ),
-            ),
-            request=req,
-            error_status_codes=["4XX", "5XX"],
-            retry_config=retry_config,
-        )
-
-        if utils.match_response(http_res, "200", "application/ld+json"):
-            return models.ListProductLocationsResponse(
-                result=utils.unmarshal_json(
-                    http_res.text, models.TextProductLocationCollection
-                ),
-                headers=utils.get_response_headers(http_res.headers),
-            )
-        if utils.match_response(http_res, "4XX", "*"):
-            http_res_text = utils.stream_to_text(http_res)
-            raise errors.APIError(
-                "API error occurred", http_res.status_code, http_res_text, http_res
-            )
-        if utils.match_response(http_res, "5XX", "*"):
-            http_res_text = utils.stream_to_text(http_res)
-            raise errors.APIError(
-                "API error occurred", http_res.status_code, http_res_text, http_res
-            )
-        if utils.match_response(http_res, "default", "application/problem+json"):
-            return models.ListProductLocationsResponse(
-                result=utils.unmarshal_json(http_res.text, models.ProblemDetail),
-                headers=utils.get_response_headers(http_res.headers),
-            )
-
-        content_type = http_res.headers.get("Content-Type")
-        http_res_text = utils.stream_to_text(http_res)
-        raise errors.APIError(
-            f"Unexpected response received (code: {http_res.status_code}, type: {content_type})",
-            http_res.status_code,
-            http_res_text,
-            http_res,
-        )
-
-    async def list_product_locations_async(
-        self,
-        *,
-        retries: OptionalNullable[utils.RetryConfig] = UNSET,
-        server_url: Optional[str] = None,
-        timeout_ms: Optional[int] = None,
-        accept_header_override: Optional[ListProductLocationsAcceptEnum] = None,
-        http_headers: Optional[Mapping[str, str]] = None,
-    ) -> models.ListProductLocationsResponse:
-        r"""Returns a list of valid text product issuance locations
-
-        :param retries: Override the default retry configuration for this method
-        :param server_url: Override the default server URL for this method
-        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
-        :param accept_header_override: Override the default accept header for this method
-        :param http_headers: Additional headers to set or replace on requests.
-        """
-        base_url = None
-        url_variables = None
-        if timeout_ms is None:
-            timeout_ms = self.sdk_configuration.timeout_ms
-
-        if server_url is not None:
-            base_url = server_url
-        else:
-            base_url = self._get_url(base_url, url_variables)
-        req = self._build_request_async(
-            method="GET",
-            path="/products/locations",
-            base_url=base_url,
-            url_variables=url_variables,
-            request=None,
-            request_body_required=False,
-            request_has_path_params=False,
-            request_has_query_params=True,
-            user_agent_header="user-agent",
-            accept_header_value=accept_header_override.value
-            if accept_header_override is not None
-            else "application/ld+json;q=1, application/problem+json;q=0",
-            http_headers=http_headers,
-            security=self.sdk_configuration.security,
-            timeout_ms=timeout_ms,
-        )
-
-        if retries == UNSET:
-            if self.sdk_configuration.retry_config is not UNSET:
-                retries = self.sdk_configuration.retry_config
-
-        retry_config = None
-        if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
-
-        http_res = await self.do_request_async(
-            hook_ctx=HookContext(
-                base_url=base_url or "",
-                operation_id="list_product_locations",
-                oauth2_scopes=[],
-                security_source=get_security_from_env(
-                    self.sdk_configuration.security, models.Security
-                ),
-            ),
-            request=req,
-            error_status_codes=["4XX", "5XX"],
-            retry_config=retry_config,
-        )
-
-        if utils.match_response(http_res, "200", "application/ld+json"):
-            return models.ListProductLocationsResponse(
-                result=utils.unmarshal_json(
-                    http_res.text, models.TextProductLocationCollection
-                ),
-                headers=utils.get_response_headers(http_res.headers),
-            )
-        if utils.match_response(http_res, "4XX", "*"):
-            http_res_text = await utils.stream_to_text_async(http_res)
-            raise errors.APIError(
-                "API error occurred", http_res.status_code, http_res_text, http_res
-            )
-        if utils.match_response(http_res, "5XX", "*"):
-            http_res_text = await utils.stream_to_text_async(http_res)
-            raise errors.APIError(
-                "API error occurred", http_res.status_code, http_res_text, http_res
-            )
-        if utils.match_response(http_res, "default", "application/problem+json"):
-            return models.ListProductLocationsResponse(
-                result=utils.unmarshal_json(http_res.text, models.ProblemDetail),
-                headers=utils.get_response_headers(http_res.headers),
-            )
-
-        content_type = http_res.headers.get("Content-Type")
-        http_res_text = await utils.stream_to_text_async(http_res)
-        raise errors.APIError(
-            f"Unexpected response received (code: {http_res.status_code}, type: {content_type})",
-            http_res.status_code,
-            http_res_text,
-            http_res,
-        )
-
-    def list_product_types(
-        self,
-        *,
-        retries: OptionalNullable[utils.RetryConfig] = UNSET,
-        server_url: Optional[str] = None,
-        timeout_ms: Optional[int] = None,
-        accept_header_override: Optional[ListProductTypesAcceptEnum] = None,
-        http_headers: Optional[Mapping[str, str]] = None,
-    ) -> models.ListProductTypesResponse:
-        r"""Returns a list of valid text product types and codes
-
-        :param retries: Override the default retry configuration for this method
-        :param server_url: Override the default server URL for this method
-        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
-        :param accept_header_override: Override the default accept header for this method
-        :param http_headers: Additional headers to set or replace on requests.
-        """
-        base_url = None
-        url_variables = None
-        if timeout_ms is None:
-            timeout_ms = self.sdk_configuration.timeout_ms
-
-        if server_url is not None:
-            base_url = server_url
-        else:
-            base_url = self._get_url(base_url, url_variables)
-        req = self._build_request(
-            method="GET",
-            path="/products/types",
-            base_url=base_url,
-            url_variables=url_variables,
-            request=None,
-            request_body_required=False,
-            request_has_path_params=False,
-            request_has_query_params=True,
-            user_agent_header="user-agent",
-            accept_header_value=accept_header_override.value
-            if accept_header_override is not None
-            else "application/ld+json;q=1, application/problem+json;q=0",
-            http_headers=http_headers,
-            security=self.sdk_configuration.security,
-            timeout_ms=timeout_ms,
-        )
-
-        if retries == UNSET:
-            if self.sdk_configuration.retry_config is not UNSET:
-                retries = self.sdk_configuration.retry_config
-
-        retry_config = None
-        if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
-
-        http_res = self.do_request(
-            hook_ctx=HookContext(
-                base_url=base_url or "",
-                operation_id="list_product_types",
-                oauth2_scopes=[],
-                security_source=get_security_from_env(
-                    self.sdk_configuration.security, models.Security
-                ),
-            ),
-            request=req,
-            error_status_codes=["4XX", "5XX"],
-            retry_config=retry_config,
-        )
-
-        if utils.match_response(http_res, "200", "application/ld+json"):
-            return models.ListProductTypesResponse(
-                result=utils.unmarshal_json(
-                    http_res.text, models.TextProductTypeCollection
-                ),
-                headers=utils.get_response_headers(http_res.headers),
-            )
-        if utils.match_response(http_res, "4XX", "*"):
-            http_res_text = utils.stream_to_text(http_res)
-            raise errors.APIError(
-                "API error occurred", http_res.status_code, http_res_text, http_res
-            )
-        if utils.match_response(http_res, "5XX", "*"):
-            http_res_text = utils.stream_to_text(http_res)
-            raise errors.APIError(
-                "API error occurred", http_res.status_code, http_res_text, http_res
-            )
-        if utils.match_response(http_res, "default", "application/problem+json"):
-            return models.ListProductTypesResponse(
-                result=utils.unmarshal_json(http_res.text, models.ProblemDetail),
-                headers=utils.get_response_headers(http_res.headers),
-            )
-
-        content_type = http_res.headers.get("Content-Type")
-        http_res_text = utils.stream_to_text(http_res)
-        raise errors.APIError(
-            f"Unexpected response received (code: {http_res.status_code}, type: {content_type})",
-            http_res.status_code,
-            http_res_text,
-            http_res,
-        )
-
-    async def list_product_types_async(
-        self,
-        *,
-        retries: OptionalNullable[utils.RetryConfig] = UNSET,
-        server_url: Optional[str] = None,
-        timeout_ms: Optional[int] = None,
-        accept_header_override: Optional[ListProductTypesAcceptEnum] = None,
-        http_headers: Optional[Mapping[str, str]] = None,
-    ) -> models.ListProductTypesResponse:
-        r"""Returns a list of valid text product types and codes
-
-        :param retries: Override the default retry configuration for this method
-        :param server_url: Override the default server URL for this method
-        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
-        :param accept_header_override: Override the default accept header for this method
-        :param http_headers: Additional headers to set or replace on requests.
-        """
-        base_url = None
-        url_variables = None
-        if timeout_ms is None:
-            timeout_ms = self.sdk_configuration.timeout_ms
-
-        if server_url is not None:
-            base_url = server_url
-        else:
-            base_url = self._get_url(base_url, url_variables)
-        req = self._build_request_async(
-            method="GET",
-            path="/products/types",
-            base_url=base_url,
-            url_variables=url_variables,
-            request=None,
-            request_body_required=False,
-            request_has_path_params=False,
-            request_has_query_params=True,
-            user_agent_header="user-agent",
-            accept_header_value=accept_header_override.value
-            if accept_header_override is not None
-            else "application/ld+json;q=1, application/problem+json;q=0",
-            http_headers=http_headers,
-            security=self.sdk_configuration.security,
-            timeout_ms=timeout_ms,
-        )
-
-        if retries == UNSET:
-            if self.sdk_configuration.retry_config is not UNSET:
-                retries = self.sdk_configuration.retry_config
-
-        retry_config = None
-        if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
-
-        http_res = await self.do_request_async(
-            hook_ctx=HookContext(
-                base_url=base_url or "",
-                operation_id="list_product_types",
-                oauth2_scopes=[],
-                security_source=get_security_from_env(
-                    self.sdk_configuration.security, models.Security
-                ),
-            ),
-            request=req,
-            error_status_codes=["4XX", "5XX"],
-            retry_config=retry_config,
-        )
-
-        if utils.match_response(http_res, "200", "application/ld+json"):
-            return models.ListProductTypesResponse(
-                result=utils.unmarshal_json(
-                    http_res.text, models.TextProductTypeCollection
-                ),
-                headers=utils.get_response_headers(http_res.headers),
-            )
-        if utils.match_response(http_res, "4XX", "*"):
-            http_res_text = await utils.stream_to_text_async(http_res)
-            raise errors.APIError(
-                "API error occurred", http_res.status_code, http_res_text, http_res
-            )
-        if utils.match_response(http_res, "5XX", "*"):
-            http_res_text = await utils.stream_to_text_async(http_res)
-            raise errors.APIError(
-                "API error occurred", http_res.status_code, http_res_text, http_res
-            )
-        if utils.match_response(http_res, "default", "application/problem+json"):
-            return models.ListProductTypesResponse(
-                result=utils.unmarshal_json(http_res.text, models.ProblemDetail),
-                headers=utils.get_response_headers(http_res.headers),
-            )
-
-        content_type = http_res.headers.get("Content-Type")
-        http_res_text = await utils.stream_to_text_async(http_res)
-        raise errors.APIError(
-            f"Unexpected response received (code: {http_res.status_code}, type: {content_type})",
-            http_res.status_code,
-            http_res_text,
-            http_res,
-        )
-
-    def get_product_by_id(
-        self,
-        *,
-        product_id: str,
-        retries: OptionalNullable[utils.RetryConfig] = UNSET,
-        server_url: Optional[str] = None,
-        timeout_ms: Optional[int] = None,
-        accept_header_override: Optional[GetProductByIdAcceptEnum] = None,
-        http_headers: Optional[Mapping[str, str]] = None,
-    ) -> models.GetProductByIDResponse:
-        r"""Returns a specific text product
-
-        :param product_id: .
-        :param retries: Override the default retry configuration for this method
-        :param server_url: Override the default server URL for this method
-        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
-        :param accept_header_override: Override the default accept header for this method
-        :param http_headers: Additional headers to set or replace on requests.
-        """
-        base_url = None
-        url_variables = None
-        if timeout_ms is None:
-            timeout_ms = self.sdk_configuration.timeout_ms
-
-        if server_url is not None:
-            base_url = server_url
-        else:
-            base_url = self._get_url(base_url, url_variables)
-
-        request = models.GetProductByIDRequest(
-            product_id=product_id,
-        )
-
-        req = self._build_request(
-            method="GET",
-            path="/products/{productId}",
-            base_url=base_url,
-            url_variables=url_variables,
-            request=request,
-            request_body_required=False,
-            request_has_path_params=True,
-            request_has_query_params=True,
-            user_agent_header="user-agent",
-            accept_header_value=accept_header_override.value
-            if accept_header_override is not None
-            else "application/ld+json;q=1, application/problem+json;q=0",
-            http_headers=http_headers,
-            security=self.sdk_configuration.security,
-            timeout_ms=timeout_ms,
-        )
-
-        if retries == UNSET:
-            if self.sdk_configuration.retry_config is not UNSET:
-                retries = self.sdk_configuration.retry_config
-
-        retry_config = None
-        if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
-
-        http_res = self.do_request(
-            hook_ctx=HookContext(
-                base_url=base_url or "",
-                operation_id="get_product_by_id",
-                oauth2_scopes=[],
-                security_source=get_security_from_env(
-                    self.sdk_configuration.security, models.Security
-                ),
-            ),
-            request=req,
-            error_status_codes=["4XX", "5XX"],
-            retry_config=retry_config,
-        )
-
-        if utils.match_response(http_res, "200", "application/ld+json"):
-            return models.GetProductByIDResponse(
-                result=utils.unmarshal_json(http_res.text, models.TextProduct),
-                headers=utils.get_response_headers(http_res.headers),
-            )
-        if utils.match_response(http_res, "4XX", "*"):
-            http_res_text = utils.stream_to_text(http_res)
-            raise errors.APIError(
-                "API error occurred", http_res.status_code, http_res_text, http_res
-            )
-        if utils.match_response(http_res, "5XX", "*"):
-            http_res_text = utils.stream_to_text(http_res)
-            raise errors.APIError(
-                "API error occurred", http_res.status_code, http_res_text, http_res
-            )
-        if utils.match_response(http_res, "default", "application/problem+json"):
-            return models.GetProductByIDResponse(
-                result=utils.unmarshal_json(http_res.text, models.ProblemDetail),
-                headers=utils.get_response_headers(http_res.headers),
-            )
-
-        content_type = http_res.headers.get("Content-Type")
-        http_res_text = utils.stream_to_text(http_res)
-        raise errors.APIError(
-            f"Unexpected response received (code: {http_res.status_code}, type: {content_type})",
-            http_res.status_code,
-            http_res_text,
-            http_res,
-        )
-
-    async def get_product_by_id_async(
-        self,
-        *,
-        product_id: str,
-        retries: OptionalNullable[utils.RetryConfig] = UNSET,
-        server_url: Optional[str] = None,
-        timeout_ms: Optional[int] = None,
-        accept_header_override: Optional[GetProductByIdAcceptEnum] = None,
-        http_headers: Optional[Mapping[str, str]] = None,
-    ) -> models.GetProductByIDResponse:
-        r"""Returns a specific text product
-
-        :param product_id: .
-        :param retries: Override the default retry configuration for this method
-        :param server_url: Override the default server URL for this method
-        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
-        :param accept_header_override: Override the default accept header for this method
-        :param http_headers: Additional headers to set or replace on requests.
-        """
-        base_url = None
-        url_variables = None
-        if timeout_ms is None:
-            timeout_ms = self.sdk_configuration.timeout_ms
-
-        if server_url is not None:
-            base_url = server_url
-        else:
-            base_url = self._get_url(base_url, url_variables)
-
-        request = models.GetProductByIDRequest(
-            product_id=product_id,
-        )
-
-        req = self._build_request_async(
-            method="GET",
-            path="/products/{productId}",
-            base_url=base_url,
-            url_variables=url_variables,
-            request=request,
-            request_body_required=False,
-            request_has_path_params=True,
-            request_has_query_params=True,
-            user_agent_header="user-agent",
-            accept_header_value=accept_header_override.value
-            if accept_header_override is not None
-            else "application/ld+json;q=1, application/problem+json;q=0",
-            http_headers=http_headers,
-            security=self.sdk_configuration.security,
-            timeout_ms=timeout_ms,
-        )
-
-        if retries == UNSET:
-            if self.sdk_configuration.retry_config is not UNSET:
-                retries = self.sdk_configuration.retry_config
-
-        retry_config = None
-        if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
-
-        http_res = await self.do_request_async(
-            hook_ctx=HookContext(
-                base_url=base_url or "",
-                operation_id="get_product_by_id",
-                oauth2_scopes=[],
-                security_source=get_security_from_env(
-                    self.sdk_configuration.security, models.Security
-                ),
-            ),
-            request=req,
-            error_status_codes=["4XX", "5XX"],
-            retry_config=retry_config,
-        )
-
-        if utils.match_response(http_res, "200", "application/ld+json"):
-            return models.GetProductByIDResponse(
-                result=utils.unmarshal_json(http_res.text, models.TextProduct),
-                headers=utils.get_response_headers(http_res.headers),
-            )
-        if utils.match_response(http_res, "4XX", "*"):
-            http_res_text = await utils.stream_to_text_async(http_res)
-            raise errors.APIError(
-                "API error occurred", http_res.status_code, http_res_text, http_res
-            )
-        if utils.match_response(http_res, "5XX", "*"):
-            http_res_text = await utils.stream_to_text_async(http_res)
-            raise errors.APIError(
-                "API error occurred", http_res.status_code, http_res_text, http_res
-            )
-        if utils.match_response(http_res, "default", "application/problem+json"):
-            return models.GetProductByIDResponse(
-                result=utils.unmarshal_json(http_res.text, models.ProblemDetail),
-                headers=utils.get_response_headers(http_res.headers),
-            )
-
-        content_type = http_res.headers.get("Content-Type")
-        http_res_text = await utils.stream_to_text_async(http_res)
-        raise errors.APIError(
-            f"Unexpected response received (code: {http_res.status_code}, type: {content_type})",
-            http_res.status_code,
-            http_res_text,
-            http_res,
-        )
-
-    def list_products_by_type(
+    def list_by_type(
         self,
         *,
         type_id: str,
         retries: OptionalNullable[utils.RetryConfig] = UNSET,
         server_url: Optional[str] = None,
         timeout_ms: Optional[int] = None,
-        accept_header_override: Optional[ListProductsByTypeAcceptEnum] = None,
+        accept_header_override: Optional[ListByTypeAcceptEnum] = None,
         http_headers: Optional[Mapping[str, str]] = None,
     ) -> models.ListProductsByTypeResponse:
         r"""Returns a list of text products of a given type
@@ -951,10 +1279,14 @@ class Products(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(500, 60000, 1.5, 3600000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["5XX"])
 
         http_res = self.do_request(
             hook_ctx=HookContext(
@@ -966,10 +1298,37 @@ class Products(BaseSDK):
                 ),
             ),
             request=req,
-            error_status_codes=["4XX", "5XX"],
+            error_status_codes=[
+                "400",
+                "401",
+                "403",
+                "404",
+                "407",
+                "408",
+                "413",
+                "414",
+                "415",
+                "422",
+                "429",
+                "431",
+                "4XX",
+                "500",
+                "501",
+                "502",
+                "503",
+                "504",
+                "505",
+                "506",
+                "507",
+                "508",
+                "510",
+                "511",
+                "5XX",
+            ],
             retry_config=retry_config,
         )
 
+        response_data: Any = None
         if utils.match_response(http_res, "200", "application/ld+json"):
             return models.ListProductsByTypeResponse(
                 result=utils.unmarshal_json(
@@ -977,6 +1336,60 @@ class Products(BaseSDK):
                 ),
                 headers=utils.get_response_headers(http_res.headers),
             )
+        if utils.match_response(http_res, "404", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.NotFoundErrorData
+            )
+            raise errors.NotFoundError(data=response_data)
+        if utils.match_response(http_res, ["401", "403", "407"], "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.UnauthorizedErrorData
+            )
+            raise errors.UnauthorizedError(data=response_data)
+        if utils.match_response(http_res, "408", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.TimeoutErrorTData
+            )
+            raise errors.TimeoutErrorT(data=response_data)
+        if utils.match_response(http_res, "429", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.RateLimitedErrorData
+            )
+            raise errors.RateLimitedError(data=response_data)
+        if utils.match_response(
+            http_res, ["400", "413", "414", "415", "422", "431"], "application/json"
+        ):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.BadRequestErrorData
+            )
+            raise errors.BadRequestError(data=response_data)
+        if utils.match_response(http_res, "504", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.TimeoutErrorTData
+            )
+            raise errors.TimeoutErrorT(data=response_data)
+        if utils.match_response(http_res, ["501", "505"], "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.NotFoundErrorData
+            )
+            raise errors.NotFoundError(data=response_data)
+        if utils.match_response(
+            http_res, ["500", "502", "503", "506", "507", "508"], "application/json"
+        ):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.InternalServerErrorData
+            )
+            raise errors.InternalServerError(data=response_data)
+        if utils.match_response(http_res, "510", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.BadRequestErrorData
+            )
+            raise errors.BadRequestError(data=response_data)
+        if utils.match_response(http_res, "511", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.UnauthorizedErrorData
+            )
+            raise errors.UnauthorizedError(data=response_data)
         if utils.match_response(http_res, "4XX", "*"):
             http_res_text = utils.stream_to_text(http_res)
             raise errors.APIError(
@@ -1002,14 +1415,14 @@ class Products(BaseSDK):
             http_res,
         )
 
-    async def list_products_by_type_async(
+    async def list_by_type_async(
         self,
         *,
         type_id: str,
         retries: OptionalNullable[utils.RetryConfig] = UNSET,
         server_url: Optional[str] = None,
         timeout_ms: Optional[int] = None,
-        accept_header_override: Optional[ListProductsByTypeAcceptEnum] = None,
+        accept_header_override: Optional[ListByTypeAcceptEnum] = None,
         http_headers: Optional[Mapping[str, str]] = None,
     ) -> models.ListProductsByTypeResponse:
         r"""Returns a list of text products of a given type
@@ -1056,10 +1469,14 @@ class Products(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(500, 60000, 1.5, 3600000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["5XX"])
 
         http_res = await self.do_request_async(
             hook_ctx=HookContext(
@@ -1071,10 +1488,37 @@ class Products(BaseSDK):
                 ),
             ),
             request=req,
-            error_status_codes=["4XX", "5XX"],
+            error_status_codes=[
+                "400",
+                "401",
+                "403",
+                "404",
+                "407",
+                "408",
+                "413",
+                "414",
+                "415",
+                "422",
+                "429",
+                "431",
+                "4XX",
+                "500",
+                "501",
+                "502",
+                "503",
+                "504",
+                "505",
+                "506",
+                "507",
+                "508",
+                "510",
+                "511",
+                "5XX",
+            ],
             retry_config=retry_config,
         )
 
+        response_data: Any = None
         if utils.match_response(http_res, "200", "application/ld+json"):
             return models.ListProductsByTypeResponse(
                 result=utils.unmarshal_json(
@@ -1082,6 +1526,60 @@ class Products(BaseSDK):
                 ),
                 headers=utils.get_response_headers(http_res.headers),
             )
+        if utils.match_response(http_res, "404", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.NotFoundErrorData
+            )
+            raise errors.NotFoundError(data=response_data)
+        if utils.match_response(http_res, ["401", "403", "407"], "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.UnauthorizedErrorData
+            )
+            raise errors.UnauthorizedError(data=response_data)
+        if utils.match_response(http_res, "408", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.TimeoutErrorTData
+            )
+            raise errors.TimeoutErrorT(data=response_data)
+        if utils.match_response(http_res, "429", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.RateLimitedErrorData
+            )
+            raise errors.RateLimitedError(data=response_data)
+        if utils.match_response(
+            http_res, ["400", "413", "414", "415", "422", "431"], "application/json"
+        ):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.BadRequestErrorData
+            )
+            raise errors.BadRequestError(data=response_data)
+        if utils.match_response(http_res, "504", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.TimeoutErrorTData
+            )
+            raise errors.TimeoutErrorT(data=response_data)
+        if utils.match_response(http_res, ["501", "505"], "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.NotFoundErrorData
+            )
+            raise errors.NotFoundError(data=response_data)
+        if utils.match_response(
+            http_res, ["500", "502", "503", "506", "507", "508"], "application/json"
+        ):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.InternalServerErrorData
+            )
+            raise errors.InternalServerError(data=response_data)
+        if utils.match_response(http_res, "510", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.BadRequestErrorData
+            )
+            raise errors.BadRequestError(data=response_data)
+        if utils.match_response(http_res, "511", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.UnauthorizedErrorData
+            )
+            raise errors.UnauthorizedError(data=response_data)
         if utils.match_response(http_res, "4XX", "*"):
             http_res_text = await utils.stream_to_text_async(http_res)
             raise errors.APIError(
@@ -1107,427 +1605,7 @@ class Products(BaseSDK):
             http_res,
         )
 
-    def list_locations_by_product_type(
-        self,
-        *,
-        type_id: str,
-        retries: OptionalNullable[utils.RetryConfig] = UNSET,
-        server_url: Optional[str] = None,
-        timeout_ms: Optional[int] = None,
-        accept_header_override: Optional[ListLocationsByProductTypeAcceptEnum] = None,
-        http_headers: Optional[Mapping[str, str]] = None,
-    ) -> models.ListLocationsByProductTypeResponse:
-        r"""Returns a list of valid text product issuance locations for a given product type
-
-        :param type_id: .
-        :param retries: Override the default retry configuration for this method
-        :param server_url: Override the default server URL for this method
-        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
-        :param accept_header_override: Override the default accept header for this method
-        :param http_headers: Additional headers to set or replace on requests.
-        """
-        base_url = None
-        url_variables = None
-        if timeout_ms is None:
-            timeout_ms = self.sdk_configuration.timeout_ms
-
-        if server_url is not None:
-            base_url = server_url
-        else:
-            base_url = self._get_url(base_url, url_variables)
-
-        request = models.ListLocationsByProductTypeRequest(
-            type_id=type_id,
-        )
-
-        req = self._build_request(
-            method="GET",
-            path="/products/types/{typeId}/locations",
-            base_url=base_url,
-            url_variables=url_variables,
-            request=request,
-            request_body_required=False,
-            request_has_path_params=True,
-            request_has_query_params=True,
-            user_agent_header="user-agent",
-            accept_header_value=accept_header_override.value
-            if accept_header_override is not None
-            else "application/ld+json;q=1, application/problem+json;q=0",
-            http_headers=http_headers,
-            security=self.sdk_configuration.security,
-            timeout_ms=timeout_ms,
-        )
-
-        if retries == UNSET:
-            if self.sdk_configuration.retry_config is not UNSET:
-                retries = self.sdk_configuration.retry_config
-
-        retry_config = None
-        if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
-
-        http_res = self.do_request(
-            hook_ctx=HookContext(
-                base_url=base_url or "",
-                operation_id="list_locations_by_product_type",
-                oauth2_scopes=[],
-                security_source=get_security_from_env(
-                    self.sdk_configuration.security, models.Security
-                ),
-            ),
-            request=req,
-            error_status_codes=["4XX", "5XX"],
-            retry_config=retry_config,
-        )
-
-        if utils.match_response(http_res, "200", "application/ld+json"):
-            return models.ListLocationsByProductTypeResponse(
-                result=utils.unmarshal_json(
-                    http_res.text, models.TextProductLocationCollection
-                ),
-                headers=utils.get_response_headers(http_res.headers),
-            )
-        if utils.match_response(http_res, "4XX", "*"):
-            http_res_text = utils.stream_to_text(http_res)
-            raise errors.APIError(
-                "API error occurred", http_res.status_code, http_res_text, http_res
-            )
-        if utils.match_response(http_res, "5XX", "*"):
-            http_res_text = utils.stream_to_text(http_res)
-            raise errors.APIError(
-                "API error occurred", http_res.status_code, http_res_text, http_res
-            )
-        if utils.match_response(http_res, "default", "application/problem+json"):
-            return models.ListLocationsByProductTypeResponse(
-                result=utils.unmarshal_json(http_res.text, models.ProblemDetail),
-                headers=utils.get_response_headers(http_res.headers),
-            )
-
-        content_type = http_res.headers.get("Content-Type")
-        http_res_text = utils.stream_to_text(http_res)
-        raise errors.APIError(
-            f"Unexpected response received (code: {http_res.status_code}, type: {content_type})",
-            http_res.status_code,
-            http_res_text,
-            http_res,
-        )
-
-    async def list_locations_by_product_type_async(
-        self,
-        *,
-        type_id: str,
-        retries: OptionalNullable[utils.RetryConfig] = UNSET,
-        server_url: Optional[str] = None,
-        timeout_ms: Optional[int] = None,
-        accept_header_override: Optional[ListLocationsByProductTypeAcceptEnum] = None,
-        http_headers: Optional[Mapping[str, str]] = None,
-    ) -> models.ListLocationsByProductTypeResponse:
-        r"""Returns a list of valid text product issuance locations for a given product type
-
-        :param type_id: .
-        :param retries: Override the default retry configuration for this method
-        :param server_url: Override the default server URL for this method
-        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
-        :param accept_header_override: Override the default accept header for this method
-        :param http_headers: Additional headers to set or replace on requests.
-        """
-        base_url = None
-        url_variables = None
-        if timeout_ms is None:
-            timeout_ms = self.sdk_configuration.timeout_ms
-
-        if server_url is not None:
-            base_url = server_url
-        else:
-            base_url = self._get_url(base_url, url_variables)
-
-        request = models.ListLocationsByProductTypeRequest(
-            type_id=type_id,
-        )
-
-        req = self._build_request_async(
-            method="GET",
-            path="/products/types/{typeId}/locations",
-            base_url=base_url,
-            url_variables=url_variables,
-            request=request,
-            request_body_required=False,
-            request_has_path_params=True,
-            request_has_query_params=True,
-            user_agent_header="user-agent",
-            accept_header_value=accept_header_override.value
-            if accept_header_override is not None
-            else "application/ld+json;q=1, application/problem+json;q=0",
-            http_headers=http_headers,
-            security=self.sdk_configuration.security,
-            timeout_ms=timeout_ms,
-        )
-
-        if retries == UNSET:
-            if self.sdk_configuration.retry_config is not UNSET:
-                retries = self.sdk_configuration.retry_config
-
-        retry_config = None
-        if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
-
-        http_res = await self.do_request_async(
-            hook_ctx=HookContext(
-                base_url=base_url or "",
-                operation_id="list_locations_by_product_type",
-                oauth2_scopes=[],
-                security_source=get_security_from_env(
-                    self.sdk_configuration.security, models.Security
-                ),
-            ),
-            request=req,
-            error_status_codes=["4XX", "5XX"],
-            retry_config=retry_config,
-        )
-
-        if utils.match_response(http_res, "200", "application/ld+json"):
-            return models.ListLocationsByProductTypeResponse(
-                result=utils.unmarshal_json(
-                    http_res.text, models.TextProductLocationCollection
-                ),
-                headers=utils.get_response_headers(http_res.headers),
-            )
-        if utils.match_response(http_res, "4XX", "*"):
-            http_res_text = await utils.stream_to_text_async(http_res)
-            raise errors.APIError(
-                "API error occurred", http_res.status_code, http_res_text, http_res
-            )
-        if utils.match_response(http_res, "5XX", "*"):
-            http_res_text = await utils.stream_to_text_async(http_res)
-            raise errors.APIError(
-                "API error occurred", http_res.status_code, http_res_text, http_res
-            )
-        if utils.match_response(http_res, "default", "application/problem+json"):
-            return models.ListLocationsByProductTypeResponse(
-                result=utils.unmarshal_json(http_res.text, models.ProblemDetail),
-                headers=utils.get_response_headers(http_res.headers),
-            )
-
-        content_type = http_res.headers.get("Content-Type")
-        http_res_text = await utils.stream_to_text_async(http_res)
-        raise errors.APIError(
-            f"Unexpected response received (code: {http_res.status_code}, type: {content_type})",
-            http_res.status_code,
-            http_res_text,
-            http_res,
-        )
-
-    def list_product_types_by_location(
-        self,
-        *,
-        location_id: str,
-        retries: OptionalNullable[utils.RetryConfig] = UNSET,
-        server_url: Optional[str] = None,
-        timeout_ms: Optional[int] = None,
-        accept_header_override: Optional[ListProductTypesByLocationAcceptEnum] = None,
-        http_headers: Optional[Mapping[str, str]] = None,
-    ) -> models.ListProductTypesByLocationResponse:
-        r"""Returns a list of valid text product types for a given issuance location
-
-        :param location_id: .
-        :param retries: Override the default retry configuration for this method
-        :param server_url: Override the default server URL for this method
-        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
-        :param accept_header_override: Override the default accept header for this method
-        :param http_headers: Additional headers to set or replace on requests.
-        """
-        base_url = None
-        url_variables = None
-        if timeout_ms is None:
-            timeout_ms = self.sdk_configuration.timeout_ms
-
-        if server_url is not None:
-            base_url = server_url
-        else:
-            base_url = self._get_url(base_url, url_variables)
-
-        request = models.ListProductTypesByLocationRequest(
-            location_id=location_id,
-        )
-
-        req = self._build_request(
-            method="GET",
-            path="/products/locations/{locationId}/types",
-            base_url=base_url,
-            url_variables=url_variables,
-            request=request,
-            request_body_required=False,
-            request_has_path_params=True,
-            request_has_query_params=True,
-            user_agent_header="user-agent",
-            accept_header_value=accept_header_override.value
-            if accept_header_override is not None
-            else "application/ld+json;q=1, application/problem+json;q=0",
-            http_headers=http_headers,
-            security=self.sdk_configuration.security,
-            timeout_ms=timeout_ms,
-        )
-
-        if retries == UNSET:
-            if self.sdk_configuration.retry_config is not UNSET:
-                retries = self.sdk_configuration.retry_config
-
-        retry_config = None
-        if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
-
-        http_res = self.do_request(
-            hook_ctx=HookContext(
-                base_url=base_url or "",
-                operation_id="list_product_types_by_location",
-                oauth2_scopes=[],
-                security_source=get_security_from_env(
-                    self.sdk_configuration.security, models.Security
-                ),
-            ),
-            request=req,
-            error_status_codes=["4XX", "5XX"],
-            retry_config=retry_config,
-        )
-
-        if utils.match_response(http_res, "200", "application/ld+json"):
-            return models.ListProductTypesByLocationResponse(
-                result=utils.unmarshal_json(
-                    http_res.text, models.TextProductTypeCollection
-                ),
-                headers=utils.get_response_headers(http_res.headers),
-            )
-        if utils.match_response(http_res, "4XX", "*"):
-            http_res_text = utils.stream_to_text(http_res)
-            raise errors.APIError(
-                "API error occurred", http_res.status_code, http_res_text, http_res
-            )
-        if utils.match_response(http_res, "5XX", "*"):
-            http_res_text = utils.stream_to_text(http_res)
-            raise errors.APIError(
-                "API error occurred", http_res.status_code, http_res_text, http_res
-            )
-        if utils.match_response(http_res, "default", "application/problem+json"):
-            return models.ListProductTypesByLocationResponse(
-                result=utils.unmarshal_json(http_res.text, models.ProblemDetail),
-                headers=utils.get_response_headers(http_res.headers),
-            )
-
-        content_type = http_res.headers.get("Content-Type")
-        http_res_text = utils.stream_to_text(http_res)
-        raise errors.APIError(
-            f"Unexpected response received (code: {http_res.status_code}, type: {content_type})",
-            http_res.status_code,
-            http_res_text,
-            http_res,
-        )
-
-    async def list_product_types_by_location_async(
-        self,
-        *,
-        location_id: str,
-        retries: OptionalNullable[utils.RetryConfig] = UNSET,
-        server_url: Optional[str] = None,
-        timeout_ms: Optional[int] = None,
-        accept_header_override: Optional[ListProductTypesByLocationAcceptEnum] = None,
-        http_headers: Optional[Mapping[str, str]] = None,
-    ) -> models.ListProductTypesByLocationResponse:
-        r"""Returns a list of valid text product types for a given issuance location
-
-        :param location_id: .
-        :param retries: Override the default retry configuration for this method
-        :param server_url: Override the default server URL for this method
-        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
-        :param accept_header_override: Override the default accept header for this method
-        :param http_headers: Additional headers to set or replace on requests.
-        """
-        base_url = None
-        url_variables = None
-        if timeout_ms is None:
-            timeout_ms = self.sdk_configuration.timeout_ms
-
-        if server_url is not None:
-            base_url = server_url
-        else:
-            base_url = self._get_url(base_url, url_variables)
-
-        request = models.ListProductTypesByLocationRequest(
-            location_id=location_id,
-        )
-
-        req = self._build_request_async(
-            method="GET",
-            path="/products/locations/{locationId}/types",
-            base_url=base_url,
-            url_variables=url_variables,
-            request=request,
-            request_body_required=False,
-            request_has_path_params=True,
-            request_has_query_params=True,
-            user_agent_header="user-agent",
-            accept_header_value=accept_header_override.value
-            if accept_header_override is not None
-            else "application/ld+json;q=1, application/problem+json;q=0",
-            http_headers=http_headers,
-            security=self.sdk_configuration.security,
-            timeout_ms=timeout_ms,
-        )
-
-        if retries == UNSET:
-            if self.sdk_configuration.retry_config is not UNSET:
-                retries = self.sdk_configuration.retry_config
-
-        retry_config = None
-        if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
-
-        http_res = await self.do_request_async(
-            hook_ctx=HookContext(
-                base_url=base_url or "",
-                operation_id="list_product_types_by_location",
-                oauth2_scopes=[],
-                security_source=get_security_from_env(
-                    self.sdk_configuration.security, models.Security
-                ),
-            ),
-            request=req,
-            error_status_codes=["4XX", "5XX"],
-            retry_config=retry_config,
-        )
-
-        if utils.match_response(http_res, "200", "application/ld+json"):
-            return models.ListProductTypesByLocationResponse(
-                result=utils.unmarshal_json(
-                    http_res.text, models.TextProductTypeCollection
-                ),
-                headers=utils.get_response_headers(http_res.headers),
-            )
-        if utils.match_response(http_res, "4XX", "*"):
-            http_res_text = await utils.stream_to_text_async(http_res)
-            raise errors.APIError(
-                "API error occurred", http_res.status_code, http_res_text, http_res
-            )
-        if utils.match_response(http_res, "5XX", "*"):
-            http_res_text = await utils.stream_to_text_async(http_res)
-            raise errors.APIError(
-                "API error occurred", http_res.status_code, http_res_text, http_res
-            )
-        if utils.match_response(http_res, "default", "application/problem+json"):
-            return models.ListProductTypesByLocationResponse(
-                result=utils.unmarshal_json(http_res.text, models.ProblemDetail),
-                headers=utils.get_response_headers(http_res.headers),
-            )
-
-        content_type = http_res.headers.get("Content-Type")
-        http_res_text = await utils.stream_to_text_async(http_res)
-        raise errors.APIError(
-            f"Unexpected response received (code: {http_res.status_code}, type: {content_type})",
-            http_res.status_code,
-            http_res_text,
-            http_res,
-        )
-
-    def list_products_by_type_and_location(
+    def list_by_type_and_location(
         self,
         *,
         type_id: str,
@@ -1535,9 +1613,7 @@ class Products(BaseSDK):
         retries: OptionalNullable[utils.RetryConfig] = UNSET,
         server_url: Optional[str] = None,
         timeout_ms: Optional[int] = None,
-        accept_header_override: Optional[
-            ListProductsByTypeAndLocationAcceptEnum
-        ] = None,
+        accept_header_override: Optional[ListByTypeAndLocationAcceptEnum] = None,
         http_headers: Optional[Mapping[str, str]] = None,
     ) -> models.ListProductsByTypeAndLocationResponse:
         r"""Returns a list of text products of a given type for a given issuance location
@@ -1586,10 +1662,14 @@ class Products(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(500, 60000, 1.5, 3600000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["5XX"])
 
         http_res = self.do_request(
             hook_ctx=HookContext(
@@ -1601,10 +1681,37 @@ class Products(BaseSDK):
                 ),
             ),
             request=req,
-            error_status_codes=["4XX", "5XX"],
+            error_status_codes=[
+                "400",
+                "401",
+                "403",
+                "404",
+                "407",
+                "408",
+                "413",
+                "414",
+                "415",
+                "422",
+                "429",
+                "431",
+                "4XX",
+                "500",
+                "501",
+                "502",
+                "503",
+                "504",
+                "505",
+                "506",
+                "507",
+                "508",
+                "510",
+                "511",
+                "5XX",
+            ],
             retry_config=retry_config,
         )
 
+        response_data: Any = None
         if utils.match_response(http_res, "200", "application/ld+json"):
             return models.ListProductsByTypeAndLocationResponse(
                 result=utils.unmarshal_json(
@@ -1612,6 +1719,60 @@ class Products(BaseSDK):
                 ),
                 headers=utils.get_response_headers(http_res.headers),
             )
+        if utils.match_response(http_res, "404", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.NotFoundErrorData
+            )
+            raise errors.NotFoundError(data=response_data)
+        if utils.match_response(http_res, ["401", "403", "407"], "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.UnauthorizedErrorData
+            )
+            raise errors.UnauthorizedError(data=response_data)
+        if utils.match_response(http_res, "408", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.TimeoutErrorTData
+            )
+            raise errors.TimeoutErrorT(data=response_data)
+        if utils.match_response(http_res, "429", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.RateLimitedErrorData
+            )
+            raise errors.RateLimitedError(data=response_data)
+        if utils.match_response(
+            http_res, ["400", "413", "414", "415", "422", "431"], "application/json"
+        ):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.BadRequestErrorData
+            )
+            raise errors.BadRequestError(data=response_data)
+        if utils.match_response(http_res, "504", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.TimeoutErrorTData
+            )
+            raise errors.TimeoutErrorT(data=response_data)
+        if utils.match_response(http_res, ["501", "505"], "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.NotFoundErrorData
+            )
+            raise errors.NotFoundError(data=response_data)
+        if utils.match_response(
+            http_res, ["500", "502", "503", "506", "507", "508"], "application/json"
+        ):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.InternalServerErrorData
+            )
+            raise errors.InternalServerError(data=response_data)
+        if utils.match_response(http_res, "510", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.BadRequestErrorData
+            )
+            raise errors.BadRequestError(data=response_data)
+        if utils.match_response(http_res, "511", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.UnauthorizedErrorData
+            )
+            raise errors.UnauthorizedError(data=response_data)
         if utils.match_response(http_res, "4XX", "*"):
             http_res_text = utils.stream_to_text(http_res)
             raise errors.APIError(
@@ -1637,7 +1798,7 @@ class Products(BaseSDK):
             http_res,
         )
 
-    async def list_products_by_type_and_location_async(
+    async def list_by_type_and_location_async(
         self,
         *,
         type_id: str,
@@ -1645,9 +1806,7 @@ class Products(BaseSDK):
         retries: OptionalNullable[utils.RetryConfig] = UNSET,
         server_url: Optional[str] = None,
         timeout_ms: Optional[int] = None,
-        accept_header_override: Optional[
-            ListProductsByTypeAndLocationAcceptEnum
-        ] = None,
+        accept_header_override: Optional[ListByTypeAndLocationAcceptEnum] = None,
         http_headers: Optional[Mapping[str, str]] = None,
     ) -> models.ListProductsByTypeAndLocationResponse:
         r"""Returns a list of text products of a given type for a given issuance location
@@ -1696,10 +1855,14 @@ class Products(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(500, 60000, 1.5, 3600000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["5XX"])
 
         http_res = await self.do_request_async(
             hook_ctx=HookContext(
@@ -1711,10 +1874,37 @@ class Products(BaseSDK):
                 ),
             ),
             request=req,
-            error_status_codes=["4XX", "5XX"],
+            error_status_codes=[
+                "400",
+                "401",
+                "403",
+                "404",
+                "407",
+                "408",
+                "413",
+                "414",
+                "415",
+                "422",
+                "429",
+                "431",
+                "4XX",
+                "500",
+                "501",
+                "502",
+                "503",
+                "504",
+                "505",
+                "506",
+                "507",
+                "508",
+                "510",
+                "511",
+                "5XX",
+            ],
             retry_config=retry_config,
         )
 
+        response_data: Any = None
         if utils.match_response(http_res, "200", "application/ld+json"):
             return models.ListProductsByTypeAndLocationResponse(
                 result=utils.unmarshal_json(
@@ -1722,6 +1912,60 @@ class Products(BaseSDK):
                 ),
                 headers=utils.get_response_headers(http_res.headers),
             )
+        if utils.match_response(http_res, "404", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.NotFoundErrorData
+            )
+            raise errors.NotFoundError(data=response_data)
+        if utils.match_response(http_res, ["401", "403", "407"], "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.UnauthorizedErrorData
+            )
+            raise errors.UnauthorizedError(data=response_data)
+        if utils.match_response(http_res, "408", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.TimeoutErrorTData
+            )
+            raise errors.TimeoutErrorT(data=response_data)
+        if utils.match_response(http_res, "429", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.RateLimitedErrorData
+            )
+            raise errors.RateLimitedError(data=response_data)
+        if utils.match_response(
+            http_res, ["400", "413", "414", "415", "422", "431"], "application/json"
+        ):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.BadRequestErrorData
+            )
+            raise errors.BadRequestError(data=response_data)
+        if utils.match_response(http_res, "504", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.TimeoutErrorTData
+            )
+            raise errors.TimeoutErrorT(data=response_data)
+        if utils.match_response(http_res, ["501", "505"], "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.NotFoundErrorData
+            )
+            raise errors.NotFoundError(data=response_data)
+        if utils.match_response(
+            http_res, ["500", "502", "503", "506", "507", "508"], "application/json"
+        ):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.InternalServerErrorData
+            )
+            raise errors.InternalServerError(data=response_data)
+        if utils.match_response(http_res, "510", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.BadRequestErrorData
+            )
+            raise errors.BadRequestError(data=response_data)
+        if utils.match_response(http_res, "511", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.UnauthorizedErrorData
+            )
+            raise errors.UnauthorizedError(data=response_data)
         if utils.match_response(http_res, "4XX", "*"):
             http_res_text = await utils.stream_to_text_async(http_res)
             raise errors.APIError(
@@ -1734,6 +1978,1118 @@ class Products(BaseSDK):
             )
         if utils.match_response(http_res, "default", "application/problem+json"):
             return models.ListProductsByTypeAndLocationResponse(
+                result=utils.unmarshal_json(http_res.text, models.ProblemDetail),
+                headers=utils.get_response_headers(http_res.headers),
+            )
+
+        content_type = http_res.headers.get("Content-Type")
+        http_res_text = await utils.stream_to_text_async(http_res)
+        raise errors.APIError(
+            f"Unexpected response received (code: {http_res.status_code}, type: {content_type})",
+            http_res.status_code,
+            http_res_text,
+            http_res,
+        )
+
+    def list_locations(
+        self,
+        *,
+        retries: OptionalNullable[utils.RetryConfig] = UNSET,
+        server_url: Optional[str] = None,
+        timeout_ms: Optional[int] = None,
+        accept_header_override: Optional[ListLocationsAcceptEnum] = None,
+        http_headers: Optional[Mapping[str, str]] = None,
+    ) -> models.ListProductLocationsResponse:
+        r"""Returns a list of valid text product issuance locations
+
+        :param retries: Override the default retry configuration for this method
+        :param server_url: Override the default server URL for this method
+        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param accept_header_override: Override the default accept header for this method
+        :param http_headers: Additional headers to set or replace on requests.
+        """
+        base_url = None
+        url_variables = None
+        if timeout_ms is None:
+            timeout_ms = self.sdk_configuration.timeout_ms
+
+        if server_url is not None:
+            base_url = server_url
+        else:
+            base_url = self._get_url(base_url, url_variables)
+        req = self._build_request(
+            method="GET",
+            path="/products/locations",
+            base_url=base_url,
+            url_variables=url_variables,
+            request=None,
+            request_body_required=False,
+            request_has_path_params=False,
+            request_has_query_params=True,
+            user_agent_header="user-agent",
+            accept_header_value=accept_header_override.value
+            if accept_header_override is not None
+            else "application/ld+json;q=1, application/problem+json;q=0",
+            http_headers=http_headers,
+            security=self.sdk_configuration.security,
+            timeout_ms=timeout_ms,
+        )
+
+        if retries == UNSET:
+            if self.sdk_configuration.retry_config is not UNSET:
+                retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(500, 60000, 1.5, 3600000), True
+                )
+
+        retry_config = None
+        if isinstance(retries, utils.RetryConfig):
+            retry_config = (retries, ["5XX"])
+
+        http_res = self.do_request(
+            hook_ctx=HookContext(
+                base_url=base_url or "",
+                operation_id="list_product_locations",
+                oauth2_scopes=[],
+                security_source=get_security_from_env(
+                    self.sdk_configuration.security, models.Security
+                ),
+            ),
+            request=req,
+            error_status_codes=[
+                "400",
+                "401",
+                "403",
+                "404",
+                "407",
+                "408",
+                "413",
+                "414",
+                "415",
+                "422",
+                "429",
+                "431",
+                "4XX",
+                "500",
+                "501",
+                "502",
+                "503",
+                "504",
+                "505",
+                "506",
+                "507",
+                "508",
+                "510",
+                "511",
+                "5XX",
+            ],
+            retry_config=retry_config,
+        )
+
+        response_data: Any = None
+        if utils.match_response(http_res, "200", "application/ld+json"):
+            return models.ListProductLocationsResponse(
+                result=utils.unmarshal_json(
+                    http_res.text, models.TextProductLocationCollection
+                ),
+                headers=utils.get_response_headers(http_res.headers),
+            )
+        if utils.match_response(http_res, "404", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.NotFoundErrorData
+            )
+            raise errors.NotFoundError(data=response_data)
+        if utils.match_response(http_res, ["401", "403", "407"], "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.UnauthorizedErrorData
+            )
+            raise errors.UnauthorizedError(data=response_data)
+        if utils.match_response(http_res, "408", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.TimeoutErrorTData
+            )
+            raise errors.TimeoutErrorT(data=response_data)
+        if utils.match_response(http_res, "429", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.RateLimitedErrorData
+            )
+            raise errors.RateLimitedError(data=response_data)
+        if utils.match_response(
+            http_res, ["400", "413", "414", "415", "422", "431"], "application/json"
+        ):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.BadRequestErrorData
+            )
+            raise errors.BadRequestError(data=response_data)
+        if utils.match_response(http_res, "504", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.TimeoutErrorTData
+            )
+            raise errors.TimeoutErrorT(data=response_data)
+        if utils.match_response(http_res, ["501", "505"], "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.NotFoundErrorData
+            )
+            raise errors.NotFoundError(data=response_data)
+        if utils.match_response(
+            http_res, ["500", "502", "503", "506", "507", "508"], "application/json"
+        ):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.InternalServerErrorData
+            )
+            raise errors.InternalServerError(data=response_data)
+        if utils.match_response(http_res, "510", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.BadRequestErrorData
+            )
+            raise errors.BadRequestError(data=response_data)
+        if utils.match_response(http_res, "511", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.UnauthorizedErrorData
+            )
+            raise errors.UnauthorizedError(data=response_data)
+        if utils.match_response(http_res, "4XX", "*"):
+            http_res_text = utils.stream_to_text(http_res)
+            raise errors.APIError(
+                "API error occurred", http_res.status_code, http_res_text, http_res
+            )
+        if utils.match_response(http_res, "5XX", "*"):
+            http_res_text = utils.stream_to_text(http_res)
+            raise errors.APIError(
+                "API error occurred", http_res.status_code, http_res_text, http_res
+            )
+        if utils.match_response(http_res, "default", "application/problem+json"):
+            return models.ListProductLocationsResponse(
+                result=utils.unmarshal_json(http_res.text, models.ProblemDetail),
+                headers=utils.get_response_headers(http_res.headers),
+            )
+
+        content_type = http_res.headers.get("Content-Type")
+        http_res_text = utils.stream_to_text(http_res)
+        raise errors.APIError(
+            f"Unexpected response received (code: {http_res.status_code}, type: {content_type})",
+            http_res.status_code,
+            http_res_text,
+            http_res,
+        )
+
+    async def list_locations_async(
+        self,
+        *,
+        retries: OptionalNullable[utils.RetryConfig] = UNSET,
+        server_url: Optional[str] = None,
+        timeout_ms: Optional[int] = None,
+        accept_header_override: Optional[ListLocationsAcceptEnum] = None,
+        http_headers: Optional[Mapping[str, str]] = None,
+    ) -> models.ListProductLocationsResponse:
+        r"""Returns a list of valid text product issuance locations
+
+        :param retries: Override the default retry configuration for this method
+        :param server_url: Override the default server URL for this method
+        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param accept_header_override: Override the default accept header for this method
+        :param http_headers: Additional headers to set or replace on requests.
+        """
+        base_url = None
+        url_variables = None
+        if timeout_ms is None:
+            timeout_ms = self.sdk_configuration.timeout_ms
+
+        if server_url is not None:
+            base_url = server_url
+        else:
+            base_url = self._get_url(base_url, url_variables)
+        req = self._build_request_async(
+            method="GET",
+            path="/products/locations",
+            base_url=base_url,
+            url_variables=url_variables,
+            request=None,
+            request_body_required=False,
+            request_has_path_params=False,
+            request_has_query_params=True,
+            user_agent_header="user-agent",
+            accept_header_value=accept_header_override.value
+            if accept_header_override is not None
+            else "application/ld+json;q=1, application/problem+json;q=0",
+            http_headers=http_headers,
+            security=self.sdk_configuration.security,
+            timeout_ms=timeout_ms,
+        )
+
+        if retries == UNSET:
+            if self.sdk_configuration.retry_config is not UNSET:
+                retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(500, 60000, 1.5, 3600000), True
+                )
+
+        retry_config = None
+        if isinstance(retries, utils.RetryConfig):
+            retry_config = (retries, ["5XX"])
+
+        http_res = await self.do_request_async(
+            hook_ctx=HookContext(
+                base_url=base_url or "",
+                operation_id="list_product_locations",
+                oauth2_scopes=[],
+                security_source=get_security_from_env(
+                    self.sdk_configuration.security, models.Security
+                ),
+            ),
+            request=req,
+            error_status_codes=[
+                "400",
+                "401",
+                "403",
+                "404",
+                "407",
+                "408",
+                "413",
+                "414",
+                "415",
+                "422",
+                "429",
+                "431",
+                "4XX",
+                "500",
+                "501",
+                "502",
+                "503",
+                "504",
+                "505",
+                "506",
+                "507",
+                "508",
+                "510",
+                "511",
+                "5XX",
+            ],
+            retry_config=retry_config,
+        )
+
+        response_data: Any = None
+        if utils.match_response(http_res, "200", "application/ld+json"):
+            return models.ListProductLocationsResponse(
+                result=utils.unmarshal_json(
+                    http_res.text, models.TextProductLocationCollection
+                ),
+                headers=utils.get_response_headers(http_res.headers),
+            )
+        if utils.match_response(http_res, "404", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.NotFoundErrorData
+            )
+            raise errors.NotFoundError(data=response_data)
+        if utils.match_response(http_res, ["401", "403", "407"], "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.UnauthorizedErrorData
+            )
+            raise errors.UnauthorizedError(data=response_data)
+        if utils.match_response(http_res, "408", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.TimeoutErrorTData
+            )
+            raise errors.TimeoutErrorT(data=response_data)
+        if utils.match_response(http_res, "429", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.RateLimitedErrorData
+            )
+            raise errors.RateLimitedError(data=response_data)
+        if utils.match_response(
+            http_res, ["400", "413", "414", "415", "422", "431"], "application/json"
+        ):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.BadRequestErrorData
+            )
+            raise errors.BadRequestError(data=response_data)
+        if utils.match_response(http_res, "504", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.TimeoutErrorTData
+            )
+            raise errors.TimeoutErrorT(data=response_data)
+        if utils.match_response(http_res, ["501", "505"], "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.NotFoundErrorData
+            )
+            raise errors.NotFoundError(data=response_data)
+        if utils.match_response(
+            http_res, ["500", "502", "503", "506", "507", "508"], "application/json"
+        ):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.InternalServerErrorData
+            )
+            raise errors.InternalServerError(data=response_data)
+        if utils.match_response(http_res, "510", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.BadRequestErrorData
+            )
+            raise errors.BadRequestError(data=response_data)
+        if utils.match_response(http_res, "511", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.UnauthorizedErrorData
+            )
+            raise errors.UnauthorizedError(data=response_data)
+        if utils.match_response(http_res, "4XX", "*"):
+            http_res_text = await utils.stream_to_text_async(http_res)
+            raise errors.APIError(
+                "API error occurred", http_res.status_code, http_res_text, http_res
+            )
+        if utils.match_response(http_res, "5XX", "*"):
+            http_res_text = await utils.stream_to_text_async(http_res)
+            raise errors.APIError(
+                "API error occurred", http_res.status_code, http_res_text, http_res
+            )
+        if utils.match_response(http_res, "default", "application/problem+json"):
+            return models.ListProductLocationsResponse(
+                result=utils.unmarshal_json(http_res.text, models.ProblemDetail),
+                headers=utils.get_response_headers(http_res.headers),
+            )
+
+        content_type = http_res.headers.get("Content-Type")
+        http_res_text = await utils.stream_to_text_async(http_res)
+        raise errors.APIError(
+            f"Unexpected response received (code: {http_res.status_code}, type: {content_type})",
+            http_res.status_code,
+            http_res_text,
+            http_res,
+        )
+
+    def list_types(
+        self,
+        *,
+        retries: OptionalNullable[utils.RetryConfig] = UNSET,
+        server_url: Optional[str] = None,
+        timeout_ms: Optional[int] = None,
+        accept_header_override: Optional[ListTypesAcceptEnum] = None,
+        http_headers: Optional[Mapping[str, str]] = None,
+    ) -> models.ListProductTypesResponse:
+        r"""Returns a list of valid text product types and codes
+
+        :param retries: Override the default retry configuration for this method
+        :param server_url: Override the default server URL for this method
+        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param accept_header_override: Override the default accept header for this method
+        :param http_headers: Additional headers to set or replace on requests.
+        """
+        base_url = None
+        url_variables = None
+        if timeout_ms is None:
+            timeout_ms = self.sdk_configuration.timeout_ms
+
+        if server_url is not None:
+            base_url = server_url
+        else:
+            base_url = self._get_url(base_url, url_variables)
+        req = self._build_request(
+            method="GET",
+            path="/products/types",
+            base_url=base_url,
+            url_variables=url_variables,
+            request=None,
+            request_body_required=False,
+            request_has_path_params=False,
+            request_has_query_params=True,
+            user_agent_header="user-agent",
+            accept_header_value=accept_header_override.value
+            if accept_header_override is not None
+            else "application/ld+json;q=1, application/problem+json;q=0",
+            http_headers=http_headers,
+            security=self.sdk_configuration.security,
+            timeout_ms=timeout_ms,
+        )
+
+        if retries == UNSET:
+            if self.sdk_configuration.retry_config is not UNSET:
+                retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(500, 60000, 1.5, 3600000), True
+                )
+
+        retry_config = None
+        if isinstance(retries, utils.RetryConfig):
+            retry_config = (retries, ["5XX"])
+
+        http_res = self.do_request(
+            hook_ctx=HookContext(
+                base_url=base_url or "",
+                operation_id="list_product_types",
+                oauth2_scopes=[],
+                security_source=get_security_from_env(
+                    self.sdk_configuration.security, models.Security
+                ),
+            ),
+            request=req,
+            error_status_codes=[
+                "400",
+                "401",
+                "403",
+                "404",
+                "407",
+                "408",
+                "413",
+                "414",
+                "415",
+                "422",
+                "429",
+                "431",
+                "4XX",
+                "500",
+                "501",
+                "502",
+                "503",
+                "504",
+                "505",
+                "506",
+                "507",
+                "508",
+                "510",
+                "511",
+                "5XX",
+            ],
+            retry_config=retry_config,
+        )
+
+        response_data: Any = None
+        if utils.match_response(http_res, "200", "application/ld+json"):
+            return models.ListProductTypesResponse(
+                result=utils.unmarshal_json(
+                    http_res.text, models.TextProductTypeCollection
+                ),
+                headers=utils.get_response_headers(http_res.headers),
+            )
+        if utils.match_response(http_res, "404", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.NotFoundErrorData
+            )
+            raise errors.NotFoundError(data=response_data)
+        if utils.match_response(http_res, ["401", "403", "407"], "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.UnauthorizedErrorData
+            )
+            raise errors.UnauthorizedError(data=response_data)
+        if utils.match_response(http_res, "408", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.TimeoutErrorTData
+            )
+            raise errors.TimeoutErrorT(data=response_data)
+        if utils.match_response(http_res, "429", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.RateLimitedErrorData
+            )
+            raise errors.RateLimitedError(data=response_data)
+        if utils.match_response(
+            http_res, ["400", "413", "414", "415", "422", "431"], "application/json"
+        ):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.BadRequestErrorData
+            )
+            raise errors.BadRequestError(data=response_data)
+        if utils.match_response(http_res, "504", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.TimeoutErrorTData
+            )
+            raise errors.TimeoutErrorT(data=response_data)
+        if utils.match_response(http_res, ["501", "505"], "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.NotFoundErrorData
+            )
+            raise errors.NotFoundError(data=response_data)
+        if utils.match_response(
+            http_res, ["500", "502", "503", "506", "507", "508"], "application/json"
+        ):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.InternalServerErrorData
+            )
+            raise errors.InternalServerError(data=response_data)
+        if utils.match_response(http_res, "510", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.BadRequestErrorData
+            )
+            raise errors.BadRequestError(data=response_data)
+        if utils.match_response(http_res, "511", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.UnauthorizedErrorData
+            )
+            raise errors.UnauthorizedError(data=response_data)
+        if utils.match_response(http_res, "4XX", "*"):
+            http_res_text = utils.stream_to_text(http_res)
+            raise errors.APIError(
+                "API error occurred", http_res.status_code, http_res_text, http_res
+            )
+        if utils.match_response(http_res, "5XX", "*"):
+            http_res_text = utils.stream_to_text(http_res)
+            raise errors.APIError(
+                "API error occurred", http_res.status_code, http_res_text, http_res
+            )
+        if utils.match_response(http_res, "default", "application/problem+json"):
+            return models.ListProductTypesResponse(
+                result=utils.unmarshal_json(http_res.text, models.ProblemDetail),
+                headers=utils.get_response_headers(http_res.headers),
+            )
+
+        content_type = http_res.headers.get("Content-Type")
+        http_res_text = utils.stream_to_text(http_res)
+        raise errors.APIError(
+            f"Unexpected response received (code: {http_res.status_code}, type: {content_type})",
+            http_res.status_code,
+            http_res_text,
+            http_res,
+        )
+
+    async def list_types_async(
+        self,
+        *,
+        retries: OptionalNullable[utils.RetryConfig] = UNSET,
+        server_url: Optional[str] = None,
+        timeout_ms: Optional[int] = None,
+        accept_header_override: Optional[ListTypesAcceptEnum] = None,
+        http_headers: Optional[Mapping[str, str]] = None,
+    ) -> models.ListProductTypesResponse:
+        r"""Returns a list of valid text product types and codes
+
+        :param retries: Override the default retry configuration for this method
+        :param server_url: Override the default server URL for this method
+        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param accept_header_override: Override the default accept header for this method
+        :param http_headers: Additional headers to set or replace on requests.
+        """
+        base_url = None
+        url_variables = None
+        if timeout_ms is None:
+            timeout_ms = self.sdk_configuration.timeout_ms
+
+        if server_url is not None:
+            base_url = server_url
+        else:
+            base_url = self._get_url(base_url, url_variables)
+        req = self._build_request_async(
+            method="GET",
+            path="/products/types",
+            base_url=base_url,
+            url_variables=url_variables,
+            request=None,
+            request_body_required=False,
+            request_has_path_params=False,
+            request_has_query_params=True,
+            user_agent_header="user-agent",
+            accept_header_value=accept_header_override.value
+            if accept_header_override is not None
+            else "application/ld+json;q=1, application/problem+json;q=0",
+            http_headers=http_headers,
+            security=self.sdk_configuration.security,
+            timeout_ms=timeout_ms,
+        )
+
+        if retries == UNSET:
+            if self.sdk_configuration.retry_config is not UNSET:
+                retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(500, 60000, 1.5, 3600000), True
+                )
+
+        retry_config = None
+        if isinstance(retries, utils.RetryConfig):
+            retry_config = (retries, ["5XX"])
+
+        http_res = await self.do_request_async(
+            hook_ctx=HookContext(
+                base_url=base_url or "",
+                operation_id="list_product_types",
+                oauth2_scopes=[],
+                security_source=get_security_from_env(
+                    self.sdk_configuration.security, models.Security
+                ),
+            ),
+            request=req,
+            error_status_codes=[
+                "400",
+                "401",
+                "403",
+                "404",
+                "407",
+                "408",
+                "413",
+                "414",
+                "415",
+                "422",
+                "429",
+                "431",
+                "4XX",
+                "500",
+                "501",
+                "502",
+                "503",
+                "504",
+                "505",
+                "506",
+                "507",
+                "508",
+                "510",
+                "511",
+                "5XX",
+            ],
+            retry_config=retry_config,
+        )
+
+        response_data: Any = None
+        if utils.match_response(http_res, "200", "application/ld+json"):
+            return models.ListProductTypesResponse(
+                result=utils.unmarshal_json(
+                    http_res.text, models.TextProductTypeCollection
+                ),
+                headers=utils.get_response_headers(http_res.headers),
+            )
+        if utils.match_response(http_res, "404", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.NotFoundErrorData
+            )
+            raise errors.NotFoundError(data=response_data)
+        if utils.match_response(http_res, ["401", "403", "407"], "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.UnauthorizedErrorData
+            )
+            raise errors.UnauthorizedError(data=response_data)
+        if utils.match_response(http_res, "408", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.TimeoutErrorTData
+            )
+            raise errors.TimeoutErrorT(data=response_data)
+        if utils.match_response(http_res, "429", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.RateLimitedErrorData
+            )
+            raise errors.RateLimitedError(data=response_data)
+        if utils.match_response(
+            http_res, ["400", "413", "414", "415", "422", "431"], "application/json"
+        ):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.BadRequestErrorData
+            )
+            raise errors.BadRequestError(data=response_data)
+        if utils.match_response(http_res, "504", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.TimeoutErrorTData
+            )
+            raise errors.TimeoutErrorT(data=response_data)
+        if utils.match_response(http_res, ["501", "505"], "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.NotFoundErrorData
+            )
+            raise errors.NotFoundError(data=response_data)
+        if utils.match_response(
+            http_res, ["500", "502", "503", "506", "507", "508"], "application/json"
+        ):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.InternalServerErrorData
+            )
+            raise errors.InternalServerError(data=response_data)
+        if utils.match_response(http_res, "510", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.BadRequestErrorData
+            )
+            raise errors.BadRequestError(data=response_data)
+        if utils.match_response(http_res, "511", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.UnauthorizedErrorData
+            )
+            raise errors.UnauthorizedError(data=response_data)
+        if utils.match_response(http_res, "4XX", "*"):
+            http_res_text = await utils.stream_to_text_async(http_res)
+            raise errors.APIError(
+                "API error occurred", http_res.status_code, http_res_text, http_res
+            )
+        if utils.match_response(http_res, "5XX", "*"):
+            http_res_text = await utils.stream_to_text_async(http_res)
+            raise errors.APIError(
+                "API error occurred", http_res.status_code, http_res_text, http_res
+            )
+        if utils.match_response(http_res, "default", "application/problem+json"):
+            return models.ListProductTypesResponse(
+                result=utils.unmarshal_json(http_res.text, models.ProblemDetail),
+                headers=utils.get_response_headers(http_res.headers),
+            )
+
+        content_type = http_res.headers.get("Content-Type")
+        http_res_text = await utils.stream_to_text_async(http_res)
+        raise errors.APIError(
+            f"Unexpected response received (code: {http_res.status_code}, type: {content_type})",
+            http_res.status_code,
+            http_res_text,
+            http_res,
+        )
+
+    def list_types_by_location(
+        self,
+        *,
+        location_id: str,
+        retries: OptionalNullable[utils.RetryConfig] = UNSET,
+        server_url: Optional[str] = None,
+        timeout_ms: Optional[int] = None,
+        accept_header_override: Optional[ListTypesByLocationAcceptEnum] = None,
+        http_headers: Optional[Mapping[str, str]] = None,
+    ) -> models.ListProductTypesByLocationResponse:
+        r"""Returns a list of valid text product types for a given issuance location
+
+        :param location_id: .
+        :param retries: Override the default retry configuration for this method
+        :param server_url: Override the default server URL for this method
+        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param accept_header_override: Override the default accept header for this method
+        :param http_headers: Additional headers to set or replace on requests.
+        """
+        base_url = None
+        url_variables = None
+        if timeout_ms is None:
+            timeout_ms = self.sdk_configuration.timeout_ms
+
+        if server_url is not None:
+            base_url = server_url
+        else:
+            base_url = self._get_url(base_url, url_variables)
+
+        request = models.ListProductTypesByLocationRequest(
+            location_id=location_id,
+        )
+
+        req = self._build_request(
+            method="GET",
+            path="/products/locations/{locationId}/types",
+            base_url=base_url,
+            url_variables=url_variables,
+            request=request,
+            request_body_required=False,
+            request_has_path_params=True,
+            request_has_query_params=True,
+            user_agent_header="user-agent",
+            accept_header_value=accept_header_override.value
+            if accept_header_override is not None
+            else "application/ld+json;q=1, application/problem+json;q=0",
+            http_headers=http_headers,
+            security=self.sdk_configuration.security,
+            timeout_ms=timeout_ms,
+        )
+
+        if retries == UNSET:
+            if self.sdk_configuration.retry_config is not UNSET:
+                retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(500, 60000, 1.5, 3600000), True
+                )
+
+        retry_config = None
+        if isinstance(retries, utils.RetryConfig):
+            retry_config = (retries, ["5XX"])
+
+        http_res = self.do_request(
+            hook_ctx=HookContext(
+                base_url=base_url or "",
+                operation_id="list_product_types_by_location",
+                oauth2_scopes=[],
+                security_source=get_security_from_env(
+                    self.sdk_configuration.security, models.Security
+                ),
+            ),
+            request=req,
+            error_status_codes=[
+                "400",
+                "401",
+                "403",
+                "404",
+                "407",
+                "408",
+                "413",
+                "414",
+                "415",
+                "422",
+                "429",
+                "431",
+                "4XX",
+                "500",
+                "501",
+                "502",
+                "503",
+                "504",
+                "505",
+                "506",
+                "507",
+                "508",
+                "510",
+                "511",
+                "5XX",
+            ],
+            retry_config=retry_config,
+        )
+
+        response_data: Any = None
+        if utils.match_response(http_res, "200", "application/ld+json"):
+            return models.ListProductTypesByLocationResponse(
+                result=utils.unmarshal_json(
+                    http_res.text, models.TextProductTypeCollection
+                ),
+                headers=utils.get_response_headers(http_res.headers),
+            )
+        if utils.match_response(http_res, "404", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.NotFoundErrorData
+            )
+            raise errors.NotFoundError(data=response_data)
+        if utils.match_response(http_res, ["401", "403", "407"], "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.UnauthorizedErrorData
+            )
+            raise errors.UnauthorizedError(data=response_data)
+        if utils.match_response(http_res, "408", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.TimeoutErrorTData
+            )
+            raise errors.TimeoutErrorT(data=response_data)
+        if utils.match_response(http_res, "429", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.RateLimitedErrorData
+            )
+            raise errors.RateLimitedError(data=response_data)
+        if utils.match_response(
+            http_res, ["400", "413", "414", "415", "422", "431"], "application/json"
+        ):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.BadRequestErrorData
+            )
+            raise errors.BadRequestError(data=response_data)
+        if utils.match_response(http_res, "504", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.TimeoutErrorTData
+            )
+            raise errors.TimeoutErrorT(data=response_data)
+        if utils.match_response(http_res, ["501", "505"], "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.NotFoundErrorData
+            )
+            raise errors.NotFoundError(data=response_data)
+        if utils.match_response(
+            http_res, ["500", "502", "503", "506", "507", "508"], "application/json"
+        ):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.InternalServerErrorData
+            )
+            raise errors.InternalServerError(data=response_data)
+        if utils.match_response(http_res, "510", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.BadRequestErrorData
+            )
+            raise errors.BadRequestError(data=response_data)
+        if utils.match_response(http_res, "511", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.UnauthorizedErrorData
+            )
+            raise errors.UnauthorizedError(data=response_data)
+        if utils.match_response(http_res, "4XX", "*"):
+            http_res_text = utils.stream_to_text(http_res)
+            raise errors.APIError(
+                "API error occurred", http_res.status_code, http_res_text, http_res
+            )
+        if utils.match_response(http_res, "5XX", "*"):
+            http_res_text = utils.stream_to_text(http_res)
+            raise errors.APIError(
+                "API error occurred", http_res.status_code, http_res_text, http_res
+            )
+        if utils.match_response(http_res, "default", "application/problem+json"):
+            return models.ListProductTypesByLocationResponse(
+                result=utils.unmarshal_json(http_res.text, models.ProblemDetail),
+                headers=utils.get_response_headers(http_res.headers),
+            )
+
+        content_type = http_res.headers.get("Content-Type")
+        http_res_text = utils.stream_to_text(http_res)
+        raise errors.APIError(
+            f"Unexpected response received (code: {http_res.status_code}, type: {content_type})",
+            http_res.status_code,
+            http_res_text,
+            http_res,
+        )
+
+    async def list_types_by_location_async(
+        self,
+        *,
+        location_id: str,
+        retries: OptionalNullable[utils.RetryConfig] = UNSET,
+        server_url: Optional[str] = None,
+        timeout_ms: Optional[int] = None,
+        accept_header_override: Optional[ListTypesByLocationAcceptEnum] = None,
+        http_headers: Optional[Mapping[str, str]] = None,
+    ) -> models.ListProductTypesByLocationResponse:
+        r"""Returns a list of valid text product types for a given issuance location
+
+        :param location_id: .
+        :param retries: Override the default retry configuration for this method
+        :param server_url: Override the default server URL for this method
+        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param accept_header_override: Override the default accept header for this method
+        :param http_headers: Additional headers to set or replace on requests.
+        """
+        base_url = None
+        url_variables = None
+        if timeout_ms is None:
+            timeout_ms = self.sdk_configuration.timeout_ms
+
+        if server_url is not None:
+            base_url = server_url
+        else:
+            base_url = self._get_url(base_url, url_variables)
+
+        request = models.ListProductTypesByLocationRequest(
+            location_id=location_id,
+        )
+
+        req = self._build_request_async(
+            method="GET",
+            path="/products/locations/{locationId}/types",
+            base_url=base_url,
+            url_variables=url_variables,
+            request=request,
+            request_body_required=False,
+            request_has_path_params=True,
+            request_has_query_params=True,
+            user_agent_header="user-agent",
+            accept_header_value=accept_header_override.value
+            if accept_header_override is not None
+            else "application/ld+json;q=1, application/problem+json;q=0",
+            http_headers=http_headers,
+            security=self.sdk_configuration.security,
+            timeout_ms=timeout_ms,
+        )
+
+        if retries == UNSET:
+            if self.sdk_configuration.retry_config is not UNSET:
+                retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(500, 60000, 1.5, 3600000), True
+                )
+
+        retry_config = None
+        if isinstance(retries, utils.RetryConfig):
+            retry_config = (retries, ["5XX"])
+
+        http_res = await self.do_request_async(
+            hook_ctx=HookContext(
+                base_url=base_url or "",
+                operation_id="list_product_types_by_location",
+                oauth2_scopes=[],
+                security_source=get_security_from_env(
+                    self.sdk_configuration.security, models.Security
+                ),
+            ),
+            request=req,
+            error_status_codes=[
+                "400",
+                "401",
+                "403",
+                "404",
+                "407",
+                "408",
+                "413",
+                "414",
+                "415",
+                "422",
+                "429",
+                "431",
+                "4XX",
+                "500",
+                "501",
+                "502",
+                "503",
+                "504",
+                "505",
+                "506",
+                "507",
+                "508",
+                "510",
+                "511",
+                "5XX",
+            ],
+            retry_config=retry_config,
+        )
+
+        response_data: Any = None
+        if utils.match_response(http_res, "200", "application/ld+json"):
+            return models.ListProductTypesByLocationResponse(
+                result=utils.unmarshal_json(
+                    http_res.text, models.TextProductTypeCollection
+                ),
+                headers=utils.get_response_headers(http_res.headers),
+            )
+        if utils.match_response(http_res, "404", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.NotFoundErrorData
+            )
+            raise errors.NotFoundError(data=response_data)
+        if utils.match_response(http_res, ["401", "403", "407"], "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.UnauthorizedErrorData
+            )
+            raise errors.UnauthorizedError(data=response_data)
+        if utils.match_response(http_res, "408", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.TimeoutErrorTData
+            )
+            raise errors.TimeoutErrorT(data=response_data)
+        if utils.match_response(http_res, "429", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.RateLimitedErrorData
+            )
+            raise errors.RateLimitedError(data=response_data)
+        if utils.match_response(
+            http_res, ["400", "413", "414", "415", "422", "431"], "application/json"
+        ):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.BadRequestErrorData
+            )
+            raise errors.BadRequestError(data=response_data)
+        if utils.match_response(http_res, "504", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.TimeoutErrorTData
+            )
+            raise errors.TimeoutErrorT(data=response_data)
+        if utils.match_response(http_res, ["501", "505"], "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.NotFoundErrorData
+            )
+            raise errors.NotFoundError(data=response_data)
+        if utils.match_response(
+            http_res, ["500", "502", "503", "506", "507", "508"], "application/json"
+        ):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.InternalServerErrorData
+            )
+            raise errors.InternalServerError(data=response_data)
+        if utils.match_response(http_res, "510", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.BadRequestErrorData
+            )
+            raise errors.BadRequestError(data=response_data)
+        if utils.match_response(http_res, "511", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.UnauthorizedErrorData
+            )
+            raise errors.UnauthorizedError(data=response_data)
+        if utils.match_response(http_res, "4XX", "*"):
+            http_res_text = await utils.stream_to_text_async(http_res)
+            raise errors.APIError(
+                "API error occurred", http_res.status_code, http_res_text, http_res
+            )
+        if utils.match_response(http_res, "5XX", "*"):
+            http_res_text = await utils.stream_to_text_async(http_res)
+            raise errors.APIError(
+                "API error occurred", http_res.status_code, http_res_text, http_res
+            )
+        if utils.match_response(http_res, "default", "application/problem+json"):
+            return models.ListProductTypesByLocationResponse(
                 result=utils.unmarshal_json(http_res.text, models.ProblemDetail),
                 headers=utils.get_response_headers(http_res.headers),
             )

@@ -19,10 +19,10 @@ class PointGeoJSONType(str, Enum):
 class PointGeoJSONTypedDict(TypedDict):
     r"""A GeoJSON feature. Please refer to IETF RFC 7946 for information on the GeoJSON format."""
 
-    type: PointGeoJSONType
     geometry: Nullable[GeoJSONGeometryTypedDict]
     r"""A GeoJSON geometry object. Please refer to IETF RFC 7946 for information on the GeoJSON format."""
     properties: PointTypedDict
+    type: PointGeoJSONType
     at_context: NotRequired[JSONLdContextUnionTypedDict]
     id: NotRequired[str]
 
@@ -30,12 +30,12 @@ class PointGeoJSONTypedDict(TypedDict):
 class PointGeoJSON(BaseModel):
     r"""A GeoJSON feature. Please refer to IETF RFC 7946 for information on the GeoJSON format."""
 
-    type: PointGeoJSONType
-
     geometry: Nullable[GeoJSONGeometry]
     r"""A GeoJSON geometry object. Please refer to IETF RFC 7946 for information on the GeoJSON format."""
 
     properties: Point
+
+    type: PointGeoJSONType
 
     at_context: Annotated[
         Optional[JSONLdContextUnion], pydantic.Field(alias="@context")

@@ -7,97 +7,14 @@ Operations related to observationstations
 
 ### Available Operations
 
-* [list_observations_by_station](#list_observations_by_station) - Returns a list of observations for a given station
-* [get_latest_observation_by_station](#get_latest_observation_by_station) - Returns the latest observation for a station
-* [get_observation_by_station](#get_observation_by_station) - Returns a single observation.
-* [list_tafs](#list_tafs) - Returns Terminal Aerodrome Forecasts for the specified airport station.
+* [get_by_station](#get_by_station) - Returns a single observation.
+* [get_latest_observation](#get_latest_observation) - Returns the latest observation for a station
+* [get_metadata](#get_metadata) - Returns metadata about a given observation station
 * [get_taf](#get_taf) - Returns a single Terminal Aerodrome Forecast.
-* [list_observation_stations](#list_observation_stations) - Returns a list of observation stations.
-* [get_observation_station_metadata](#get_observation_station_metadata) - Returns metadata about a given observation station
+* [list](#list) - Returns a list of observation stations.
+* [list_tafs](#list_tafs) - Returns Terminal Aerodrome Forecasts for the specified airport station.
 
-## list_observations_by_station
-
-Returns a list of observations for a given station
-
-### Example Usage
-
-```python
-from nws_api_client import NwsClient
-import os
-
-
-with NwsClient(
-    user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
-) as nws_client:
-
-    res = nws_client.observationstations.list_observations_by_station(station_id="<id>")
-
-    # Handle response
-    print(res)
-
-```
-
-### Parameters
-
-| Parameter                                                            | Type                                                                 | Required                                                             | Description                                                          |
-| -------------------------------------------------------------------- | -------------------------------------------------------------------- | -------------------------------------------------------------------- | -------------------------------------------------------------------- |
-| `station_id`                                                         | *str*                                                                | :heavy_check_mark:                                                   | Observation station ID                                               |
-| `start`                                                              | [date](https://docs.python.org/3/library/datetime.html#date-objects) | :heavy_minus_sign:                                                   | Start time                                                           |
-| `end`                                                                | [date](https://docs.python.org/3/library/datetime.html#date-objects) | :heavy_minus_sign:                                                   | End time                                                             |
-| `limit`                                                              | *Optional[int]*                                                      | :heavy_minus_sign:                                                   | Limit                                                                |
-| `retries`                                                            | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)     | :heavy_minus_sign:                                                   | Configuration to override the default retry behavior of the client.  |
-
-### Response
-
-**[models.ListObservationsByStationResponse](../../models/listobservationsbystationresponse.md)**
-
-### Errors
-
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.APIError | 4XX, 5XX        | \*/\*           |
-
-## get_latest_observation_by_station
-
-Returns the latest observation for a station
-
-### Example Usage
-
-```python
-from nws_api_client import NwsClient
-import os
-
-
-with NwsClient(
-    user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
-) as nws_client:
-
-    res = nws_client.observationstations.get_latest_observation_by_station(station_id="<id>")
-
-    # Handle response
-    print(res)
-
-```
-
-### Parameters
-
-| Parameter                                                           | Type                                                                | Required                                                            | Description                                                         |
-| ------------------------------------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------- |
-| `station_id`                                                        | *str*                                                               | :heavy_check_mark:                                                  | Observation station ID                                              |
-| `require_qc`                                                        | *Optional[bool]*                                                    | :heavy_minus_sign:                                                  | Require QC                                                          |
-| `retries`                                                           | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)    | :heavy_minus_sign:                                                  | Configuration to override the default retry behavior of the client. |
-
-### Response
-
-**[models.GetLatestObservationByStationResponse](../../models/getlatestobservationbystationresponse.md)**
-
-### Errors
-
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.APIError | 4XX, 5XX        | \*/\*           |
-
-## get_observation_by_station
+## get_by_station
 
 Returns a single observation.
 
@@ -113,7 +30,7 @@ with NwsClient(
     user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
 ) as nws_client:
 
-    res = nws_client.observationstations.get_observation_by_station(station_id="<id>", time=parse_datetime("2025-02-15T11:07:35.928Z"))
+    res = nws_client.observationstations.get_by_station(station_id="<id>", time=parse_datetime("2025-02-15T11:07:35.928Z"))
 
     # Handle response
     print(res)
@@ -134,13 +51,23 @@ with NwsClient(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.APIError | 4XX, 5XX        | \*/\*           |
+| Error Type                   | Status Code                  | Content Type                 |
+| ---------------------------- | ---------------------------- | ---------------------------- |
+| errors.NotFoundError         | 404                          | application/json             |
+| errors.UnauthorizedError     | 401, 403, 407                | application/json             |
+| errors.TimeoutErrorT         | 408                          | application/json             |
+| errors.RateLimitedError      | 429                          | application/json             |
+| errors.BadRequestError       | 400, 413, 414, 415, 422, 431 | application/json             |
+| errors.TimeoutErrorT         | 504                          | application/json             |
+| errors.NotFoundError         | 501, 505                     | application/json             |
+| errors.InternalServerError   | 500, 502, 503, 506, 507, 508 | application/json             |
+| errors.BadRequestError       | 510                          | application/json             |
+| errors.UnauthorizedError     | 511                          | application/json             |
+| errors.APIError              | 4XX, 5XX                     | \*/\*                        |
 
-## list_tafs
+## get_latest_observation
 
-Returns Terminal Aerodrome Forecasts for the specified airport station.
+Returns the latest observation for a station
 
 ### Example Usage
 
@@ -153,7 +80,57 @@ with NwsClient(
     user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
 ) as nws_client:
 
-    res = nws_client.observationstations.list_tafs(station_id="<id>")
+    res = nws_client.observationstations.get_latest_observation(station_id="<id>")
+
+    # Handle response
+    print(res)
+
+```
+
+### Parameters
+
+| Parameter                                                           | Type                                                                | Required                                                            | Description                                                         |
+| ------------------------------------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------- |
+| `station_id`                                                        | *str*                                                               | :heavy_check_mark:                                                  | Observation station ID                                              |
+| `require_qc`                                                        | *Optional[bool]*                                                    | :heavy_minus_sign:                                                  | Require QC                                                          |
+| `retries`                                                           | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)    | :heavy_minus_sign:                                                  | Configuration to override the default retry behavior of the client. |
+
+### Response
+
+**[models.GetLatestObservationByStationResponse](../../models/getlatestobservationbystationresponse.md)**
+
+### Errors
+
+| Error Type                   | Status Code                  | Content Type                 |
+| ---------------------------- | ---------------------------- | ---------------------------- |
+| errors.NotFoundError         | 404                          | application/json             |
+| errors.UnauthorizedError     | 401, 403, 407                | application/json             |
+| errors.TimeoutErrorT         | 408                          | application/json             |
+| errors.RateLimitedError      | 429                          | application/json             |
+| errors.BadRequestError       | 400, 413, 414, 415, 422, 431 | application/json             |
+| errors.TimeoutErrorT         | 504                          | application/json             |
+| errors.NotFoundError         | 501, 505                     | application/json             |
+| errors.InternalServerError   | 500, 502, 503, 506, 507, 508 | application/json             |
+| errors.BadRequestError       | 510                          | application/json             |
+| errors.UnauthorizedError     | 511                          | application/json             |
+| errors.APIError              | 4XX, 5XX                     | \*/\*                        |
+
+## get_metadata
+
+Returns metadata about a given observation station
+
+### Example Usage
+
+```python
+from nws_api_client import NwsClient
+import os
+
+
+with NwsClient(
+    user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
+) as nws_client:
+
+    res = nws_client.observationstations.get_metadata(station_id="<id>")
 
     # Handle response
     print(res)
@@ -169,13 +146,23 @@ with NwsClient(
 
 ### Response
 
-**[models.ListTafsResponse](../../models/listtafsresponse.md)**
+**[models.GetObservationStationMetadataResponse](../../models/getobservationstationmetadataresponse.md)**
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.APIError | 4XX, 5XX        | \*/\*           |
+| Error Type                   | Status Code                  | Content Type                 |
+| ---------------------------- | ---------------------------- | ---------------------------- |
+| errors.NotFoundError         | 404                          | application/json             |
+| errors.UnauthorizedError     | 401, 403, 407                | application/json             |
+| errors.TimeoutErrorT         | 408                          | application/json             |
+| errors.RateLimitedError      | 429                          | application/json             |
+| errors.BadRequestError       | 400, 413, 414, 415, 422, 431 | application/json             |
+| errors.TimeoutErrorT         | 504                          | application/json             |
+| errors.NotFoundError         | 501, 505                     | application/json             |
+| errors.InternalServerError   | 500, 502, 503, 506, 507, 508 | application/json             |
+| errors.BadRequestError       | 510                          | application/json             |
+| errors.UnauthorizedError     | 511                          | application/json             |
+| errors.APIError              | 4XX, 5XX                     | \*/\*                        |
 
 ## get_taf
 
@@ -215,11 +202,21 @@ with NwsClient(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.APIError | 4XX, 5XX        | \*/\*           |
+| Error Type                   | Status Code                  | Content Type                 |
+| ---------------------------- | ---------------------------- | ---------------------------- |
+| errors.NotFoundError         | 404                          | application/json             |
+| errors.UnauthorizedError     | 401, 403, 407                | application/json             |
+| errors.TimeoutErrorT         | 408                          | application/json             |
+| errors.RateLimitedError      | 429                          | application/json             |
+| errors.BadRequestError       | 400, 413, 414, 415, 422, 431 | application/json             |
+| errors.TimeoutErrorT         | 504                          | application/json             |
+| errors.NotFoundError         | 501, 505                     | application/json             |
+| errors.InternalServerError   | 500, 502, 503, 506, 507, 508 | application/json             |
+| errors.BadRequestError       | 510                          | application/json             |
+| errors.UnauthorizedError     | 511                          | application/json             |
+| errors.APIError              | 4XX, 5XX                     | \*/\*                        |
 
-## list_observation_stations
+## list
 
 Returns a list of observation stations.
 
@@ -234,7 +231,7 @@ with NwsClient(
     user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
 ) as nws_client:
 
-    res = nws_client.observationstations.list_observation_stations()
+    res = nws_client.observationstations.list()
 
     # Handle response
     print(res)
@@ -257,13 +254,23 @@ with NwsClient(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.APIError | 4XX, 5XX        | \*/\*           |
+| Error Type                   | Status Code                  | Content Type                 |
+| ---------------------------- | ---------------------------- | ---------------------------- |
+| errors.NotFoundError         | 404                          | application/json             |
+| errors.UnauthorizedError     | 401, 403, 407                | application/json             |
+| errors.TimeoutErrorT         | 408                          | application/json             |
+| errors.RateLimitedError      | 429                          | application/json             |
+| errors.BadRequestError       | 400, 413, 414, 415, 422, 431 | application/json             |
+| errors.TimeoutErrorT         | 504                          | application/json             |
+| errors.NotFoundError         | 501, 505                     | application/json             |
+| errors.InternalServerError   | 500, 502, 503, 506, 507, 508 | application/json             |
+| errors.BadRequestError       | 510                          | application/json             |
+| errors.UnauthorizedError     | 511                          | application/json             |
+| errors.APIError              | 4XX, 5XX                     | \*/\*                        |
 
-## get_observation_station_metadata
+## list_tafs
 
-Returns metadata about a given observation station
+Returns Terminal Aerodrome Forecasts for the specified airport station.
 
 ### Example Usage
 
@@ -276,7 +283,7 @@ with NwsClient(
     user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
 ) as nws_client:
 
-    res = nws_client.observationstations.get_observation_station_metadata(station_id="<id>")
+    res = nws_client.observationstations.list_tafs(station_id="<id>")
 
     # Handle response
     print(res)
@@ -292,10 +299,20 @@ with NwsClient(
 
 ### Response
 
-**[models.GetObservationStationMetadataResponse](../../models/getobservationstationmetadataresponse.md)**
+**[models.ListTafsResponse](../../models/listtafsresponse.md)**
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.APIError | 4XX, 5XX        | \*/\*           |
+| Error Type                   | Status Code                  | Content Type                 |
+| ---------------------------- | ---------------------------- | ---------------------------- |
+| errors.NotFoundError         | 404                          | application/json             |
+| errors.UnauthorizedError     | 401, 403, 407                | application/json             |
+| errors.TimeoutErrorT         | 408                          | application/json             |
+| errors.RateLimitedError      | 429                          | application/json             |
+| errors.BadRequestError       | 400, 413, 414, 415, 422, 431 | application/json             |
+| errors.TimeoutErrorT         | 504                          | application/json             |
+| errors.NotFoundError         | 501, 505                     | application/json             |
+| errors.InternalServerError   | 500, 502, 503, 506, 507, 508 | application/json             |
+| errors.BadRequestError       | 510                          | application/json             |
+| errors.UnauthorizedError     | 511                          | application/json             |
+| errors.APIError              | 4XX, 5XX                     | \*/\*                        |

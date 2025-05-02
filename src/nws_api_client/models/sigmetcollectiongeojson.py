@@ -17,17 +17,17 @@ class SigmetCollectionGeoJSONType(str, Enum):
 class SigmetCollectionGeoJSONTypedDict(TypedDict):
     r"""A GeoJSON feature collection. Please refer to IETF RFC 7946 for information on the GeoJSON format."""
 
-    type: SigmetCollectionGeoJSONType
     features: List[SigmetGeoJSONTypedDict]
+    type: SigmetCollectionGeoJSONType
     at_context: NotRequired[JSONLdContextUnionTypedDict]
 
 
 class SigmetCollectionGeoJSON(BaseModel):
     r"""A GeoJSON feature collection. Please refer to IETF RFC 7946 for information on the GeoJSON format."""
 
-    type: SigmetCollectionGeoJSONType
-
     features: List[SigmetGeoJSON]
+
+    type: SigmetCollectionGeoJSONType
 
     at_context: Annotated[
         Optional[JSONLdContextUnion], pydantic.Field(alias="@context")

@@ -6,30 +6,30 @@ from nws_api_client import errors, models, utils
 from nws_api_client._hooks import HookContext
 from nws_api_client.types import OptionalNullable, UNSET
 from nws_api_client.utils import get_security_from_env
-from typing import List, Mapping, Optional
+from typing import Any, List, Mapping, Optional
 
 
-class GetGridpointRawForecastAcceptEnum(str, Enum):
-    APPLICATION_GEO_PLUS_JSON = "application/geo+json"
-    APPLICATION_LD_PLUS_JSON = "application/ld+json"
-    APPLICATION_PROBLEM_PLUS_JSON = "application/problem+json"
-
-
-class GetGridpointForecastAcceptEnum(str, Enum):
+class GetForecastAcceptEnum(str, Enum):
     APPLICATION_GEO_PLUS_JSON = "application/geo+json"
     APPLICATION_LD_PLUS_JSON = "application/ld+json"
     APPLICATION_PROBLEM_PLUS_JSON = "application/problem+json"
     APPLICATION_VND_NOAA_DWML_PLUS_XML = "application/vnd.noaa.dwml+xml"
 
 
-class GetGridpointHourlyForecastAcceptEnum(str, Enum):
+class GetHourlyForecastAcceptEnum(str, Enum):
     APPLICATION_GEO_PLUS_JSON = "application/geo+json"
     APPLICATION_LD_PLUS_JSON = "application/ld+json"
     APPLICATION_PROBLEM_PLUS_JSON = "application/problem+json"
     APPLICATION_VND_NOAA_DWML_PLUS_XML = "application/vnd.noaa.dwml+xml"
 
 
-class ListObservationStationsByGridpointAcceptEnum(str, Enum):
+class GetRawForecastAcceptEnum(str, Enum):
+    APPLICATION_GEO_PLUS_JSON = "application/geo+json"
+    APPLICATION_LD_PLUS_JSON = "application/ld+json"
+    APPLICATION_PROBLEM_PLUS_JSON = "application/problem+json"
+
+
+class ListObservationStationsAcceptEnum(str, Enum):
     APPLICATION_GEO_PLUS_JSON = "application/geo+json"
     APPLICATION_LD_PLUS_JSON = "application/ld+json"
     APPLICATION_PROBLEM_PLUS_JSON = "application/problem+json"
@@ -38,229 +38,7 @@ class ListObservationStationsByGridpointAcceptEnum(str, Enum):
 class Gridpoints(BaseSDK):
     r"""Operations related to gridpoints (X,Y)"""
 
-    def get_gridpoint_raw_forecast(
-        self,
-        *,
-        wfo: models.NWSForecastOfficeID,
-        point: List[int],
-        retries: OptionalNullable[utils.RetryConfig] = UNSET,
-        server_url: Optional[str] = None,
-        timeout_ms: Optional[int] = None,
-        accept_header_override: Optional[GetGridpointRawForecastAcceptEnum] = None,
-        http_headers: Optional[Mapping[str, str]] = None,
-    ) -> models.GetGridpointRawForecastResponse:
-        r"""Returns raw numerical forecast data for a 2.5km grid area
-
-        :param wfo: Forecast office ID
-        :param point: Two-element array encoding grid X and Y (comma-separated)
-        :param retries: Override the default retry configuration for this method
-        :param server_url: Override the default server URL for this method
-        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
-        :param accept_header_override: Override the default accept header for this method
-        :param http_headers: Additional headers to set or replace on requests.
-        """
-        base_url = None
-        url_variables = None
-        if timeout_ms is None:
-            timeout_ms = self.sdk_configuration.timeout_ms
-
-        if server_url is not None:
-            base_url = server_url
-        else:
-            base_url = self._get_url(base_url, url_variables)
-
-        request = models.GetGridpointRawForecastRequest(
-            wfo=wfo,
-            point=point,
-        )
-
-        req = self._build_request(
-            method="GET",
-            path="/gridpoints/{wfo}/{point}",
-            base_url=base_url,
-            url_variables=url_variables,
-            request=request,
-            request_body_required=False,
-            request_has_path_params=True,
-            request_has_query_params=True,
-            user_agent_header="user-agent",
-            accept_header_value=accept_header_override.value
-            if accept_header_override is not None
-            else "application/geo+json;q=1, application/ld+json;q=0.7, application/problem+json;q=0",
-            http_headers=http_headers,
-            security=self.sdk_configuration.security,
-            timeout_ms=timeout_ms,
-        )
-
-        if retries == UNSET:
-            if self.sdk_configuration.retry_config is not UNSET:
-                retries = self.sdk_configuration.retry_config
-
-        retry_config = None
-        if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
-
-        http_res = self.do_request(
-            hook_ctx=HookContext(
-                base_url=base_url or "",
-                operation_id="get_gridpoint_raw_forecast",
-                oauth2_scopes=[],
-                security_source=get_security_from_env(
-                    self.sdk_configuration.security, models.Security
-                ),
-            ),
-            request=req,
-            error_status_codes=["4XX", "5XX"],
-            retry_config=retry_config,
-        )
-
-        if utils.match_response(http_res, "200", "application/geo+json"):
-            return models.GetGridpointRawForecastResponse(
-                result=utils.unmarshal_json(http_res.text, models.GridpointGeoJSON),
-                headers=utils.get_response_headers(http_res.headers),
-            )
-        if utils.match_response(http_res, "200", "application/ld+json"):
-            return models.GetGridpointRawForecastResponse(
-                result=utils.unmarshal_json(http_res.text, models.Gridpoint),
-                headers=utils.get_response_headers(http_res.headers),
-            )
-        if utils.match_response(http_res, "4XX", "*"):
-            http_res_text = utils.stream_to_text(http_res)
-            raise errors.APIError(
-                "API error occurred", http_res.status_code, http_res_text, http_res
-            )
-        if utils.match_response(http_res, "5XX", "*"):
-            http_res_text = utils.stream_to_text(http_res)
-            raise errors.APIError(
-                "API error occurred", http_res.status_code, http_res_text, http_res
-            )
-        if utils.match_response(http_res, "default", "application/problem+json"):
-            return models.GetGridpointRawForecastResponse(
-                result=utils.unmarshal_json(http_res.text, models.ProblemDetail),
-                headers=utils.get_response_headers(http_res.headers),
-            )
-
-        content_type = http_res.headers.get("Content-Type")
-        http_res_text = utils.stream_to_text(http_res)
-        raise errors.APIError(
-            f"Unexpected response received (code: {http_res.status_code}, type: {content_type})",
-            http_res.status_code,
-            http_res_text,
-            http_res,
-        )
-
-    async def get_gridpoint_raw_forecast_async(
-        self,
-        *,
-        wfo: models.NWSForecastOfficeID,
-        point: List[int],
-        retries: OptionalNullable[utils.RetryConfig] = UNSET,
-        server_url: Optional[str] = None,
-        timeout_ms: Optional[int] = None,
-        accept_header_override: Optional[GetGridpointRawForecastAcceptEnum] = None,
-        http_headers: Optional[Mapping[str, str]] = None,
-    ) -> models.GetGridpointRawForecastResponse:
-        r"""Returns raw numerical forecast data for a 2.5km grid area
-
-        :param wfo: Forecast office ID
-        :param point: Two-element array encoding grid X and Y (comma-separated)
-        :param retries: Override the default retry configuration for this method
-        :param server_url: Override the default server URL for this method
-        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
-        :param accept_header_override: Override the default accept header for this method
-        :param http_headers: Additional headers to set or replace on requests.
-        """
-        base_url = None
-        url_variables = None
-        if timeout_ms is None:
-            timeout_ms = self.sdk_configuration.timeout_ms
-
-        if server_url is not None:
-            base_url = server_url
-        else:
-            base_url = self._get_url(base_url, url_variables)
-
-        request = models.GetGridpointRawForecastRequest(
-            wfo=wfo,
-            point=point,
-        )
-
-        req = self._build_request_async(
-            method="GET",
-            path="/gridpoints/{wfo}/{point}",
-            base_url=base_url,
-            url_variables=url_variables,
-            request=request,
-            request_body_required=False,
-            request_has_path_params=True,
-            request_has_query_params=True,
-            user_agent_header="user-agent",
-            accept_header_value=accept_header_override.value
-            if accept_header_override is not None
-            else "application/geo+json;q=1, application/ld+json;q=0.7, application/problem+json;q=0",
-            http_headers=http_headers,
-            security=self.sdk_configuration.security,
-            timeout_ms=timeout_ms,
-        )
-
-        if retries == UNSET:
-            if self.sdk_configuration.retry_config is not UNSET:
-                retries = self.sdk_configuration.retry_config
-
-        retry_config = None
-        if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
-
-        http_res = await self.do_request_async(
-            hook_ctx=HookContext(
-                base_url=base_url or "",
-                operation_id="get_gridpoint_raw_forecast",
-                oauth2_scopes=[],
-                security_source=get_security_from_env(
-                    self.sdk_configuration.security, models.Security
-                ),
-            ),
-            request=req,
-            error_status_codes=["4XX", "5XX"],
-            retry_config=retry_config,
-        )
-
-        if utils.match_response(http_res, "200", "application/geo+json"):
-            return models.GetGridpointRawForecastResponse(
-                result=utils.unmarshal_json(http_res.text, models.GridpointGeoJSON),
-                headers=utils.get_response_headers(http_res.headers),
-            )
-        if utils.match_response(http_res, "200", "application/ld+json"):
-            return models.GetGridpointRawForecastResponse(
-                result=utils.unmarshal_json(http_res.text, models.Gridpoint),
-                headers=utils.get_response_headers(http_res.headers),
-            )
-        if utils.match_response(http_res, "4XX", "*"):
-            http_res_text = await utils.stream_to_text_async(http_res)
-            raise errors.APIError(
-                "API error occurred", http_res.status_code, http_res_text, http_res
-            )
-        if utils.match_response(http_res, "5XX", "*"):
-            http_res_text = await utils.stream_to_text_async(http_res)
-            raise errors.APIError(
-                "API error occurred", http_res.status_code, http_res_text, http_res
-            )
-        if utils.match_response(http_res, "default", "application/problem+json"):
-            return models.GetGridpointRawForecastResponse(
-                result=utils.unmarshal_json(http_res.text, models.ProblemDetail),
-                headers=utils.get_response_headers(http_res.headers),
-            )
-
-        content_type = http_res.headers.get("Content-Type")
-        http_res_text = await utils.stream_to_text_async(http_res)
-        raise errors.APIError(
-            f"Unexpected response received (code: {http_res.status_code}, type: {content_type})",
-            http_res.status_code,
-            http_res_text,
-            http_res,
-        )
-
-    def get_gridpoint_forecast(
+    def get_forecast(
         self,
         *,
         wfo: models.NWSForecastOfficeID,
@@ -272,7 +50,7 @@ class Gridpoints(BaseSDK):
         retries: OptionalNullable[utils.RetryConfig] = UNSET,
         server_url: Optional[str] = None,
         timeout_ms: Optional[int] = None,
-        accept_header_override: Optional[GetGridpointForecastAcceptEnum] = None,
+        accept_header_override: Optional[GetForecastAcceptEnum] = None,
         http_headers: Optional[Mapping[str, str]] = None,
     ) -> models.GetGridpointForecastResponse:
         r"""Returns a textual forecast for a 2.5km grid area
@@ -325,10 +103,14 @@ class Gridpoints(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(500, 60000, 1.5, 3600000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["5XX"])
 
         http_res = self.do_request(
             hook_ctx=HookContext(
@@ -340,10 +122,37 @@ class Gridpoints(BaseSDK):
                 ),
             ),
             request=req,
-            error_status_codes=["4XX", "5XX"],
+            error_status_codes=[
+                "400",
+                "401",
+                "403",
+                "404",
+                "407",
+                "408",
+                "413",
+                "414",
+                "415",
+                "422",
+                "429",
+                "431",
+                "4XX",
+                "500",
+                "501",
+                "502",
+                "503",
+                "504",
+                "505",
+                "506",
+                "507",
+                "508",
+                "510",
+                "511",
+                "5XX",
+            ],
             retry_config=retry_config,
         )
 
+        response_data: Any = None
         if utils.match_response(http_res, "200", "application/geo+json"):
             return models.GetGridpointForecastResponse(
                 result=utils.unmarshal_json(
@@ -364,6 +173,60 @@ class Gridpoints(BaseSDK):
                 result=http_res_bytes,
                 headers=utils.get_response_headers(http_res.headers),
             )
+        if utils.match_response(http_res, "404", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.NotFoundErrorData
+            )
+            raise errors.NotFoundError(data=response_data)
+        if utils.match_response(http_res, ["401", "403", "407"], "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.UnauthorizedErrorData
+            )
+            raise errors.UnauthorizedError(data=response_data)
+        if utils.match_response(http_res, "408", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.TimeoutErrorTData
+            )
+            raise errors.TimeoutErrorT(data=response_data)
+        if utils.match_response(http_res, "429", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.RateLimitedErrorData
+            )
+            raise errors.RateLimitedError(data=response_data)
+        if utils.match_response(
+            http_res, ["400", "413", "414", "415", "422", "431"], "application/json"
+        ):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.BadRequestErrorData
+            )
+            raise errors.BadRequestError(data=response_data)
+        if utils.match_response(http_res, "504", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.TimeoutErrorTData
+            )
+            raise errors.TimeoutErrorT(data=response_data)
+        if utils.match_response(http_res, ["501", "505"], "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.NotFoundErrorData
+            )
+            raise errors.NotFoundError(data=response_data)
+        if utils.match_response(
+            http_res, ["500", "502", "503", "506", "507", "508"], "application/json"
+        ):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.InternalServerErrorData
+            )
+            raise errors.InternalServerError(data=response_data)
+        if utils.match_response(http_res, "510", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.BadRequestErrorData
+            )
+            raise errors.BadRequestError(data=response_data)
+        if utils.match_response(http_res, "511", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.UnauthorizedErrorData
+            )
+            raise errors.UnauthorizedError(data=response_data)
         if utils.match_response(http_res, "4XX", "*"):
             http_res_text = utils.stream_to_text(http_res)
             raise errors.APIError(
@@ -389,7 +252,7 @@ class Gridpoints(BaseSDK):
             http_res,
         )
 
-    async def get_gridpoint_forecast_async(
+    async def get_forecast_async(
         self,
         *,
         wfo: models.NWSForecastOfficeID,
@@ -401,7 +264,7 @@ class Gridpoints(BaseSDK):
         retries: OptionalNullable[utils.RetryConfig] = UNSET,
         server_url: Optional[str] = None,
         timeout_ms: Optional[int] = None,
-        accept_header_override: Optional[GetGridpointForecastAcceptEnum] = None,
+        accept_header_override: Optional[GetForecastAcceptEnum] = None,
         http_headers: Optional[Mapping[str, str]] = None,
     ) -> models.GetGridpointForecastResponse:
         r"""Returns a textual forecast for a 2.5km grid area
@@ -454,10 +317,14 @@ class Gridpoints(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(500, 60000, 1.5, 3600000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["5XX"])
 
         http_res = await self.do_request_async(
             hook_ctx=HookContext(
@@ -469,10 +336,37 @@ class Gridpoints(BaseSDK):
                 ),
             ),
             request=req,
-            error_status_codes=["4XX", "5XX"],
+            error_status_codes=[
+                "400",
+                "401",
+                "403",
+                "404",
+                "407",
+                "408",
+                "413",
+                "414",
+                "415",
+                "422",
+                "429",
+                "431",
+                "4XX",
+                "500",
+                "501",
+                "502",
+                "503",
+                "504",
+                "505",
+                "506",
+                "507",
+                "508",
+                "510",
+                "511",
+                "5XX",
+            ],
             retry_config=retry_config,
         )
 
+        response_data: Any = None
         if utils.match_response(http_res, "200", "application/geo+json"):
             return models.GetGridpointForecastResponse(
                 result=utils.unmarshal_json(
@@ -493,6 +387,60 @@ class Gridpoints(BaseSDK):
                 result=http_res_bytes,
                 headers=utils.get_response_headers(http_res.headers),
             )
+        if utils.match_response(http_res, "404", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.NotFoundErrorData
+            )
+            raise errors.NotFoundError(data=response_data)
+        if utils.match_response(http_res, ["401", "403", "407"], "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.UnauthorizedErrorData
+            )
+            raise errors.UnauthorizedError(data=response_data)
+        if utils.match_response(http_res, "408", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.TimeoutErrorTData
+            )
+            raise errors.TimeoutErrorT(data=response_data)
+        if utils.match_response(http_res, "429", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.RateLimitedErrorData
+            )
+            raise errors.RateLimitedError(data=response_data)
+        if utils.match_response(
+            http_res, ["400", "413", "414", "415", "422", "431"], "application/json"
+        ):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.BadRequestErrorData
+            )
+            raise errors.BadRequestError(data=response_data)
+        if utils.match_response(http_res, "504", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.TimeoutErrorTData
+            )
+            raise errors.TimeoutErrorT(data=response_data)
+        if utils.match_response(http_res, ["501", "505"], "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.NotFoundErrorData
+            )
+            raise errors.NotFoundError(data=response_data)
+        if utils.match_response(
+            http_res, ["500", "502", "503", "506", "507", "508"], "application/json"
+        ):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.InternalServerErrorData
+            )
+            raise errors.InternalServerError(data=response_data)
+        if utils.match_response(http_res, "510", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.BadRequestErrorData
+            )
+            raise errors.BadRequestError(data=response_data)
+        if utils.match_response(http_res, "511", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.UnauthorizedErrorData
+            )
+            raise errors.UnauthorizedError(data=response_data)
         if utils.match_response(http_res, "4XX", "*"):
             http_res_text = await utils.stream_to_text_async(http_res)
             raise errors.APIError(
@@ -518,7 +466,7 @@ class Gridpoints(BaseSDK):
             http_res,
         )
 
-    def get_gridpoint_hourly_forecast(
+    def get_hourly_forecast(
         self,
         *,
         wfo: models.NWSForecastOfficeID,
@@ -530,7 +478,7 @@ class Gridpoints(BaseSDK):
         retries: OptionalNullable[utils.RetryConfig] = UNSET,
         server_url: Optional[str] = None,
         timeout_ms: Optional[int] = None,
-        accept_header_override: Optional[GetGridpointHourlyForecastAcceptEnum] = None,
+        accept_header_override: Optional[GetHourlyForecastAcceptEnum] = None,
         http_headers: Optional[Mapping[str, str]] = None,
     ) -> models.GetGridpointHourlyForecastResponse:
         r"""Returns a textual hourly forecast for a 2.5km grid area
@@ -583,10 +531,14 @@ class Gridpoints(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(500, 60000, 1.5, 3600000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["5XX"])
 
         http_res = self.do_request(
             hook_ctx=HookContext(
@@ -598,10 +550,37 @@ class Gridpoints(BaseSDK):
                 ),
             ),
             request=req,
-            error_status_codes=["4XX", "5XX"],
+            error_status_codes=[
+                "400",
+                "401",
+                "403",
+                "404",
+                "407",
+                "408",
+                "413",
+                "414",
+                "415",
+                "422",
+                "429",
+                "431",
+                "4XX",
+                "500",
+                "501",
+                "502",
+                "503",
+                "504",
+                "505",
+                "506",
+                "507",
+                "508",
+                "510",
+                "511",
+                "5XX",
+            ],
             retry_config=retry_config,
         )
 
+        response_data: Any = None
         if utils.match_response(http_res, "200", "application/geo+json"):
             return models.GetGridpointHourlyForecastResponse(
                 result=utils.unmarshal_json(
@@ -622,6 +601,60 @@ class Gridpoints(BaseSDK):
                 result=http_res_bytes,
                 headers=utils.get_response_headers(http_res.headers),
             )
+        if utils.match_response(http_res, "404", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.NotFoundErrorData
+            )
+            raise errors.NotFoundError(data=response_data)
+        if utils.match_response(http_res, ["401", "403", "407"], "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.UnauthorizedErrorData
+            )
+            raise errors.UnauthorizedError(data=response_data)
+        if utils.match_response(http_res, "408", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.TimeoutErrorTData
+            )
+            raise errors.TimeoutErrorT(data=response_data)
+        if utils.match_response(http_res, "429", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.RateLimitedErrorData
+            )
+            raise errors.RateLimitedError(data=response_data)
+        if utils.match_response(
+            http_res, ["400", "413", "414", "415", "422", "431"], "application/json"
+        ):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.BadRequestErrorData
+            )
+            raise errors.BadRequestError(data=response_data)
+        if utils.match_response(http_res, "504", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.TimeoutErrorTData
+            )
+            raise errors.TimeoutErrorT(data=response_data)
+        if utils.match_response(http_res, ["501", "505"], "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.NotFoundErrorData
+            )
+            raise errors.NotFoundError(data=response_data)
+        if utils.match_response(
+            http_res, ["500", "502", "503", "506", "507", "508"], "application/json"
+        ):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.InternalServerErrorData
+            )
+            raise errors.InternalServerError(data=response_data)
+        if utils.match_response(http_res, "510", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.BadRequestErrorData
+            )
+            raise errors.BadRequestError(data=response_data)
+        if utils.match_response(http_res, "511", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.UnauthorizedErrorData
+            )
+            raise errors.UnauthorizedError(data=response_data)
         if utils.match_response(http_res, "4XX", "*"):
             http_res_text = utils.stream_to_text(http_res)
             raise errors.APIError(
@@ -647,7 +680,7 @@ class Gridpoints(BaseSDK):
             http_res,
         )
 
-    async def get_gridpoint_hourly_forecast_async(
+    async def get_hourly_forecast_async(
         self,
         *,
         wfo: models.NWSForecastOfficeID,
@@ -659,7 +692,7 @@ class Gridpoints(BaseSDK):
         retries: OptionalNullable[utils.RetryConfig] = UNSET,
         server_url: Optional[str] = None,
         timeout_ms: Optional[int] = None,
-        accept_header_override: Optional[GetGridpointHourlyForecastAcceptEnum] = None,
+        accept_header_override: Optional[GetHourlyForecastAcceptEnum] = None,
         http_headers: Optional[Mapping[str, str]] = None,
     ) -> models.GetGridpointHourlyForecastResponse:
         r"""Returns a textual hourly forecast for a 2.5km grid area
@@ -712,10 +745,14 @@ class Gridpoints(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(500, 60000, 1.5, 3600000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["5XX"])
 
         http_res = await self.do_request_async(
             hook_ctx=HookContext(
@@ -727,10 +764,37 @@ class Gridpoints(BaseSDK):
                 ),
             ),
             request=req,
-            error_status_codes=["4XX", "5XX"],
+            error_status_codes=[
+                "400",
+                "401",
+                "403",
+                "404",
+                "407",
+                "408",
+                "413",
+                "414",
+                "415",
+                "422",
+                "429",
+                "431",
+                "4XX",
+                "500",
+                "501",
+                "502",
+                "503",
+                "504",
+                "505",
+                "506",
+                "507",
+                "508",
+                "510",
+                "511",
+                "5XX",
+            ],
             retry_config=retry_config,
         )
 
+        response_data: Any = None
         if utils.match_response(http_res, "200", "application/geo+json"):
             return models.GetGridpointHourlyForecastResponse(
                 result=utils.unmarshal_json(
@@ -751,6 +815,60 @@ class Gridpoints(BaseSDK):
                 result=http_res_bytes,
                 headers=utils.get_response_headers(http_res.headers),
             )
+        if utils.match_response(http_res, "404", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.NotFoundErrorData
+            )
+            raise errors.NotFoundError(data=response_data)
+        if utils.match_response(http_res, ["401", "403", "407"], "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.UnauthorizedErrorData
+            )
+            raise errors.UnauthorizedError(data=response_data)
+        if utils.match_response(http_res, "408", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.TimeoutErrorTData
+            )
+            raise errors.TimeoutErrorT(data=response_data)
+        if utils.match_response(http_res, "429", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.RateLimitedErrorData
+            )
+            raise errors.RateLimitedError(data=response_data)
+        if utils.match_response(
+            http_res, ["400", "413", "414", "415", "422", "431"], "application/json"
+        ):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.BadRequestErrorData
+            )
+            raise errors.BadRequestError(data=response_data)
+        if utils.match_response(http_res, "504", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.TimeoutErrorTData
+            )
+            raise errors.TimeoutErrorT(data=response_data)
+        if utils.match_response(http_res, ["501", "505"], "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.NotFoundErrorData
+            )
+            raise errors.NotFoundError(data=response_data)
+        if utils.match_response(
+            http_res, ["500", "502", "503", "506", "507", "508"], "application/json"
+        ):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.InternalServerErrorData
+            )
+            raise errors.InternalServerError(data=response_data)
+        if utils.match_response(http_res, "510", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.BadRequestErrorData
+            )
+            raise errors.BadRequestError(data=response_data)
+        if utils.match_response(http_res, "511", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.UnauthorizedErrorData
+            )
+            raise errors.UnauthorizedError(data=response_data)
         if utils.match_response(http_res, "4XX", "*"):
             http_res_text = await utils.stream_to_text_async(http_res)
             raise errors.APIError(
@@ -776,7 +894,399 @@ class Gridpoints(BaseSDK):
             http_res,
         )
 
-    def list_observation_stations_by_gridpoint(
+    def get_raw_forecast(
+        self,
+        *,
+        wfo: models.NWSForecastOfficeID,
+        point: List[int],
+        retries: OptionalNullable[utils.RetryConfig] = UNSET,
+        server_url: Optional[str] = None,
+        timeout_ms: Optional[int] = None,
+        accept_header_override: Optional[GetRawForecastAcceptEnum] = None,
+        http_headers: Optional[Mapping[str, str]] = None,
+    ) -> models.GetGridpointRawForecastResponse:
+        r"""Returns raw numerical forecast data for a 2.5km grid area
+
+        :param wfo: Forecast office ID
+        :param point: Two-element array encoding grid X and Y (comma-separated)
+        :param retries: Override the default retry configuration for this method
+        :param server_url: Override the default server URL for this method
+        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param accept_header_override: Override the default accept header for this method
+        :param http_headers: Additional headers to set or replace on requests.
+        """
+        base_url = None
+        url_variables = None
+        if timeout_ms is None:
+            timeout_ms = self.sdk_configuration.timeout_ms
+
+        if server_url is not None:
+            base_url = server_url
+        else:
+            base_url = self._get_url(base_url, url_variables)
+
+        request = models.GetGridpointRawForecastRequest(
+            wfo=wfo,
+            point=point,
+        )
+
+        req = self._build_request(
+            method="GET",
+            path="/gridpoints/{wfo}/{point}",
+            base_url=base_url,
+            url_variables=url_variables,
+            request=request,
+            request_body_required=False,
+            request_has_path_params=True,
+            request_has_query_params=True,
+            user_agent_header="user-agent",
+            accept_header_value=accept_header_override.value
+            if accept_header_override is not None
+            else "application/geo+json;q=1, application/ld+json;q=0.7, application/problem+json;q=0",
+            http_headers=http_headers,
+            security=self.sdk_configuration.security,
+            timeout_ms=timeout_ms,
+        )
+
+        if retries == UNSET:
+            if self.sdk_configuration.retry_config is not UNSET:
+                retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(500, 60000, 1.5, 3600000), True
+                )
+
+        retry_config = None
+        if isinstance(retries, utils.RetryConfig):
+            retry_config = (retries, ["5XX"])
+
+        http_res = self.do_request(
+            hook_ctx=HookContext(
+                base_url=base_url or "",
+                operation_id="get_gridpoint_raw_forecast",
+                oauth2_scopes=[],
+                security_source=get_security_from_env(
+                    self.sdk_configuration.security, models.Security
+                ),
+            ),
+            request=req,
+            error_status_codes=[
+                "400",
+                "401",
+                "403",
+                "404",
+                "407",
+                "408",
+                "413",
+                "414",
+                "415",
+                "422",
+                "429",
+                "431",
+                "4XX",
+                "500",
+                "501",
+                "502",
+                "503",
+                "504",
+                "505",
+                "506",
+                "507",
+                "508",
+                "510",
+                "511",
+                "5XX",
+            ],
+            retry_config=retry_config,
+        )
+
+        response_data: Any = None
+        if utils.match_response(http_res, "200", "application/geo+json"):
+            return models.GetGridpointRawForecastResponse(
+                result=utils.unmarshal_json(http_res.text, models.GridpointGeoJSON),
+                headers=utils.get_response_headers(http_res.headers),
+            )
+        if utils.match_response(http_res, "200", "application/ld+json"):
+            return models.GetGridpointRawForecastResponse(
+                result=utils.unmarshal_json(http_res.text, models.Gridpoint),
+                headers=utils.get_response_headers(http_res.headers),
+            )
+        if utils.match_response(http_res, "404", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.NotFoundErrorData
+            )
+            raise errors.NotFoundError(data=response_data)
+        if utils.match_response(http_res, ["401", "403", "407"], "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.UnauthorizedErrorData
+            )
+            raise errors.UnauthorizedError(data=response_data)
+        if utils.match_response(http_res, "408", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.TimeoutErrorTData
+            )
+            raise errors.TimeoutErrorT(data=response_data)
+        if utils.match_response(http_res, "429", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.RateLimitedErrorData
+            )
+            raise errors.RateLimitedError(data=response_data)
+        if utils.match_response(
+            http_res, ["400", "413", "414", "415", "422", "431"], "application/json"
+        ):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.BadRequestErrorData
+            )
+            raise errors.BadRequestError(data=response_data)
+        if utils.match_response(http_res, "504", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.TimeoutErrorTData
+            )
+            raise errors.TimeoutErrorT(data=response_data)
+        if utils.match_response(http_res, ["501", "505"], "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.NotFoundErrorData
+            )
+            raise errors.NotFoundError(data=response_data)
+        if utils.match_response(
+            http_res, ["500", "502", "503", "506", "507", "508"], "application/json"
+        ):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.InternalServerErrorData
+            )
+            raise errors.InternalServerError(data=response_data)
+        if utils.match_response(http_res, "510", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.BadRequestErrorData
+            )
+            raise errors.BadRequestError(data=response_data)
+        if utils.match_response(http_res, "511", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.UnauthorizedErrorData
+            )
+            raise errors.UnauthorizedError(data=response_data)
+        if utils.match_response(http_res, "4XX", "*"):
+            http_res_text = utils.stream_to_text(http_res)
+            raise errors.APIError(
+                "API error occurred", http_res.status_code, http_res_text, http_res
+            )
+        if utils.match_response(http_res, "5XX", "*"):
+            http_res_text = utils.stream_to_text(http_res)
+            raise errors.APIError(
+                "API error occurred", http_res.status_code, http_res_text, http_res
+            )
+        if utils.match_response(http_res, "default", "application/problem+json"):
+            return models.GetGridpointRawForecastResponse(
+                result=utils.unmarshal_json(http_res.text, models.ProblemDetail),
+                headers=utils.get_response_headers(http_res.headers),
+            )
+
+        content_type = http_res.headers.get("Content-Type")
+        http_res_text = utils.stream_to_text(http_res)
+        raise errors.APIError(
+            f"Unexpected response received (code: {http_res.status_code}, type: {content_type})",
+            http_res.status_code,
+            http_res_text,
+            http_res,
+        )
+
+    async def get_raw_forecast_async(
+        self,
+        *,
+        wfo: models.NWSForecastOfficeID,
+        point: List[int],
+        retries: OptionalNullable[utils.RetryConfig] = UNSET,
+        server_url: Optional[str] = None,
+        timeout_ms: Optional[int] = None,
+        accept_header_override: Optional[GetRawForecastAcceptEnum] = None,
+        http_headers: Optional[Mapping[str, str]] = None,
+    ) -> models.GetGridpointRawForecastResponse:
+        r"""Returns raw numerical forecast data for a 2.5km grid area
+
+        :param wfo: Forecast office ID
+        :param point: Two-element array encoding grid X and Y (comma-separated)
+        :param retries: Override the default retry configuration for this method
+        :param server_url: Override the default server URL for this method
+        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param accept_header_override: Override the default accept header for this method
+        :param http_headers: Additional headers to set or replace on requests.
+        """
+        base_url = None
+        url_variables = None
+        if timeout_ms is None:
+            timeout_ms = self.sdk_configuration.timeout_ms
+
+        if server_url is not None:
+            base_url = server_url
+        else:
+            base_url = self._get_url(base_url, url_variables)
+
+        request = models.GetGridpointRawForecastRequest(
+            wfo=wfo,
+            point=point,
+        )
+
+        req = self._build_request_async(
+            method="GET",
+            path="/gridpoints/{wfo}/{point}",
+            base_url=base_url,
+            url_variables=url_variables,
+            request=request,
+            request_body_required=False,
+            request_has_path_params=True,
+            request_has_query_params=True,
+            user_agent_header="user-agent",
+            accept_header_value=accept_header_override.value
+            if accept_header_override is not None
+            else "application/geo+json;q=1, application/ld+json;q=0.7, application/problem+json;q=0",
+            http_headers=http_headers,
+            security=self.sdk_configuration.security,
+            timeout_ms=timeout_ms,
+        )
+
+        if retries == UNSET:
+            if self.sdk_configuration.retry_config is not UNSET:
+                retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(500, 60000, 1.5, 3600000), True
+                )
+
+        retry_config = None
+        if isinstance(retries, utils.RetryConfig):
+            retry_config = (retries, ["5XX"])
+
+        http_res = await self.do_request_async(
+            hook_ctx=HookContext(
+                base_url=base_url or "",
+                operation_id="get_gridpoint_raw_forecast",
+                oauth2_scopes=[],
+                security_source=get_security_from_env(
+                    self.sdk_configuration.security, models.Security
+                ),
+            ),
+            request=req,
+            error_status_codes=[
+                "400",
+                "401",
+                "403",
+                "404",
+                "407",
+                "408",
+                "413",
+                "414",
+                "415",
+                "422",
+                "429",
+                "431",
+                "4XX",
+                "500",
+                "501",
+                "502",
+                "503",
+                "504",
+                "505",
+                "506",
+                "507",
+                "508",
+                "510",
+                "511",
+                "5XX",
+            ],
+            retry_config=retry_config,
+        )
+
+        response_data: Any = None
+        if utils.match_response(http_res, "200", "application/geo+json"):
+            return models.GetGridpointRawForecastResponse(
+                result=utils.unmarshal_json(http_res.text, models.GridpointGeoJSON),
+                headers=utils.get_response_headers(http_res.headers),
+            )
+        if utils.match_response(http_res, "200", "application/ld+json"):
+            return models.GetGridpointRawForecastResponse(
+                result=utils.unmarshal_json(http_res.text, models.Gridpoint),
+                headers=utils.get_response_headers(http_res.headers),
+            )
+        if utils.match_response(http_res, "404", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.NotFoundErrorData
+            )
+            raise errors.NotFoundError(data=response_data)
+        if utils.match_response(http_res, ["401", "403", "407"], "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.UnauthorizedErrorData
+            )
+            raise errors.UnauthorizedError(data=response_data)
+        if utils.match_response(http_res, "408", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.TimeoutErrorTData
+            )
+            raise errors.TimeoutErrorT(data=response_data)
+        if utils.match_response(http_res, "429", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.RateLimitedErrorData
+            )
+            raise errors.RateLimitedError(data=response_data)
+        if utils.match_response(
+            http_res, ["400", "413", "414", "415", "422", "431"], "application/json"
+        ):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.BadRequestErrorData
+            )
+            raise errors.BadRequestError(data=response_data)
+        if utils.match_response(http_res, "504", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.TimeoutErrorTData
+            )
+            raise errors.TimeoutErrorT(data=response_data)
+        if utils.match_response(http_res, ["501", "505"], "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.NotFoundErrorData
+            )
+            raise errors.NotFoundError(data=response_data)
+        if utils.match_response(
+            http_res, ["500", "502", "503", "506", "507", "508"], "application/json"
+        ):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.InternalServerErrorData
+            )
+            raise errors.InternalServerError(data=response_data)
+        if utils.match_response(http_res, "510", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.BadRequestErrorData
+            )
+            raise errors.BadRequestError(data=response_data)
+        if utils.match_response(http_res, "511", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.UnauthorizedErrorData
+            )
+            raise errors.UnauthorizedError(data=response_data)
+        if utils.match_response(http_res, "4XX", "*"):
+            http_res_text = await utils.stream_to_text_async(http_res)
+            raise errors.APIError(
+                "API error occurred", http_res.status_code, http_res_text, http_res
+            )
+        if utils.match_response(http_res, "5XX", "*"):
+            http_res_text = await utils.stream_to_text_async(http_res)
+            raise errors.APIError(
+                "API error occurred", http_res.status_code, http_res_text, http_res
+            )
+        if utils.match_response(http_res, "default", "application/problem+json"):
+            return models.GetGridpointRawForecastResponse(
+                result=utils.unmarshal_json(http_res.text, models.ProblemDetail),
+                headers=utils.get_response_headers(http_res.headers),
+            )
+
+        content_type = http_res.headers.get("Content-Type")
+        http_res_text = await utils.stream_to_text_async(http_res)
+        raise errors.APIError(
+            f"Unexpected response received (code: {http_res.status_code}, type: {content_type})",
+            http_res.status_code,
+            http_res_text,
+            http_res,
+        )
+
+    def list_observation_stations(
         self,
         *,
         wfo: models.NWSForecastOfficeID,
@@ -786,9 +1296,7 @@ class Gridpoints(BaseSDK):
         retries: OptionalNullable[utils.RetryConfig] = UNSET,
         server_url: Optional[str] = None,
         timeout_ms: Optional[int] = None,
-        accept_header_override: Optional[
-            ListObservationStationsByGridpointAcceptEnum
-        ] = None,
+        accept_header_override: Optional[ListObservationStationsAcceptEnum] = None,
         http_headers: Optional[Mapping[str, str]] = None,
     ) -> models.ListObservationStationsByGridpointResponse:
         r"""Returns a list of observation stations usable for a given 2.5km grid area
@@ -841,10 +1349,14 @@ class Gridpoints(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(500, 60000, 1.5, 3600000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["5XX"])
 
         http_res = self.do_request(
             hook_ctx=HookContext(
@@ -856,10 +1368,37 @@ class Gridpoints(BaseSDK):
                 ),
             ),
             request=req,
-            error_status_codes=["4XX", "5XX"],
+            error_status_codes=[
+                "400",
+                "401",
+                "403",
+                "404",
+                "407",
+                "408",
+                "413",
+                "414",
+                "415",
+                "422",
+                "429",
+                "431",
+                "4XX",
+                "500",
+                "501",
+                "502",
+                "503",
+                "504",
+                "505",
+                "506",
+                "507",
+                "508",
+                "510",
+                "511",
+                "5XX",
+            ],
             retry_config=retry_config,
         )
 
+        response_data: Any = None
         if utils.match_response(http_res, "200", "application/geo+json"):
             return models.ListObservationStationsByGridpointResponse(
                 result=utils.unmarshal_json(
@@ -874,6 +1413,60 @@ class Gridpoints(BaseSDK):
                 ),
                 headers=utils.get_response_headers(http_res.headers),
             )
+        if utils.match_response(http_res, "404", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.NotFoundErrorData
+            )
+            raise errors.NotFoundError(data=response_data)
+        if utils.match_response(http_res, ["401", "403", "407"], "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.UnauthorizedErrorData
+            )
+            raise errors.UnauthorizedError(data=response_data)
+        if utils.match_response(http_res, "408", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.TimeoutErrorTData
+            )
+            raise errors.TimeoutErrorT(data=response_data)
+        if utils.match_response(http_res, "429", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.RateLimitedErrorData
+            )
+            raise errors.RateLimitedError(data=response_data)
+        if utils.match_response(
+            http_res, ["400", "413", "414", "415", "422", "431"], "application/json"
+        ):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.BadRequestErrorData
+            )
+            raise errors.BadRequestError(data=response_data)
+        if utils.match_response(http_res, "504", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.TimeoutErrorTData
+            )
+            raise errors.TimeoutErrorT(data=response_data)
+        if utils.match_response(http_res, ["501", "505"], "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.NotFoundErrorData
+            )
+            raise errors.NotFoundError(data=response_data)
+        if utils.match_response(
+            http_res, ["500", "502", "503", "506", "507", "508"], "application/json"
+        ):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.InternalServerErrorData
+            )
+            raise errors.InternalServerError(data=response_data)
+        if utils.match_response(http_res, "510", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.BadRequestErrorData
+            )
+            raise errors.BadRequestError(data=response_data)
+        if utils.match_response(http_res, "511", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.UnauthorizedErrorData
+            )
+            raise errors.UnauthorizedError(data=response_data)
         if utils.match_response(http_res, "4XX", "*"):
             http_res_text = utils.stream_to_text(http_res)
             raise errors.APIError(
@@ -899,7 +1492,7 @@ class Gridpoints(BaseSDK):
             http_res,
         )
 
-    async def list_observation_stations_by_gridpoint_async(
+    async def list_observation_stations_async(
         self,
         *,
         wfo: models.NWSForecastOfficeID,
@@ -909,9 +1502,7 @@ class Gridpoints(BaseSDK):
         retries: OptionalNullable[utils.RetryConfig] = UNSET,
         server_url: Optional[str] = None,
         timeout_ms: Optional[int] = None,
-        accept_header_override: Optional[
-            ListObservationStationsByGridpointAcceptEnum
-        ] = None,
+        accept_header_override: Optional[ListObservationStationsAcceptEnum] = None,
         http_headers: Optional[Mapping[str, str]] = None,
     ) -> models.ListObservationStationsByGridpointResponse:
         r"""Returns a list of observation stations usable for a given 2.5km grid area
@@ -964,10 +1555,14 @@ class Gridpoints(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(500, 60000, 1.5, 3600000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["5XX"])
 
         http_res = await self.do_request_async(
             hook_ctx=HookContext(
@@ -979,10 +1574,37 @@ class Gridpoints(BaseSDK):
                 ),
             ),
             request=req,
-            error_status_codes=["4XX", "5XX"],
+            error_status_codes=[
+                "400",
+                "401",
+                "403",
+                "404",
+                "407",
+                "408",
+                "413",
+                "414",
+                "415",
+                "422",
+                "429",
+                "431",
+                "4XX",
+                "500",
+                "501",
+                "502",
+                "503",
+                "504",
+                "505",
+                "506",
+                "507",
+                "508",
+                "510",
+                "511",
+                "5XX",
+            ],
             retry_config=retry_config,
         )
 
+        response_data: Any = None
         if utils.match_response(http_res, "200", "application/geo+json"):
             return models.ListObservationStationsByGridpointResponse(
                 result=utils.unmarshal_json(
@@ -997,6 +1619,60 @@ class Gridpoints(BaseSDK):
                 ),
                 headers=utils.get_response_headers(http_res.headers),
             )
+        if utils.match_response(http_res, "404", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.NotFoundErrorData
+            )
+            raise errors.NotFoundError(data=response_data)
+        if utils.match_response(http_res, ["401", "403", "407"], "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.UnauthorizedErrorData
+            )
+            raise errors.UnauthorizedError(data=response_data)
+        if utils.match_response(http_res, "408", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.TimeoutErrorTData
+            )
+            raise errors.TimeoutErrorT(data=response_data)
+        if utils.match_response(http_res, "429", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.RateLimitedErrorData
+            )
+            raise errors.RateLimitedError(data=response_data)
+        if utils.match_response(
+            http_res, ["400", "413", "414", "415", "422", "431"], "application/json"
+        ):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.BadRequestErrorData
+            )
+            raise errors.BadRequestError(data=response_data)
+        if utils.match_response(http_res, "504", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.TimeoutErrorTData
+            )
+            raise errors.TimeoutErrorT(data=response_data)
+        if utils.match_response(http_res, ["501", "505"], "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.NotFoundErrorData
+            )
+            raise errors.NotFoundError(data=response_data)
+        if utils.match_response(
+            http_res, ["500", "502", "503", "506", "507", "508"], "application/json"
+        ):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.InternalServerErrorData
+            )
+            raise errors.InternalServerError(data=response_data)
+        if utils.match_response(http_res, "510", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.BadRequestErrorData
+            )
+            raise errors.BadRequestError(data=response_data)
+        if utils.match_response(http_res, "511", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.UnauthorizedErrorData
+            )
+            raise errors.UnauthorizedError(data=response_data)
         if utils.match_response(http_res, "4XX", "*"):
             http_res_text = await utils.stream_to_text_async(http_res)
             raise errors.APIError(

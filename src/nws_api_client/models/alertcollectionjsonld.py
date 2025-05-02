@@ -12,28 +12,28 @@ from typing_extensions import Annotated, NotRequired, TypedDict
 
 
 class AlertCollectionJSONLdTypedDict(TypedDict):
+    at_context: NotRequired[JSONLdContextUnionTypedDict]
+    at_graph: NotRequired[List[AlertTypedDict]]
+    pagination: NotRequired[PaginationInfoTypedDict]
+    r"""Links for retrieving more data from paged data sets"""
     title: NotRequired[str]
     r"""A title describing the alert collection"""
     updated: NotRequired[datetime]
     r"""The last time a change occurred to this collection"""
-    pagination: NotRequired[PaginationInfoTypedDict]
-    r"""Links for retrieving more data from paged data sets"""
-    at_context: NotRequired[JSONLdContextUnionTypedDict]
-    at_graph: NotRequired[List[AlertTypedDict]]
 
 
 class AlertCollectionJSONLd(BaseModel):
-    title: Optional[str] = None
-    r"""A title describing the alert collection"""
-
-    updated: Optional[datetime] = None
-    r"""The last time a change occurred to this collection"""
-
-    pagination: Optional[PaginationInfo] = None
-    r"""Links for retrieving more data from paged data sets"""
-
     at_context: Annotated[
         Optional[JSONLdContextUnion], pydantic.Field(alias="@context")
     ] = None
 
     at_graph: Annotated[Optional[List[Alert]], pydantic.Field(alias="@graph")] = None
+
+    pagination: Optional[PaginationInfo] = None
+    r"""Links for retrieving more data from paged data sets"""
+
+    title: Optional[str] = None
+    r"""A title describing the alert collection"""
+
+    updated: Optional[datetime] = None
+    r"""The last time a change occurred to this collection"""

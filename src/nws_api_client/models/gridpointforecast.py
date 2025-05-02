@@ -26,31 +26,30 @@ class GridpointForecastTypedDict(TypedDict):
     r"""A multi-day forecast for a 2.5km grid square."""
 
     at_context: NotRequired[JSONLdContextUnionTypedDict]
-    geometry: NotRequired[Nullable[str]]
-    r"""A geometry represented in Well-Known Text (WKT) format."""
-    units: NotRequired[GridpointForecastUnits]
-    r"""Denotes the units used in the textual portions of the forecast."""
+    elevation: NotRequired[QuantitativeValueTypedDict]
+    r"""A structured value representing a measurement and its unit of measure. This object is a slighly modified version of the schema.org definition at https://schema.org/QuantitativeValue
+
+    """
     forecast_generator: NotRequired[str]
     r"""The internal generator class used to create the forecast text (used for NWS debugging)."""
     generated_at: NotRequired[datetime]
     r"""The time this forecast data was generated."""
+    geometry: NotRequired[Nullable[str]]
+    r"""A geometry represented in Well-Known Text (WKT) format."""
+    periods: NotRequired[List[GridpointForecastPeriodTypedDict]]
+    r"""An array of forecast periods."""
+    units: NotRequired[GridpointForecastUnits]
+    r"""Denotes the units used in the textual portions of the forecast."""
     update_time: NotRequired[datetime]
     r"""The last update time of the data this forecast was generated from."""
     valid_times: NotRequired[str]
     r"""A time interval in ISO 8601 format. This can be one of:
-
     1. Start and end time
     2. Start time and duration
     3. Duration and end time
     The string \"NOW\" can also be used in place of a start/end time.
 
     """
-    elevation: NotRequired[QuantitativeValueTypedDict]
-    r"""A structured value representing a measurement and its unit of measure. This object is a slighly modified version of the schema.org definition at https://schema.org/QuantitativeValue
-
-    """
-    periods: NotRequired[List[GridpointForecastPeriodTypedDict]]
-    r"""An array of forecast periods."""
 
 
 class GridpointForecast(BaseModel):
@@ -60,11 +59,10 @@ class GridpointForecast(BaseModel):
         Optional[JSONLdContextUnion], pydantic.Field(alias="@context")
     ] = None
 
-    geometry: OptionalNullable[str] = UNSET
-    r"""A geometry represented in Well-Known Text (WKT) format."""
+    elevation: Optional[QuantitativeValue] = None
+    r"""A structured value representing a measurement and its unit of measure. This object is a slighly modified version of the schema.org definition at https://schema.org/QuantitativeValue
 
-    units: Optional[GridpointForecastUnits] = GridpointForecastUnits.US
-    r"""Denotes the units used in the textual portions of the forecast."""
+    """
 
     forecast_generator: Annotated[
         Optional[str], pydantic.Field(alias="forecastGenerator")
@@ -76,6 +74,15 @@ class GridpointForecast(BaseModel):
     )
     r"""The time this forecast data was generated."""
 
+    geometry: OptionalNullable[str] = UNSET
+    r"""A geometry represented in Well-Known Text (WKT) format."""
+
+    periods: Optional[List[GridpointForecastPeriod]] = None
+    r"""An array of forecast periods."""
+
+    units: Optional[GridpointForecastUnits] = GridpointForecastUnits.US
+    r"""Denotes the units used in the textual portions of the forecast."""
+
     update_time: Annotated[Optional[datetime], pydantic.Field(alias="updateTime")] = (
         None
     )
@@ -83,7 +90,6 @@ class GridpointForecast(BaseModel):
 
     valid_times: Annotated[Optional[str], pydantic.Field(alias="validTimes")] = None
     r"""A time interval in ISO 8601 format. This can be one of:
-
     1. Start and end time
     2. Start time and duration
     3. Duration and end time
@@ -91,26 +97,18 @@ class GridpointForecast(BaseModel):
 
     """
 
-    elevation: Optional[QuantitativeValue] = None
-    r"""A structured value representing a measurement and its unit of measure. This object is a slighly modified version of the schema.org definition at https://schema.org/QuantitativeValue
-
-    """
-
-    periods: Optional[List[GridpointForecastPeriod]] = None
-    r"""An array of forecast periods."""
-
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):
         optional_fields = [
             "@context",
-            "geometry",
-            "units",
+            "elevation",
             "forecastGenerator",
             "generatedAt",
+            "geometry",
+            "periods",
+            "units",
             "updateTime",
             "validTimes",
-            "elevation",
-            "periods",
         ]
         nullable_fields = ["geometry"]
         null_default_fields = []

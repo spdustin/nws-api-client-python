@@ -6,15 +6,15 @@ from nws_api_client import errors, models, utils
 from nws_api_client._hooks import HookContext
 from nws_api_client.types import OptionalNullable, UNSET
 from nws_api_client.utils import get_security_from_env
-from typing import Mapping, Optional
+from typing import Any, Mapping, Optional
 
 
-class GetOfficeHeadlineAcceptEnum(str, Enum):
+class GetHeadlineAcceptEnum(str, Enum):
     APPLICATION_LD_PLUS_JSON = "application/ld+json"
     APPLICATION_PROBLEM_PLUS_JSON = "application/problem+json"
 
 
-class ListOfficeHeadlinesAcceptEnum(str, Enum):
+class ListHeadlinesAcceptEnum(str, Enum):
     APPLICATION_LD_PLUS_JSON = "application/ld+json"
     APPLICATION_PROBLEM_PLUS_JSON = "application/problem+json"
 
@@ -22,7 +22,389 @@ class ListOfficeHeadlinesAcceptEnum(str, Enum):
 class Offices(BaseSDK):
     r"""Operations related to offices"""
 
-    def get_office_metadata(
+    def get_headline(
+        self,
+        *,
+        office_id: models.NWSOfficeID,
+        headline_id: str,
+        retries: OptionalNullable[utils.RetryConfig] = UNSET,
+        server_url: Optional[str] = None,
+        timeout_ms: Optional[int] = None,
+        accept_header_override: Optional[GetHeadlineAcceptEnum] = None,
+        http_headers: Optional[Mapping[str, str]] = None,
+    ) -> models.GetOfficeHeadlineResponse:
+        r"""Returns a specific news headline for a given NWS office
+
+        :param office_id: NWS office ID
+        :param headline_id: Headline record ID
+        :param retries: Override the default retry configuration for this method
+        :param server_url: Override the default server URL for this method
+        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param accept_header_override: Override the default accept header for this method
+        :param http_headers: Additional headers to set or replace on requests.
+        """
+        base_url = None
+        url_variables = None
+        if timeout_ms is None:
+            timeout_ms = self.sdk_configuration.timeout_ms
+
+        if server_url is not None:
+            base_url = server_url
+        else:
+            base_url = self._get_url(base_url, url_variables)
+
+        request = models.GetOfficeHeadlineRequest(
+            office_id=office_id,
+            headline_id=headline_id,
+        )
+
+        req = self._build_request(
+            method="GET",
+            path="/offices/{officeId}/headlines/{headlineId}",
+            base_url=base_url,
+            url_variables=url_variables,
+            request=request,
+            request_body_required=False,
+            request_has_path_params=True,
+            request_has_query_params=True,
+            user_agent_header="user-agent",
+            accept_header_value=accept_header_override.value
+            if accept_header_override is not None
+            else "application/ld+json;q=1, application/problem+json;q=0",
+            http_headers=http_headers,
+            security=self.sdk_configuration.security,
+            timeout_ms=timeout_ms,
+        )
+
+        if retries == UNSET:
+            if self.sdk_configuration.retry_config is not UNSET:
+                retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(500, 60000, 1.5, 3600000), True
+                )
+
+        retry_config = None
+        if isinstance(retries, utils.RetryConfig):
+            retry_config = (retries, ["5XX"])
+
+        http_res = self.do_request(
+            hook_ctx=HookContext(
+                base_url=base_url or "",
+                operation_id="get_office_headline",
+                oauth2_scopes=[],
+                security_source=get_security_from_env(
+                    self.sdk_configuration.security, models.Security
+                ),
+            ),
+            request=req,
+            error_status_codes=[
+                "400",
+                "401",
+                "403",
+                "404",
+                "407",
+                "408",
+                "413",
+                "414",
+                "415",
+                "422",
+                "429",
+                "431",
+                "4XX",
+                "500",
+                "501",
+                "502",
+                "503",
+                "504",
+                "505",
+                "506",
+                "507",
+                "508",
+                "510",
+                "511",
+                "5XX",
+            ],
+            retry_config=retry_config,
+        )
+
+        response_data: Any = None
+        if utils.match_response(http_res, "200", "application/ld+json"):
+            return models.GetOfficeHeadlineResponse(
+                result=utils.unmarshal_json(http_res.text, models.OfficeHeadline),
+                headers=utils.get_response_headers(http_res.headers),
+            )
+        if utils.match_response(http_res, "404", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.NotFoundErrorData
+            )
+            raise errors.NotFoundError(data=response_data)
+        if utils.match_response(http_res, ["401", "403", "407"], "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.UnauthorizedErrorData
+            )
+            raise errors.UnauthorizedError(data=response_data)
+        if utils.match_response(http_res, "408", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.TimeoutErrorTData
+            )
+            raise errors.TimeoutErrorT(data=response_data)
+        if utils.match_response(http_res, "429", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.RateLimitedErrorData
+            )
+            raise errors.RateLimitedError(data=response_data)
+        if utils.match_response(
+            http_res, ["400", "413", "414", "415", "422", "431"], "application/json"
+        ):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.BadRequestErrorData
+            )
+            raise errors.BadRequestError(data=response_data)
+        if utils.match_response(http_res, "504", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.TimeoutErrorTData
+            )
+            raise errors.TimeoutErrorT(data=response_data)
+        if utils.match_response(http_res, ["501", "505"], "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.NotFoundErrorData
+            )
+            raise errors.NotFoundError(data=response_data)
+        if utils.match_response(
+            http_res, ["500", "502", "503", "506", "507", "508"], "application/json"
+        ):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.InternalServerErrorData
+            )
+            raise errors.InternalServerError(data=response_data)
+        if utils.match_response(http_res, "510", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.BadRequestErrorData
+            )
+            raise errors.BadRequestError(data=response_data)
+        if utils.match_response(http_res, "511", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.UnauthorizedErrorData
+            )
+            raise errors.UnauthorizedError(data=response_data)
+        if utils.match_response(http_res, "4XX", "*"):
+            http_res_text = utils.stream_to_text(http_res)
+            raise errors.APIError(
+                "API error occurred", http_res.status_code, http_res_text, http_res
+            )
+        if utils.match_response(http_res, "5XX", "*"):
+            http_res_text = utils.stream_to_text(http_res)
+            raise errors.APIError(
+                "API error occurred", http_res.status_code, http_res_text, http_res
+            )
+        if utils.match_response(http_res, "default", "application/problem+json"):
+            return models.GetOfficeHeadlineResponse(
+                result=utils.unmarshal_json(http_res.text, models.ProblemDetail),
+                headers=utils.get_response_headers(http_res.headers),
+            )
+
+        content_type = http_res.headers.get("Content-Type")
+        http_res_text = utils.stream_to_text(http_res)
+        raise errors.APIError(
+            f"Unexpected response received (code: {http_res.status_code}, type: {content_type})",
+            http_res.status_code,
+            http_res_text,
+            http_res,
+        )
+
+    async def get_headline_async(
+        self,
+        *,
+        office_id: models.NWSOfficeID,
+        headline_id: str,
+        retries: OptionalNullable[utils.RetryConfig] = UNSET,
+        server_url: Optional[str] = None,
+        timeout_ms: Optional[int] = None,
+        accept_header_override: Optional[GetHeadlineAcceptEnum] = None,
+        http_headers: Optional[Mapping[str, str]] = None,
+    ) -> models.GetOfficeHeadlineResponse:
+        r"""Returns a specific news headline for a given NWS office
+
+        :param office_id: NWS office ID
+        :param headline_id: Headline record ID
+        :param retries: Override the default retry configuration for this method
+        :param server_url: Override the default server URL for this method
+        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param accept_header_override: Override the default accept header for this method
+        :param http_headers: Additional headers to set or replace on requests.
+        """
+        base_url = None
+        url_variables = None
+        if timeout_ms is None:
+            timeout_ms = self.sdk_configuration.timeout_ms
+
+        if server_url is not None:
+            base_url = server_url
+        else:
+            base_url = self._get_url(base_url, url_variables)
+
+        request = models.GetOfficeHeadlineRequest(
+            office_id=office_id,
+            headline_id=headline_id,
+        )
+
+        req = self._build_request_async(
+            method="GET",
+            path="/offices/{officeId}/headlines/{headlineId}",
+            base_url=base_url,
+            url_variables=url_variables,
+            request=request,
+            request_body_required=False,
+            request_has_path_params=True,
+            request_has_query_params=True,
+            user_agent_header="user-agent",
+            accept_header_value=accept_header_override.value
+            if accept_header_override is not None
+            else "application/ld+json;q=1, application/problem+json;q=0",
+            http_headers=http_headers,
+            security=self.sdk_configuration.security,
+            timeout_ms=timeout_ms,
+        )
+
+        if retries == UNSET:
+            if self.sdk_configuration.retry_config is not UNSET:
+                retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(500, 60000, 1.5, 3600000), True
+                )
+
+        retry_config = None
+        if isinstance(retries, utils.RetryConfig):
+            retry_config = (retries, ["5XX"])
+
+        http_res = await self.do_request_async(
+            hook_ctx=HookContext(
+                base_url=base_url or "",
+                operation_id="get_office_headline",
+                oauth2_scopes=[],
+                security_source=get_security_from_env(
+                    self.sdk_configuration.security, models.Security
+                ),
+            ),
+            request=req,
+            error_status_codes=[
+                "400",
+                "401",
+                "403",
+                "404",
+                "407",
+                "408",
+                "413",
+                "414",
+                "415",
+                "422",
+                "429",
+                "431",
+                "4XX",
+                "500",
+                "501",
+                "502",
+                "503",
+                "504",
+                "505",
+                "506",
+                "507",
+                "508",
+                "510",
+                "511",
+                "5XX",
+            ],
+            retry_config=retry_config,
+        )
+
+        response_data: Any = None
+        if utils.match_response(http_res, "200", "application/ld+json"):
+            return models.GetOfficeHeadlineResponse(
+                result=utils.unmarshal_json(http_res.text, models.OfficeHeadline),
+                headers=utils.get_response_headers(http_res.headers),
+            )
+        if utils.match_response(http_res, "404", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.NotFoundErrorData
+            )
+            raise errors.NotFoundError(data=response_data)
+        if utils.match_response(http_res, ["401", "403", "407"], "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.UnauthorizedErrorData
+            )
+            raise errors.UnauthorizedError(data=response_data)
+        if utils.match_response(http_res, "408", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.TimeoutErrorTData
+            )
+            raise errors.TimeoutErrorT(data=response_data)
+        if utils.match_response(http_res, "429", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.RateLimitedErrorData
+            )
+            raise errors.RateLimitedError(data=response_data)
+        if utils.match_response(
+            http_res, ["400", "413", "414", "415", "422", "431"], "application/json"
+        ):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.BadRequestErrorData
+            )
+            raise errors.BadRequestError(data=response_data)
+        if utils.match_response(http_res, "504", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.TimeoutErrorTData
+            )
+            raise errors.TimeoutErrorT(data=response_data)
+        if utils.match_response(http_res, ["501", "505"], "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.NotFoundErrorData
+            )
+            raise errors.NotFoundError(data=response_data)
+        if utils.match_response(
+            http_res, ["500", "502", "503", "506", "507", "508"], "application/json"
+        ):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.InternalServerErrorData
+            )
+            raise errors.InternalServerError(data=response_data)
+        if utils.match_response(http_res, "510", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.BadRequestErrorData
+            )
+            raise errors.BadRequestError(data=response_data)
+        if utils.match_response(http_res, "511", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.UnauthorizedErrorData
+            )
+            raise errors.UnauthorizedError(data=response_data)
+        if utils.match_response(http_res, "4XX", "*"):
+            http_res_text = await utils.stream_to_text_async(http_res)
+            raise errors.APIError(
+                "API error occurred", http_res.status_code, http_res_text, http_res
+            )
+        if utils.match_response(http_res, "5XX", "*"):
+            http_res_text = await utils.stream_to_text_async(http_res)
+            raise errors.APIError(
+                "API error occurred", http_res.status_code, http_res_text, http_res
+            )
+        if utils.match_response(http_res, "default", "application/problem+json"):
+            return models.GetOfficeHeadlineResponse(
+                result=utils.unmarshal_json(http_res.text, models.ProblemDetail),
+                headers=utils.get_response_headers(http_res.headers),
+            )
+
+        content_type = http_res.headers.get("Content-Type")
+        http_res_text = await utils.stream_to_text_async(http_res)
+        raise errors.APIError(
+            f"Unexpected response received (code: {http_res.status_code}, type: {content_type})",
+            http_res.status_code,
+            http_res_text,
+            http_res,
+        )
+
+    def get_metadata(
         self,
         *,
         office_id: models.NWSOfficeID,
@@ -72,10 +454,14 @@ class Offices(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(500, 60000, 1.5, 3600000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["5XX"])
 
         http_res = self.do_request(
             hook_ctx=HookContext(
@@ -87,15 +473,96 @@ class Offices(BaseSDK):
                 ),
             ),
             request=req,
-            error_status_codes=["4XX", "5XX"],
+            error_status_codes=[
+                "400",
+                "401",
+                "403",
+                "404",
+                "407",
+                "408",
+                "413",
+                "414",
+                "415",
+                "422",
+                "429",
+                "431",
+                "4XX",
+                "500",
+                "501",
+                "502",
+                "503",
+                "504",
+                "505",
+                "506",
+                "507",
+                "508",
+                "510",
+                "511",
+                "5XX",
+            ],
             retry_config=retry_config,
         )
 
+        response_data: Any = None
         if utils.match_response(http_res, "200", "application/problem+json"):
             return models.GetOfficeMetadataResponse(
                 result=utils.unmarshal_json(http_res.text, models.ProblemDetail),
                 headers=utils.get_response_headers(http_res.headers),
             )
+        if utils.match_response(http_res, "404", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.NotFoundErrorData
+            )
+            raise errors.NotFoundError(data=response_data)
+        if utils.match_response(http_res, ["401", "403", "407"], "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.UnauthorizedErrorData
+            )
+            raise errors.UnauthorizedError(data=response_data)
+        if utils.match_response(http_res, "408", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.TimeoutErrorTData
+            )
+            raise errors.TimeoutErrorT(data=response_data)
+        if utils.match_response(http_res, "429", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.RateLimitedErrorData
+            )
+            raise errors.RateLimitedError(data=response_data)
+        if utils.match_response(
+            http_res, ["400", "413", "414", "415", "422", "431"], "application/json"
+        ):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.BadRequestErrorData
+            )
+            raise errors.BadRequestError(data=response_data)
+        if utils.match_response(http_res, "504", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.TimeoutErrorTData
+            )
+            raise errors.TimeoutErrorT(data=response_data)
+        if utils.match_response(http_res, ["501", "505"], "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.NotFoundErrorData
+            )
+            raise errors.NotFoundError(data=response_data)
+        if utils.match_response(
+            http_res, ["500", "502", "503", "506", "507", "508"], "application/json"
+        ):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.InternalServerErrorData
+            )
+            raise errors.InternalServerError(data=response_data)
+        if utils.match_response(http_res, "510", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.BadRequestErrorData
+            )
+            raise errors.BadRequestError(data=response_data)
+        if utils.match_response(http_res, "511", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.UnauthorizedErrorData
+            )
+            raise errors.UnauthorizedError(data=response_data)
         if utils.match_response(http_res, "4XX", "*"):
             http_res_text = utils.stream_to_text(http_res)
             raise errors.APIError(
@@ -121,7 +588,7 @@ class Offices(BaseSDK):
             http_res,
         )
 
-    async def get_office_metadata_async(
+    async def get_metadata_async(
         self,
         *,
         office_id: models.NWSOfficeID,
@@ -171,10 +638,14 @@ class Offices(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(500, 60000, 1.5, 3600000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["5XX"])
 
         http_res = await self.do_request_async(
             hook_ctx=HookContext(
@@ -186,15 +657,96 @@ class Offices(BaseSDK):
                 ),
             ),
             request=req,
-            error_status_codes=["4XX", "5XX"],
+            error_status_codes=[
+                "400",
+                "401",
+                "403",
+                "404",
+                "407",
+                "408",
+                "413",
+                "414",
+                "415",
+                "422",
+                "429",
+                "431",
+                "4XX",
+                "500",
+                "501",
+                "502",
+                "503",
+                "504",
+                "505",
+                "506",
+                "507",
+                "508",
+                "510",
+                "511",
+                "5XX",
+            ],
             retry_config=retry_config,
         )
 
+        response_data: Any = None
         if utils.match_response(http_res, "200", "application/problem+json"):
             return models.GetOfficeMetadataResponse(
                 result=utils.unmarshal_json(http_res.text, models.ProblemDetail),
                 headers=utils.get_response_headers(http_res.headers),
             )
+        if utils.match_response(http_res, "404", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.NotFoundErrorData
+            )
+            raise errors.NotFoundError(data=response_data)
+        if utils.match_response(http_res, ["401", "403", "407"], "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.UnauthorizedErrorData
+            )
+            raise errors.UnauthorizedError(data=response_data)
+        if utils.match_response(http_res, "408", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.TimeoutErrorTData
+            )
+            raise errors.TimeoutErrorT(data=response_data)
+        if utils.match_response(http_res, "429", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.RateLimitedErrorData
+            )
+            raise errors.RateLimitedError(data=response_data)
+        if utils.match_response(
+            http_res, ["400", "413", "414", "415", "422", "431"], "application/json"
+        ):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.BadRequestErrorData
+            )
+            raise errors.BadRequestError(data=response_data)
+        if utils.match_response(http_res, "504", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.TimeoutErrorTData
+            )
+            raise errors.TimeoutErrorT(data=response_data)
+        if utils.match_response(http_res, ["501", "505"], "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.NotFoundErrorData
+            )
+            raise errors.NotFoundError(data=response_data)
+        if utils.match_response(
+            http_res, ["500", "502", "503", "506", "507", "508"], "application/json"
+        ):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.InternalServerErrorData
+            )
+            raise errors.InternalServerError(data=response_data)
+        if utils.match_response(http_res, "510", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.BadRequestErrorData
+            )
+            raise errors.BadRequestError(data=response_data)
+        if utils.match_response(http_res, "511", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.UnauthorizedErrorData
+            )
+            raise errors.UnauthorizedError(data=response_data)
         if utils.match_response(http_res, "4XX", "*"):
             http_res_text = await utils.stream_to_text_async(http_res)
             raise errors.APIError(
@@ -220,226 +772,14 @@ class Offices(BaseSDK):
             http_res,
         )
 
-    def get_office_headline(
-        self,
-        *,
-        office_id: models.NWSOfficeID,
-        headline_id: str,
-        retries: OptionalNullable[utils.RetryConfig] = UNSET,
-        server_url: Optional[str] = None,
-        timeout_ms: Optional[int] = None,
-        accept_header_override: Optional[GetOfficeHeadlineAcceptEnum] = None,
-        http_headers: Optional[Mapping[str, str]] = None,
-    ) -> models.GetOfficeHeadlineResponse:
-        r"""Returns a specific news headline for a given NWS office
-
-        :param office_id: NWS office ID
-        :param headline_id: Headline record ID
-        :param retries: Override the default retry configuration for this method
-        :param server_url: Override the default server URL for this method
-        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
-        :param accept_header_override: Override the default accept header for this method
-        :param http_headers: Additional headers to set or replace on requests.
-        """
-        base_url = None
-        url_variables = None
-        if timeout_ms is None:
-            timeout_ms = self.sdk_configuration.timeout_ms
-
-        if server_url is not None:
-            base_url = server_url
-        else:
-            base_url = self._get_url(base_url, url_variables)
-
-        request = models.GetOfficeHeadlineRequest(
-            office_id=office_id,
-            headline_id=headline_id,
-        )
-
-        req = self._build_request(
-            method="GET",
-            path="/offices/{officeId}/headlines/{headlineId}",
-            base_url=base_url,
-            url_variables=url_variables,
-            request=request,
-            request_body_required=False,
-            request_has_path_params=True,
-            request_has_query_params=True,
-            user_agent_header="user-agent",
-            accept_header_value=accept_header_override.value
-            if accept_header_override is not None
-            else "application/ld+json;q=1, application/problem+json;q=0",
-            http_headers=http_headers,
-            security=self.sdk_configuration.security,
-            timeout_ms=timeout_ms,
-        )
-
-        if retries == UNSET:
-            if self.sdk_configuration.retry_config is not UNSET:
-                retries = self.sdk_configuration.retry_config
-
-        retry_config = None
-        if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
-
-        http_res = self.do_request(
-            hook_ctx=HookContext(
-                base_url=base_url or "",
-                operation_id="get_office_headline",
-                oauth2_scopes=[],
-                security_source=get_security_from_env(
-                    self.sdk_configuration.security, models.Security
-                ),
-            ),
-            request=req,
-            error_status_codes=["4XX", "5XX"],
-            retry_config=retry_config,
-        )
-
-        if utils.match_response(http_res, "200", "application/ld+json"):
-            return models.GetOfficeHeadlineResponse(
-                result=utils.unmarshal_json(http_res.text, models.OfficeHeadline),
-                headers=utils.get_response_headers(http_res.headers),
-            )
-        if utils.match_response(http_res, "4XX", "*"):
-            http_res_text = utils.stream_to_text(http_res)
-            raise errors.APIError(
-                "API error occurred", http_res.status_code, http_res_text, http_res
-            )
-        if utils.match_response(http_res, "5XX", "*"):
-            http_res_text = utils.stream_to_text(http_res)
-            raise errors.APIError(
-                "API error occurred", http_res.status_code, http_res_text, http_res
-            )
-        if utils.match_response(http_res, "default", "application/problem+json"):
-            return models.GetOfficeHeadlineResponse(
-                result=utils.unmarshal_json(http_res.text, models.ProblemDetail),
-                headers=utils.get_response_headers(http_res.headers),
-            )
-
-        content_type = http_res.headers.get("Content-Type")
-        http_res_text = utils.stream_to_text(http_res)
-        raise errors.APIError(
-            f"Unexpected response received (code: {http_res.status_code}, type: {content_type})",
-            http_res.status_code,
-            http_res_text,
-            http_res,
-        )
-
-    async def get_office_headline_async(
-        self,
-        *,
-        office_id: models.NWSOfficeID,
-        headline_id: str,
-        retries: OptionalNullable[utils.RetryConfig] = UNSET,
-        server_url: Optional[str] = None,
-        timeout_ms: Optional[int] = None,
-        accept_header_override: Optional[GetOfficeHeadlineAcceptEnum] = None,
-        http_headers: Optional[Mapping[str, str]] = None,
-    ) -> models.GetOfficeHeadlineResponse:
-        r"""Returns a specific news headline for a given NWS office
-
-        :param office_id: NWS office ID
-        :param headline_id: Headline record ID
-        :param retries: Override the default retry configuration for this method
-        :param server_url: Override the default server URL for this method
-        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
-        :param accept_header_override: Override the default accept header for this method
-        :param http_headers: Additional headers to set or replace on requests.
-        """
-        base_url = None
-        url_variables = None
-        if timeout_ms is None:
-            timeout_ms = self.sdk_configuration.timeout_ms
-
-        if server_url is not None:
-            base_url = server_url
-        else:
-            base_url = self._get_url(base_url, url_variables)
-
-        request = models.GetOfficeHeadlineRequest(
-            office_id=office_id,
-            headline_id=headline_id,
-        )
-
-        req = self._build_request_async(
-            method="GET",
-            path="/offices/{officeId}/headlines/{headlineId}",
-            base_url=base_url,
-            url_variables=url_variables,
-            request=request,
-            request_body_required=False,
-            request_has_path_params=True,
-            request_has_query_params=True,
-            user_agent_header="user-agent",
-            accept_header_value=accept_header_override.value
-            if accept_header_override is not None
-            else "application/ld+json;q=1, application/problem+json;q=0",
-            http_headers=http_headers,
-            security=self.sdk_configuration.security,
-            timeout_ms=timeout_ms,
-        )
-
-        if retries == UNSET:
-            if self.sdk_configuration.retry_config is not UNSET:
-                retries = self.sdk_configuration.retry_config
-
-        retry_config = None
-        if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
-
-        http_res = await self.do_request_async(
-            hook_ctx=HookContext(
-                base_url=base_url or "",
-                operation_id="get_office_headline",
-                oauth2_scopes=[],
-                security_source=get_security_from_env(
-                    self.sdk_configuration.security, models.Security
-                ),
-            ),
-            request=req,
-            error_status_codes=["4XX", "5XX"],
-            retry_config=retry_config,
-        )
-
-        if utils.match_response(http_res, "200", "application/ld+json"):
-            return models.GetOfficeHeadlineResponse(
-                result=utils.unmarshal_json(http_res.text, models.OfficeHeadline),
-                headers=utils.get_response_headers(http_res.headers),
-            )
-        if utils.match_response(http_res, "4XX", "*"):
-            http_res_text = await utils.stream_to_text_async(http_res)
-            raise errors.APIError(
-                "API error occurred", http_res.status_code, http_res_text, http_res
-            )
-        if utils.match_response(http_res, "5XX", "*"):
-            http_res_text = await utils.stream_to_text_async(http_res)
-            raise errors.APIError(
-                "API error occurred", http_res.status_code, http_res_text, http_res
-            )
-        if utils.match_response(http_res, "default", "application/problem+json"):
-            return models.GetOfficeHeadlineResponse(
-                result=utils.unmarshal_json(http_res.text, models.ProblemDetail),
-                headers=utils.get_response_headers(http_res.headers),
-            )
-
-        content_type = http_res.headers.get("Content-Type")
-        http_res_text = await utils.stream_to_text_async(http_res)
-        raise errors.APIError(
-            f"Unexpected response received (code: {http_res.status_code}, type: {content_type})",
-            http_res.status_code,
-            http_res_text,
-            http_res,
-        )
-
-    def list_office_headlines(
+    def list_headlines(
         self,
         *,
         office_id: models.NWSOfficeID,
         retries: OptionalNullable[utils.RetryConfig] = UNSET,
         server_url: Optional[str] = None,
         timeout_ms: Optional[int] = None,
-        accept_header_override: Optional[ListOfficeHeadlinesAcceptEnum] = None,
+        accept_header_override: Optional[ListHeadlinesAcceptEnum] = None,
         http_headers: Optional[Mapping[str, str]] = None,
     ) -> models.ListOfficeHeadlinesResponse:
         r"""Returns a list of news headlines for a given NWS office
@@ -486,10 +826,14 @@ class Offices(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(500, 60000, 1.5, 3600000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["5XX"])
 
         http_res = self.do_request(
             hook_ctx=HookContext(
@@ -501,10 +845,37 @@ class Offices(BaseSDK):
                 ),
             ),
             request=req,
-            error_status_codes=["4XX", "5XX"],
+            error_status_codes=[
+                "400",
+                "401",
+                "403",
+                "404",
+                "407",
+                "408",
+                "413",
+                "414",
+                "415",
+                "422",
+                "429",
+                "431",
+                "4XX",
+                "500",
+                "501",
+                "502",
+                "503",
+                "504",
+                "505",
+                "506",
+                "507",
+                "508",
+                "510",
+                "511",
+                "5XX",
+            ],
             retry_config=retry_config,
         )
 
+        response_data: Any = None
         if utils.match_response(http_res, "200", "application/ld+json"):
             return models.ListOfficeHeadlinesResponse(
                 result=utils.unmarshal_json(
@@ -512,6 +883,60 @@ class Offices(BaseSDK):
                 ),
                 headers=utils.get_response_headers(http_res.headers),
             )
+        if utils.match_response(http_res, "404", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.NotFoundErrorData
+            )
+            raise errors.NotFoundError(data=response_data)
+        if utils.match_response(http_res, ["401", "403", "407"], "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.UnauthorizedErrorData
+            )
+            raise errors.UnauthorizedError(data=response_data)
+        if utils.match_response(http_res, "408", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.TimeoutErrorTData
+            )
+            raise errors.TimeoutErrorT(data=response_data)
+        if utils.match_response(http_res, "429", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.RateLimitedErrorData
+            )
+            raise errors.RateLimitedError(data=response_data)
+        if utils.match_response(
+            http_res, ["400", "413", "414", "415", "422", "431"], "application/json"
+        ):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.BadRequestErrorData
+            )
+            raise errors.BadRequestError(data=response_data)
+        if utils.match_response(http_res, "504", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.TimeoutErrorTData
+            )
+            raise errors.TimeoutErrorT(data=response_data)
+        if utils.match_response(http_res, ["501", "505"], "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.NotFoundErrorData
+            )
+            raise errors.NotFoundError(data=response_data)
+        if utils.match_response(
+            http_res, ["500", "502", "503", "506", "507", "508"], "application/json"
+        ):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.InternalServerErrorData
+            )
+            raise errors.InternalServerError(data=response_data)
+        if utils.match_response(http_res, "510", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.BadRequestErrorData
+            )
+            raise errors.BadRequestError(data=response_data)
+        if utils.match_response(http_res, "511", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.UnauthorizedErrorData
+            )
+            raise errors.UnauthorizedError(data=response_data)
         if utils.match_response(http_res, "4XX", "*"):
             http_res_text = utils.stream_to_text(http_res)
             raise errors.APIError(
@@ -537,14 +962,14 @@ class Offices(BaseSDK):
             http_res,
         )
 
-    async def list_office_headlines_async(
+    async def list_headlines_async(
         self,
         *,
         office_id: models.NWSOfficeID,
         retries: OptionalNullable[utils.RetryConfig] = UNSET,
         server_url: Optional[str] = None,
         timeout_ms: Optional[int] = None,
-        accept_header_override: Optional[ListOfficeHeadlinesAcceptEnum] = None,
+        accept_header_override: Optional[ListHeadlinesAcceptEnum] = None,
         http_headers: Optional[Mapping[str, str]] = None,
     ) -> models.ListOfficeHeadlinesResponse:
         r"""Returns a list of news headlines for a given NWS office
@@ -591,10 +1016,14 @@ class Offices(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(500, 60000, 1.5, 3600000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["5XX"])
 
         http_res = await self.do_request_async(
             hook_ctx=HookContext(
@@ -606,10 +1035,37 @@ class Offices(BaseSDK):
                 ),
             ),
             request=req,
-            error_status_codes=["4XX", "5XX"],
+            error_status_codes=[
+                "400",
+                "401",
+                "403",
+                "404",
+                "407",
+                "408",
+                "413",
+                "414",
+                "415",
+                "422",
+                "429",
+                "431",
+                "4XX",
+                "500",
+                "501",
+                "502",
+                "503",
+                "504",
+                "505",
+                "506",
+                "507",
+                "508",
+                "510",
+                "511",
+                "5XX",
+            ],
             retry_config=retry_config,
         )
 
+        response_data: Any = None
         if utils.match_response(http_res, "200", "application/ld+json"):
             return models.ListOfficeHeadlinesResponse(
                 result=utils.unmarshal_json(
@@ -617,6 +1073,60 @@ class Offices(BaseSDK):
                 ),
                 headers=utils.get_response_headers(http_res.headers),
             )
+        if utils.match_response(http_res, "404", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.NotFoundErrorData
+            )
+            raise errors.NotFoundError(data=response_data)
+        if utils.match_response(http_res, ["401", "403", "407"], "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.UnauthorizedErrorData
+            )
+            raise errors.UnauthorizedError(data=response_data)
+        if utils.match_response(http_res, "408", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.TimeoutErrorTData
+            )
+            raise errors.TimeoutErrorT(data=response_data)
+        if utils.match_response(http_res, "429", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.RateLimitedErrorData
+            )
+            raise errors.RateLimitedError(data=response_data)
+        if utils.match_response(
+            http_res, ["400", "413", "414", "415", "422", "431"], "application/json"
+        ):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.BadRequestErrorData
+            )
+            raise errors.BadRequestError(data=response_data)
+        if utils.match_response(http_res, "504", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.TimeoutErrorTData
+            )
+            raise errors.TimeoutErrorT(data=response_data)
+        if utils.match_response(http_res, ["501", "505"], "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.NotFoundErrorData
+            )
+            raise errors.NotFoundError(data=response_data)
+        if utils.match_response(
+            http_res, ["500", "502", "503", "506", "507", "508"], "application/json"
+        ):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.InternalServerErrorData
+            )
+            raise errors.InternalServerError(data=response_data)
+        if utils.match_response(http_res, "510", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.BadRequestErrorData
+            )
+            raise errors.BadRequestError(data=response_data)
+        if utils.match_response(http_res, "511", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.UnauthorizedErrorData
+            )
+            raise errors.UnauthorizedError(data=response_data)
         if utils.match_response(http_res, "4XX", "*"):
             http_res_text = await utils.stream_to_text_async(http_res)
             raise errors.APIError(

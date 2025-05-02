@@ -19,11 +19,11 @@ class GridpointForecastGeoJSONType(str, Enum):
 class GridpointForecastGeoJSONTypedDict(TypedDict):
     r"""A GeoJSON feature. Please refer to IETF RFC 7946 for information on the GeoJSON format."""
 
-    type: GridpointForecastGeoJSONType
     geometry: Nullable[GeoJSONGeometryTypedDict]
     r"""A GeoJSON geometry object. Please refer to IETF RFC 7946 for information on the GeoJSON format."""
     properties: GridpointForecastTypedDict
     r"""A multi-day forecast for a 2.5km grid square."""
+    type: GridpointForecastGeoJSONType
     at_context: NotRequired[JSONLdContextUnionTypedDict]
     id: NotRequired[str]
 
@@ -31,13 +31,13 @@ class GridpointForecastGeoJSONTypedDict(TypedDict):
 class GridpointForecastGeoJSON(BaseModel):
     r"""A GeoJSON feature. Please refer to IETF RFC 7946 for information on the GeoJSON format."""
 
-    type: GridpointForecastGeoJSONType
-
     geometry: Nullable[GeoJSONGeometry]
     r"""A GeoJSON geometry object. Please refer to IETF RFC 7946 for information on the GeoJSON format."""
 
     properties: GridpointForecast
     r"""A multi-day forecast for a 2.5km grid square."""
+
+    type: GridpointForecastGeoJSONType
 
     at_context: Annotated[
         Optional[JSONLdContextUnion], pydantic.Field(alias="@context")

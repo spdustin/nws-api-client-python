@@ -6,10 +6,10 @@ from nws_api_client import errors, models, utils
 from nws_api_client._hooks import HookContext
 from nws_api_client.types import OptionalNullable, UNSET
 from nws_api_client.utils import get_security_from_env
-from typing import Mapping, Optional
+from typing import Any, Mapping, Optional
 
 
-class GetPointMetadataAcceptEnum(str, Enum):
+class GetMetadataAcceptEnum(str, Enum):
     APPLICATION_GEO_PLUS_JSON = "application/geo+json"
     APPLICATION_LD_PLUS_JSON = "application/ld+json"
     APPLICATION_PROBLEM_PLUS_JSON = "application/problem+json"
@@ -18,14 +18,14 @@ class GetPointMetadataAcceptEnum(str, Enum):
 class Points(BaseSDK):
     r"""Operations related to geographic points (lat,lon)"""
 
-    def get_point_metadata(
+    def get_metadata(
         self,
         *,
         point: str,
         retries: OptionalNullable[utils.RetryConfig] = UNSET,
         server_url: Optional[str] = None,
         timeout_ms: Optional[int] = None,
-        accept_header_override: Optional[GetPointMetadataAcceptEnum] = None,
+        accept_header_override: Optional[GetMetadataAcceptEnum] = None,
         http_headers: Optional[Mapping[str, str]] = None,
     ) -> models.GetPointMetadataResponse:
         r"""Returns metadata about a given latitude/longitude point
@@ -72,10 +72,14 @@ class Points(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(500, 60000, 1.5, 3600000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["5XX"])
 
         http_res = self.do_request(
             hook_ctx=HookContext(
@@ -87,10 +91,37 @@ class Points(BaseSDK):
                 ),
             ),
             request=req,
-            error_status_codes=["4XX", "5XX"],
+            error_status_codes=[
+                "400",
+                "401",
+                "403",
+                "404",
+                "407",
+                "408",
+                "413",
+                "414",
+                "415",
+                "422",
+                "429",
+                "431",
+                "4XX",
+                "500",
+                "501",
+                "502",
+                "503",
+                "504",
+                "505",
+                "506",
+                "507",
+                "508",
+                "510",
+                "511",
+                "5XX",
+            ],
             retry_config=retry_config,
         )
 
+        response_data: Any = None
         if utils.match_response(http_res, "200", "application/geo+json"):
             return models.GetPointMetadataResponse(
                 result=utils.unmarshal_json(http_res.text, models.PointGeoJSON),
@@ -101,6 +132,60 @@ class Points(BaseSDK):
                 result=utils.unmarshal_json(http_res.text, models.PointJSONLd),
                 headers=utils.get_response_headers(http_res.headers),
             )
+        if utils.match_response(http_res, "404", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.NotFoundErrorData
+            )
+            raise errors.NotFoundError(data=response_data)
+        if utils.match_response(http_res, ["401", "403", "407"], "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.UnauthorizedErrorData
+            )
+            raise errors.UnauthorizedError(data=response_data)
+        if utils.match_response(http_res, "408", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.TimeoutErrorTData
+            )
+            raise errors.TimeoutErrorT(data=response_data)
+        if utils.match_response(http_res, "429", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.RateLimitedErrorData
+            )
+            raise errors.RateLimitedError(data=response_data)
+        if utils.match_response(
+            http_res, ["400", "413", "414", "415", "422", "431"], "application/json"
+        ):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.BadRequestErrorData
+            )
+            raise errors.BadRequestError(data=response_data)
+        if utils.match_response(http_res, "504", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.TimeoutErrorTData
+            )
+            raise errors.TimeoutErrorT(data=response_data)
+        if utils.match_response(http_res, ["501", "505"], "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.NotFoundErrorData
+            )
+            raise errors.NotFoundError(data=response_data)
+        if utils.match_response(
+            http_res, ["500", "502", "503", "506", "507", "508"], "application/json"
+        ):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.InternalServerErrorData
+            )
+            raise errors.InternalServerError(data=response_data)
+        if utils.match_response(http_res, "510", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.BadRequestErrorData
+            )
+            raise errors.BadRequestError(data=response_data)
+        if utils.match_response(http_res, "511", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.UnauthorizedErrorData
+            )
+            raise errors.UnauthorizedError(data=response_data)
         if utils.match_response(http_res, "4XX", "*"):
             http_res_text = utils.stream_to_text(http_res)
             raise errors.APIError(
@@ -126,14 +211,14 @@ class Points(BaseSDK):
             http_res,
         )
 
-    async def get_point_metadata_async(
+    async def get_metadata_async(
         self,
         *,
         point: str,
         retries: OptionalNullable[utils.RetryConfig] = UNSET,
         server_url: Optional[str] = None,
         timeout_ms: Optional[int] = None,
-        accept_header_override: Optional[GetPointMetadataAcceptEnum] = None,
+        accept_header_override: Optional[GetMetadataAcceptEnum] = None,
         http_headers: Optional[Mapping[str, str]] = None,
     ) -> models.GetPointMetadataResponse:
         r"""Returns metadata about a given latitude/longitude point
@@ -180,10 +265,14 @@ class Points(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(500, 60000, 1.5, 3600000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["5XX"])
 
         http_res = await self.do_request_async(
             hook_ctx=HookContext(
@@ -195,10 +284,37 @@ class Points(BaseSDK):
                 ),
             ),
             request=req,
-            error_status_codes=["4XX", "5XX"],
+            error_status_codes=[
+                "400",
+                "401",
+                "403",
+                "404",
+                "407",
+                "408",
+                "413",
+                "414",
+                "415",
+                "422",
+                "429",
+                "431",
+                "4XX",
+                "500",
+                "501",
+                "502",
+                "503",
+                "504",
+                "505",
+                "506",
+                "507",
+                "508",
+                "510",
+                "511",
+                "5XX",
+            ],
             retry_config=retry_config,
         )
 
+        response_data: Any = None
         if utils.match_response(http_res, "200", "application/geo+json"):
             return models.GetPointMetadataResponse(
                 result=utils.unmarshal_json(http_res.text, models.PointGeoJSON),
@@ -209,6 +325,60 @@ class Points(BaseSDK):
                 result=utils.unmarshal_json(http_res.text, models.PointJSONLd),
                 headers=utils.get_response_headers(http_res.headers),
             )
+        if utils.match_response(http_res, "404", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.NotFoundErrorData
+            )
+            raise errors.NotFoundError(data=response_data)
+        if utils.match_response(http_res, ["401", "403", "407"], "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.UnauthorizedErrorData
+            )
+            raise errors.UnauthorizedError(data=response_data)
+        if utils.match_response(http_res, "408", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.TimeoutErrorTData
+            )
+            raise errors.TimeoutErrorT(data=response_data)
+        if utils.match_response(http_res, "429", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.RateLimitedErrorData
+            )
+            raise errors.RateLimitedError(data=response_data)
+        if utils.match_response(
+            http_res, ["400", "413", "414", "415", "422", "431"], "application/json"
+        ):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.BadRequestErrorData
+            )
+            raise errors.BadRequestError(data=response_data)
+        if utils.match_response(http_res, "504", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.TimeoutErrorTData
+            )
+            raise errors.TimeoutErrorT(data=response_data)
+        if utils.match_response(http_res, ["501", "505"], "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.NotFoundErrorData
+            )
+            raise errors.NotFoundError(data=response_data)
+        if utils.match_response(
+            http_res, ["500", "502", "503", "506", "507", "508"], "application/json"
+        ):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.InternalServerErrorData
+            )
+            raise errors.InternalServerError(data=response_data)
+        if utils.match_response(http_res, "510", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.BadRequestErrorData
+            )
+            raise errors.BadRequestError(data=response_data)
+        if utils.match_response(http_res, "511", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.UnauthorizedErrorData
+            )
+            raise errors.UnauthorizedError(data=response_data)
         if utils.match_response(http_res, "4XX", "*"):
             http_res_text = await utils.stream_to_text_async(http_res)
             raise errors.APIError(

@@ -41,23 +41,23 @@ class PointJSONLdTypedDict(TypedDict):
     r"""A geometry represented in Well-Known Text (WKT) format."""
     at_id: NotRequired[str]
     at_type: NotRequired[PointJSONLdAtType]
+    county: NotRequired[str]
     cwa: NotRequired[NWSForecastOfficeID]
     r"""Three-letter identifier for a NWS office."""
+    fire_weather_zone: NotRequired[str]
+    forecast: NotRequired[str]
+    forecast_grid_data: NotRequired[str]
+    forecast_hourly: NotRequired[str]
     forecast_office: NotRequired[str]
+    forecast_zone: NotRequired[str]
     grid_id: NotRequired[NWSForecastOfficeID]
     r"""Three-letter identifier for a NWS office."""
     grid_x: NotRequired[int]
     grid_y: NotRequired[int]
-    forecast: NotRequired[str]
-    forecast_hourly: NotRequired[str]
-    forecast_grid_data: NotRequired[str]
     observation_stations: NotRequired[str]
-    relative_location: NotRequired[PointJSONLdRelativeLocationTypedDict]
-    forecast_zone: NotRequired[str]
-    county: NotRequired[str]
-    fire_weather_zone: NotRequired[str]
-    time_zone: NotRequired[str]
     radar_station: NotRequired[str]
+    relative_location: NotRequired[PointJSONLdRelativeLocationTypedDict]
+    time_zone: NotRequired[str]
 
 
 class PointJSONLd(BaseModel):
@@ -72,12 +72,30 @@ class PointJSONLd(BaseModel):
         None
     )
 
+    county: Optional[str] = None
+
     cwa: Optional[NWSForecastOfficeID] = None
     r"""Three-letter identifier for a NWS office."""
+
+    fire_weather_zone: Annotated[
+        Optional[str], pydantic.Field(alias="fireWeatherZone")
+    ] = None
+
+    forecast: Optional[str] = None
+
+    forecast_grid_data: Annotated[
+        Optional[str], pydantic.Field(alias="forecastGridData")
+    ] = None
+
+    forecast_hourly: Annotated[
+        Optional[str], pydantic.Field(alias="forecastHourly")
+    ] = None
 
     forecast_office: Annotated[
         Optional[str], pydantic.Field(alias="forecastOffice")
     ] = None
+
+    forecast_zone: Annotated[Optional[str], pydantic.Field(alias="forecastZone")] = None
 
     grid_id: Annotated[
         Optional[NWSForecastOfficeID], pydantic.Field(alias="gridId")
@@ -88,56 +106,38 @@ class PointJSONLd(BaseModel):
 
     grid_y: Annotated[Optional[int], pydantic.Field(alias="gridY")] = None
 
-    forecast: Optional[str] = None
-
-    forecast_hourly: Annotated[
-        Optional[str], pydantic.Field(alias="forecastHourly")
-    ] = None
-
-    forecast_grid_data: Annotated[
-        Optional[str], pydantic.Field(alias="forecastGridData")
-    ] = None
-
     observation_stations: Annotated[
         Optional[str], pydantic.Field(alias="observationStations")
     ] = None
+
+    radar_station: Annotated[Optional[str], pydantic.Field(alias="radarStation")] = None
 
     relative_location: Annotated[
         Optional[PointJSONLdRelativeLocation], pydantic.Field(alias="relativeLocation")
     ] = None
 
-    forecast_zone: Annotated[Optional[str], pydantic.Field(alias="forecastZone")] = None
-
-    county: Optional[str] = None
-
-    fire_weather_zone: Annotated[
-        Optional[str], pydantic.Field(alias="fireWeatherZone")
-    ] = None
-
     time_zone: Annotated[Optional[str], pydantic.Field(alias="timeZone")] = None
-
-    radar_station: Annotated[Optional[str], pydantic.Field(alias="radarStation")] = None
 
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):
         optional_fields = [
             "@id",
             "@type",
+            "county",
             "cwa",
+            "fireWeatherZone",
+            "forecast",
+            "forecastGridData",
+            "forecastHourly",
             "forecastOffice",
+            "forecastZone",
             "gridId",
             "gridX",
             "gridY",
-            "forecast",
-            "forecastHourly",
-            "forecastGridData",
             "observationStations",
-            "relativeLocation",
-            "forecastZone",
-            "county",
-            "fireWeatherZone",
-            "timeZone",
             "radarStation",
+            "relativeLocation",
+            "timeZone",
         ]
         nullable_fields = ["geometry"]
         null_default_fields = []

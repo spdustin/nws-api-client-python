@@ -18,64 +18,64 @@ class AlertAtomEntryAuthor(BaseModel):
 class AlertAtomEntryTypedDict(TypedDict):
     r"""An alert entry in an Atom feed"""
 
-    id: NotRequired[str]
-    updated: NotRequired[str]
-    published: NotRequired[str]
-    author: NotRequired[AlertAtomEntryAuthorTypedDict]
-    summary: NotRequired[str]
-    event: NotRequired[str]
-    sent: NotRequired[str]
-    effective: NotRequired[str]
-    expires: NotRequired[str]
-    status: NotRequired[str]
-    msg_type: NotRequired[str]
-    category: NotRequired[str]
-    urgency: NotRequired[str]
-    severity: NotRequired[str]
-    certainty: NotRequired[str]
     area_desc: NotRequired[str]
-    polygon: NotRequired[str]
+    author: NotRequired[AlertAtomEntryAuthorTypedDict]
+    category: NotRequired[str]
+    certainty: NotRequired[str]
+    effective: NotRequired[str]
+    event: NotRequired[str]
+    expires: NotRequired[str]
     geocode: NotRequired[List[AlertXMLParameterTypedDict]]
+    id: NotRequired[str]
+    msg_type: NotRequired[str]
     parameter: NotRequired[List[AlertXMLParameterTypedDict]]
+    polygon: NotRequired[str]
+    published: NotRequired[str]
+    sent: NotRequired[str]
+    severity: NotRequired[str]
+    status: NotRequired[str]
+    summary: NotRequired[str]
+    updated: NotRequired[str]
+    urgency: NotRequired[str]
 
 
 class AlertAtomEntry(BaseModel):
     r"""An alert entry in an Atom feed"""
 
-    id: Optional[str] = None
-
-    updated: Optional[str] = None
-
-    published: Optional[str] = None
+    area_desc: Optional[str] = None
 
     author: Optional[AlertAtomEntryAuthor] = None
 
-    summary: Optional[str] = None
-
-    event: Optional[str] = None
-
-    sent: Optional[str] = None
-
-    effective: Optional[str] = None
-
-    expires: Optional[str] = None
-
-    status: Optional[str] = None
-
-    msg_type: Optional[str] = None
-
     category: Optional[str] = None
-
-    urgency: Optional[str] = None
-
-    severity: Optional[str] = None
 
     certainty: Optional[str] = None
 
-    area_desc: Optional[str] = None
+    effective: Optional[str] = None
 
-    polygon: Optional[str] = None
+    event: Optional[str] = None
+
+    expires: Optional[str] = None
 
     geocode: Optional[List[AlertXMLParameter]] = None
 
+    id: Optional[str] = None
+
+    msg_type: Optional[str] = None
+
     parameter: Optional[List[AlertXMLParameter]] = None
+
+    polygon: Optional[str] = None
+
+    published: Optional[str] = None
+
+    sent: Optional[str] = None
+
+    severity: Optional[str] = None
+
+    status: Optional[str] = None
+
+    summary: Optional[str] = None
+
+    updated: Optional[str] = None
+
+    urgency: Optional[str] = None

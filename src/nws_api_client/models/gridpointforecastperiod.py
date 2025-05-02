@@ -39,6 +39,13 @@ This property as an integer value is deprecated. Future versions will express th
 """
 
 
+class TemperatureTrend(str, Enum):
+    r"""If not null, indicates a non-diurnal temperature trend for the period (either rising temperature overnight, or falling temperature during the day)"""
+
+    RISING = "rising"
+    FALLING = "falling"
+
+
 @deprecated(
     "warning: ** DEPRECATED ** - This will be removed in a future release, please migrate away from it as soon as possible."
 )
@@ -52,27 +59,25 @@ class TemperatureUnit(str, Enum):
     C = "C"
 
 
-class TemperatureTrend(str, Enum):
-    r"""If not null, indicates a non-diurnal temperature trend for the period (either rising temperature overnight, or falling temperature during the day)"""
+class WindDirection(str, Enum):
+    r"""The prevailing direction of the wind for the period, using a 16-point compass."""
 
-    RISING = "rising"
-    FALLING = "falling"
-
-
-WindSpeedTypedDict = TypeAliasType(
-    "WindSpeedTypedDict", Union[QuantitativeValueTypedDict, str]
-)
-r"""Wind speed for the period.
-This property as an string value is deprecated. Future versions will express this value as a quantitative value object. To make use of the future standard format now, set the \"forecast_wind_speed_qv\" feature flag on the request.
-
-"""
-
-
-WindSpeed = TypeAliasType("WindSpeed", Union[QuantitativeValue, str])
-r"""Wind speed for the period.
-This property as an string value is deprecated. Future versions will express this value as a quantitative value object. To make use of the future standard format now, set the \"forecast_wind_speed_qv\" feature flag on the request.
-
-"""
+    N = "N"
+    NNE = "NNE"
+    NE = "NE"
+    ENE = "ENE"
+    E = "E"
+    ESE = "ESE"
+    SE = "SE"
+    SSE = "SSE"
+    S = "S"
+    SSW = "SSW"
+    SW = "SW"
+    WSW = "WSW"
+    W = "W"
+    WNW = "WNW"
+    NW = "NW"
+    NNW = "NNW"
 
 
 class GridpointForecastPeriodQualityControl(str, Enum):
@@ -92,12 +97,14 @@ class GridpointForecastPeriodQualityControl(str, Enum):
 class GridpointForecastPeriodQuantitativeValueTypedDict(TypedDict):
     r"""A structured value representing a measurement and its unit of measure. This object is a slighly modified version of the schema.org definition at https://schema.org/QuantitativeValue"""
 
-    value: NotRequired[Nullable[float]]
-    r"""A measured value"""
     max_value: NotRequired[float]
     r"""The maximum value of a range of measured values"""
     min_value: NotRequired[float]
     r"""The minimum value of a range of measured values"""
+    quality_control: NotRequired[GridpointForecastPeriodQualityControl]
+    r"""For values in observation records, the quality control flag from the MADIS system. The definitions of these flags can be found at https://madis.ncep.noaa.gov/madis_sfc_qc_notes.shtml
+
+    """
     unit_code: NotRequired[str]
     r"""A string denoting a unit of measure, expressed in the format \"{unit}\" or \"{namespace}:{unit}\".
     Units with the namespace \"wmo\" or \"wmoUnit\" are defined in the World Meteorological Organization Codes Registry at http://codes.wmo.int/common/unit and should be canonically resolvable to http://codes.wmo.int/common/unit/{unit}.
@@ -106,23 +113,26 @@ class GridpointForecastPeriodQuantitativeValueTypedDict(TypedDict):
     Namespaced units are considered deprecated. We will be aligning API to use the same standards as GML/IWXXM in the future.
 
     """
-    quality_control: NotRequired[GridpointForecastPeriodQualityControl]
-    r"""For values in observation records, the quality control flag from the MADIS system. The definitions of these flags can be found at https://madis.ncep.noaa.gov/madis_sfc_qc_notes.shtml
-
-    """
+    value: NotRequired[Nullable[float]]
+    r"""A measured value"""
 
 
 class GridpointForecastPeriodQuantitativeValue(BaseModel):
     r"""A structured value representing a measurement and its unit of measure. This object is a slighly modified version of the schema.org definition at https://schema.org/QuantitativeValue"""
-
-    value: OptionalNullable[float] = UNSET
-    r"""A measured value"""
 
     max_value: Annotated[Optional[float], pydantic.Field(alias="maxValue")] = None
     r"""The maximum value of a range of measured values"""
 
     min_value: Annotated[Optional[float], pydantic.Field(alias="minValue")] = None
     r"""The minimum value of a range of measured values"""
+
+    quality_control: Annotated[
+        Optional[GridpointForecastPeriodQualityControl],
+        pydantic.Field(alias="qualityControl"),
+    ] = None
+    r"""For values in observation records, the quality control flag from the MADIS system. The definitions of these flags can be found at https://madis.ncep.noaa.gov/madis_sfc_qc_notes.shtml
+
+    """
 
     unit_code: Annotated[Optional[str], pydantic.Field(alias="unitCode")] = None
     r"""A string denoting a unit of measure, expressed in the format \"{unit}\" or \"{namespace}:{unit}\".
@@ -133,22 +143,17 @@ class GridpointForecastPeriodQuantitativeValue(BaseModel):
 
     """
 
-    quality_control: Annotated[
-        Optional[GridpointForecastPeriodQualityControl],
-        pydantic.Field(alias="qualityControl"),
-    ] = None
-    r"""For values in observation records, the quality control flag from the MADIS system. The definitions of these flags can be found at https://madis.ncep.noaa.gov/madis_sfc_qc_notes.shtml
-
-    """
+    value: OptionalNullable[float] = UNSET
+    r"""A measured value"""
 
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):
         optional_fields = [
-            "value",
             "maxValue",
             "minValue",
-            "unitCode",
             "qualityControl",
+            "unitCode",
+            "value",
         ]
         nullable_fields = ["value"]
         null_default_fields = []
@@ -196,61 +201,44 @@ This property as an string value is deprecated. Future versions will express thi
 """
 
 
-class WindDirection(str, Enum):
-    r"""The prevailing direction of the wind for the period, using a 16-point compass."""
+WindSpeedTypedDict = TypeAliasType(
+    "WindSpeedTypedDict", Union[QuantitativeValueTypedDict, str]
+)
+r"""Wind speed for the period.
+This property as an string value is deprecated. Future versions will express this value as a quantitative value object. To make use of the future standard format now, set the \"forecast_wind_speed_qv\" feature flag on the request.
 
-    N = "N"
-    NNE = "NNE"
-    NE = "NE"
-    ENE = "ENE"
-    E = "E"
-    ESE = "ESE"
-    SE = "SE"
-    SSE = "SSE"
-    S = "S"
-    SSW = "SSW"
-    SW = "SW"
-    WSW = "WSW"
-    W = "W"
-    WNW = "WNW"
-    NW = "NW"
-    NNW = "NNW"
+"""
+
+
+WindSpeed = TypeAliasType("WindSpeed", Union[QuantitativeValue, str])
+r"""Wind speed for the period.
+This property as an string value is deprecated. Future versions will express this value as a quantitative value object. To make use of the future standard format now, set the \"forecast_wind_speed_qv\" feature flag on the request.
+
+"""
 
 
 class GridpointForecastPeriodTypedDict(TypedDict):
     r"""An object containing forecast information for a specific time period (generally 12-hour or 1-hour)."""
 
-    number: NotRequired[int]
-    r"""Sequential period number."""
+    detailed_forecast: NotRequired[str]
+    r"""A detailed textual forecast for the period."""
+    dewpoint: NotRequired[QuantitativeValueTypedDict]
+    r"""A structured value representing a measurement and its unit of measure. This object is a slighly modified version of the schema.org definition at https://schema.org/QuantitativeValue
+
+    """
+    end_time: NotRequired[datetime]
+    r"""The ending time that this forecast period is valid for."""
+    icon: NotRequired[str]
+    r"""A link to an icon representing the forecast summary."""
+    is_daytime: NotRequired[bool]
+    r"""Indicates whether this period is daytime or nighttime."""
     name: NotRequired[str]
     r"""A textual identifier for the period. This value will not be present for hourly forecasts.
 
     """
-    start_time: NotRequired[datetime]
-    r"""The starting time that this forecast period is valid for."""
-    end_time: NotRequired[datetime]
-    r"""The ending time that this forecast period is valid for."""
-    is_daytime: NotRequired[bool]
-    r"""Indicates whether this period is daytime or nighttime."""
-    temperature: NotRequired[TemperatureTypedDict]
-    r"""High/low temperature for the period, depending on whether the period is day or night.
-    This property as an integer value is deprecated. Future versions will express this value as a quantitative value object. To make use of the future standard format now, set the \"forecast_temperature_qv\" feature flag on the request.
-
-    """
-    temperature_unit: NotRequired[TemperatureUnit]
-    r"""The unit of the temperature value (Fahrenheit or Celsius).
-    This property is deprecated. Future versions will indicate the unit within the quantitative value object for the temperature property. To make use of the future standard format now, set the \"forecast_temperature_qv\" feature flag on the request.
-
-    """
-    temperature_trend: NotRequired[Nullable[TemperatureTrend]]
-    r"""If not null, indicates a non-diurnal temperature trend for the period (either rising temperature overnight, or falling temperature during the day)
-
-    """
+    number: NotRequired[int]
+    r"""Sequential period number."""
     probability_of_precipitation: NotRequired[QuantitativeValueTypedDict]
-    r"""A structured value representing a measurement and its unit of measure. This object is a slighly modified version of the schema.org definition at https://schema.org/QuantitativeValue
-
-    """
-    dewpoint: NotRequired[QuantitativeValueTypedDict]
     r"""A structured value representing a measurement and its unit of measure. This object is a slighly modified version of the schema.org definition at https://schema.org/QuantitativeValue
 
     """
@@ -258,49 +246,105 @@ class GridpointForecastPeriodTypedDict(TypedDict):
     r"""A structured value representing a measurement and its unit of measure. This object is a slighly modified version of the schema.org definition at https://schema.org/QuantitativeValue
 
     """
-    wind_speed: NotRequired[WindSpeedTypedDict]
-    r"""Wind speed for the period.
-    This property as an string value is deprecated. Future versions will express this value as a quantitative value object. To make use of the future standard format now, set the \"forecast_wind_speed_qv\" feature flag on the request.
+    short_forecast: NotRequired[str]
+    r"""A brief textual forecast summary for the period."""
+    start_time: NotRequired[datetime]
+    r"""The starting time that this forecast period is valid for."""
+    temperature: NotRequired[TemperatureTypedDict]
+    r"""High/low temperature for the period, depending on whether the period is day or night.
+    This property as an integer value is deprecated. Future versions will express this value as a quantitative value object. To make use of the future standard format now, set the \"forecast_temperature_qv\" feature flag on the request.
 
     """
+    temperature_trend: NotRequired[Nullable[TemperatureTrend]]
+    r"""If not null, indicates a non-diurnal temperature trend for the period (either rising temperature overnight, or falling temperature during the day)
+
+    """
+    temperature_unit: NotRequired[TemperatureUnit]
+    r"""The unit of the temperature value (Fahrenheit or Celsius).
+    This property is deprecated. Future versions will indicate the unit within the quantitative value object for the temperature property. To make use of the future standard format now, set the \"forecast_temperature_qv\" feature flag on the request.
+
+    """
+    wind_direction: NotRequired[WindDirection]
+    r"""The prevailing direction of the wind for the period, using a 16-point compass."""
     wind_gust: NotRequired[Nullable[WindGustTypedDict]]
     r"""Peak wind gust for the period.
     This property as an string value is deprecated. Future versions will express this value as a quantitative value object. To make use of the future standard format now, set the \"forecast_wind_speed_qv\" feature flag on the request.
 
     """
-    wind_direction: NotRequired[WindDirection]
-    r"""The prevailing direction of the wind for the period, using a 16-point compass."""
-    icon: NotRequired[str]
-    r"""A link to an icon representing the forecast summary."""
-    short_forecast: NotRequired[str]
-    r"""A brief textual forecast summary for the period."""
-    detailed_forecast: NotRequired[str]
-    r"""A detailed textual forecast for the period."""
+    wind_speed: NotRequired[WindSpeedTypedDict]
+    r"""Wind speed for the period.
+    This property as an string value is deprecated. Future versions will express this value as a quantitative value object. To make use of the future standard format now, set the \"forecast_wind_speed_qv\" feature flag on the request.
+
+    """
 
 
 class GridpointForecastPeriod(BaseModel):
     r"""An object containing forecast information for a specific time period (generally 12-hour or 1-hour)."""
 
-    number: Optional[int] = None
-    r"""Sequential period number."""
+    detailed_forecast: Annotated[
+        Optional[str], pydantic.Field(alias="detailedForecast")
+    ] = None
+    r"""A detailed textual forecast for the period."""
+
+    dewpoint: Optional[QuantitativeValue] = None
+    r"""A structured value representing a measurement and its unit of measure. This object is a slighly modified version of the schema.org definition at https://schema.org/QuantitativeValue
+
+    """
+
+    end_time: Annotated[Optional[datetime], pydantic.Field(alias="endTime")] = None
+    r"""The ending time that this forecast period is valid for."""
+
+    icon: Annotated[
+        Optional[str],
+        pydantic.Field(
+            deprecated="warning: ** DEPRECATED ** - This will be removed in a future release, please migrate away from it as soon as possible."
+        ),
+    ] = None
+    r"""A link to an icon representing the forecast summary."""
+
+    is_daytime: Annotated[Optional[bool], pydantic.Field(alias="isDaytime")] = None
+    r"""Indicates whether this period is daytime or nighttime."""
 
     name: Optional[str] = None
     r"""A textual identifier for the period. This value will not be present for hourly forecasts.
 
     """
 
+    number: Optional[int] = None
+    r"""Sequential period number."""
+
+    probability_of_precipitation: Annotated[
+        Optional[QuantitativeValue], pydantic.Field(alias="probabilityOfPrecipitation")
+    ] = None
+    r"""A structured value representing a measurement and its unit of measure. This object is a slighly modified version of the schema.org definition at https://schema.org/QuantitativeValue
+
+    """
+
+    relative_humidity: Annotated[
+        Optional[QuantitativeValue], pydantic.Field(alias="relativeHumidity")
+    ] = None
+    r"""A structured value representing a measurement and its unit of measure. This object is a slighly modified version of the schema.org definition at https://schema.org/QuantitativeValue
+
+    """
+
+    short_forecast: Annotated[Optional[str], pydantic.Field(alias="shortForecast")] = (
+        None
+    )
+    r"""A brief textual forecast summary for the period."""
+
     start_time: Annotated[Optional[datetime], pydantic.Field(alias="startTime")] = None
     r"""The starting time that this forecast period is valid for."""
-
-    end_time: Annotated[Optional[datetime], pydantic.Field(alias="endTime")] = None
-    r"""The ending time that this forecast period is valid for."""
-
-    is_daytime: Annotated[Optional[bool], pydantic.Field(alias="isDaytime")] = None
-    r"""Indicates whether this period is daytime or nighttime."""
 
     temperature: Optional[Temperature] = None
     r"""High/low temperature for the period, depending on whether the period is day or night.
     This property as an integer value is deprecated. Future versions will express this value as a quantitative value object. To make use of the future standard format now, set the \"forecast_temperature_qv\" feature flag on the request.
+
+    """
+
+    temperature_trend: Annotated[
+        OptionalNullable[TemperatureTrend], pydantic.Field(alias="temperatureTrend")
+    ] = UNSET
+    r"""If not null, indicates a non-diurnal temperature trend for the period (either rising temperature overnight, or falling temperature during the day)
 
     """
 
@@ -316,37 +360,10 @@ class GridpointForecastPeriod(BaseModel):
 
     """
 
-    temperature_trend: Annotated[
-        OptionalNullable[TemperatureTrend], pydantic.Field(alias="temperatureTrend")
-    ] = UNSET
-    r"""If not null, indicates a non-diurnal temperature trend for the period (either rising temperature overnight, or falling temperature during the day)
-
-    """
-
-    probability_of_precipitation: Annotated[
-        Optional[QuantitativeValue], pydantic.Field(alias="probabilityOfPrecipitation")
+    wind_direction: Annotated[
+        Optional[WindDirection], pydantic.Field(alias="windDirection")
     ] = None
-    r"""A structured value representing a measurement and its unit of measure. This object is a slighly modified version of the schema.org definition at https://schema.org/QuantitativeValue
-
-    """
-
-    dewpoint: Optional[QuantitativeValue] = None
-    r"""A structured value representing a measurement and its unit of measure. This object is a slighly modified version of the schema.org definition at https://schema.org/QuantitativeValue
-
-    """
-
-    relative_humidity: Annotated[
-        Optional[QuantitativeValue], pydantic.Field(alias="relativeHumidity")
-    ] = None
-    r"""A structured value representing a measurement and its unit of measure. This object is a slighly modified version of the schema.org definition at https://schema.org/QuantitativeValue
-
-    """
-
-    wind_speed: Annotated[Optional[WindSpeed], pydantic.Field(alias="windSpeed")] = None
-    r"""Wind speed for the period.
-    This property as an string value is deprecated. Future versions will express this value as a quantitative value object. To make use of the future standard format now, set the \"forecast_wind_speed_qv\" feature flag on the request.
-
-    """
+    r"""The prevailing direction of the wind for the period, using a 16-point compass."""
 
     wind_gust: Annotated[
         OptionalNullable[WindGust], pydantic.Field(alias="windGust")
@@ -356,49 +373,32 @@ class GridpointForecastPeriod(BaseModel):
 
     """
 
-    wind_direction: Annotated[
-        Optional[WindDirection], pydantic.Field(alias="windDirection")
-    ] = None
-    r"""The prevailing direction of the wind for the period, using a 16-point compass."""
+    wind_speed: Annotated[Optional[WindSpeed], pydantic.Field(alias="windSpeed")] = None
+    r"""Wind speed for the period.
+    This property as an string value is deprecated. Future versions will express this value as a quantitative value object. To make use of the future standard format now, set the \"forecast_wind_speed_qv\" feature flag on the request.
 
-    icon: Annotated[
-        Optional[str],
-        pydantic.Field(
-            deprecated="warning: ** DEPRECATED ** - This will be removed in a future release, please migrate away from it as soon as possible."
-        ),
-    ] = None
-    r"""A link to an icon representing the forecast summary."""
-
-    short_forecast: Annotated[Optional[str], pydantic.Field(alias="shortForecast")] = (
-        None
-    )
-    r"""A brief textual forecast summary for the period."""
-
-    detailed_forecast: Annotated[
-        Optional[str], pydantic.Field(alias="detailedForecast")
-    ] = None
-    r"""A detailed textual forecast for the period."""
+    """
 
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):
         optional_fields = [
-            "number",
-            "name",
-            "startTime",
-            "endTime",
-            "isDaytime",
-            "temperature",
-            "temperatureUnit",
-            "temperatureTrend",
-            "probabilityOfPrecipitation",
-            "dewpoint",
-            "relativeHumidity",
-            "windSpeed",
-            "windGust",
-            "windDirection",
-            "icon",
-            "shortForecast",
             "detailedForecast",
+            "dewpoint",
+            "endTime",
+            "icon",
+            "isDaytime",
+            "name",
+            "number",
+            "probabilityOfPrecipitation",
+            "relativeHumidity",
+            "shortForecast",
+            "startTime",
+            "temperature",
+            "temperatureTrend",
+            "temperatureUnit",
+            "windDirection",
+            "windGust",
+            "windSpeed",
         ]
         nullable_fields = ["temperatureTrend", "windGust"]
         null_default_fields = []

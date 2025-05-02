@@ -3,10 +3,10 @@
 
 ## Supported Types
 
-### `models.ObservationGeoJSON`
+### `bytes`
 
 ```python
-value: models.ObservationGeoJSON = /* values here */
+value: bytes = /* values here */
 ```
 
 ### `models.Observation`
@@ -15,10 +15,10 @@ value: models.ObservationGeoJSON = /* values here */
 value: models.Observation = /* values here */
 ```
 
-### `bytes`
+### `models.ObservationGeoJSON`
 
 ```python
-value: bytes = /* values here */
+value: models.ObservationGeoJSON = /* values here */
 ```
 
 ### `models.ProblemDetail`

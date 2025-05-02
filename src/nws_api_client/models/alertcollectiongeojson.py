@@ -12,10 +12,6 @@ from typing import List, Optional
 from typing_extensions import Annotated, NotRequired, TypedDict
 
 
-class AlertCollectionGeoJSONType(str, Enum):
-    FEATURE_COLLECTION = "FeatureCollection"
-
-
 class AlertCollectionGeoJSONFeatureTypedDict(TypedDict):
     properties: NotRequired[AlertTypedDict]
     r"""An object representing a public alert message.
@@ -34,36 +30,40 @@ class AlertCollectionGeoJSONFeature(BaseModel):
     """
 
 
+class AlertCollectionGeoJSONType(str, Enum):
+    FEATURE_COLLECTION = "FeatureCollection"
+
+
 class AlertCollectionGeoJSONTypedDict(TypedDict):
     r"""A GeoJSON feature collection. Please refer to IETF RFC 7946 for information on the GeoJSON format."""
 
-    type: AlertCollectionGeoJSONType
     features: List[AlertCollectionGeoJSONFeatureTypedDict]
+    type: AlertCollectionGeoJSONType
     at_context: NotRequired[JSONLdContextUnionTypedDict]
+    pagination: NotRequired[PaginationInfoTypedDict]
+    r"""Links for retrieving more data from paged data sets"""
     title: NotRequired[str]
     r"""A title describing the alert collection"""
     updated: NotRequired[datetime]
     r"""The last time a change occurred to this collection"""
-    pagination: NotRequired[PaginationInfoTypedDict]
-    r"""Links for retrieving more data from paged data sets"""
 
 
 class AlertCollectionGeoJSON(BaseModel):
     r"""A GeoJSON feature collection. Please refer to IETF RFC 7946 for information on the GeoJSON format."""
 
-    type: AlertCollectionGeoJSONType
-
     features: List[AlertCollectionGeoJSONFeature]
+
+    type: AlertCollectionGeoJSONType
 
     at_context: Annotated[
         Optional[JSONLdContextUnion], pydantic.Field(alias="@context")
     ] = None
+
+    pagination: Optional[PaginationInfo] = None
+    r"""Links for retrieving more data from paged data sets"""
 
     title: Optional[str] = None
     r"""A title describing the alert collection"""
 
     updated: Optional[datetime] = None
     r"""The last time a change occurred to this collection"""
-
-    pagination: Optional[PaginationInfo] = None
-    r"""Links for retrieving more data from paged data sets"""

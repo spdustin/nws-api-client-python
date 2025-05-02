@@ -1,7 +1,6 @@
 # AreaCode
 
 State, territory, and marine area codes.
-
 Marine area code as defined in NWS Directive 10-302:
 * AM: Western North Atlantic Ocean and along U.S. East Coast south of Currituck Beach Light NC following the coastline into Gulf of Mexico to Ocean Reef FL including the Caribbean
 * AN: Western North Atlantic Ocean and along U.S. East Coast from Canadian border south to Currituck Beach Light NC

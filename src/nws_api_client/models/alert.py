@@ -21,23 +21,40 @@ from typing import Any, Dict, List, Optional
 from typing_extensions import Annotated, NotRequired, TypedDict
 
 
+class Category(str, Enum):
+    r"""The code denoting the category of the subject event of the alert message."""
+
+    MET = "Met"
+    GEO = "Geo"
+    SAFETY = "Safety"
+    SECURITY = "Security"
+    RESCUE = "Rescue"
+    FIRE = "Fire"
+    HEALTH = "Health"
+    ENV = "Env"
+    TRANSPORT = "Transport"
+    INFRA = "Infra"
+    CBRNE = "CBRNE"
+    OTHER = "Other"
+
+
 class GeocodeTypedDict(TypedDict):
     r"""Lists of codes for NWS public zones and counties affected by the alert."""
 
-    ugc: NotRequired[List[str]]
-    r"""A list of NWS public zone or county identifiers."""
     same: NotRequired[List[str]]
     r"""A list of SAME (Specific Area Message Encoding) codes for affected counties."""
+    ugc: NotRequired[List[str]]
+    r"""A list of NWS public zone or county identifiers."""
 
 
 class Geocode(BaseModel):
     r"""Lists of codes for NWS public zones and counties affected by the alert."""
 
-    ugc: Annotated[Optional[List[str]], pydantic.Field(alias="UGC")] = None
-    r"""A list of NWS public zone or county identifiers."""
-
     same: Annotated[Optional[List[str]], pydantic.Field(alias="SAME")] = None
     r"""A list of SAME (Specific Area Message Encoding) codes for affected counties."""
+
+    ugc: Annotated[Optional[List[str]], pydantic.Field(alias="UGC")] = None
+    r"""A list of NWS public zone or county identifiers."""
 
 
 class ReferenceTypedDict(TypedDict):
@@ -65,23 +82,6 @@ class Reference(BaseModel):
     r"""The time the prior alert was sent."""
 
 
-class Category(str, Enum):
-    r"""The code denoting the category of the subject event of the alert message."""
-
-    MET = "Met"
-    GEO = "Geo"
-    SAFETY = "Safety"
-    SECURITY = "Security"
-    RESCUE = "Rescue"
-    FIRE = "Fire"
-    HEALTH = "Health"
-    ENV = "Env"
-    TRANSPORT = "Transport"
-    INFRA = "Infra"
-    CBRNE = "CBRNE"
-    OTHER = "Other"
-
-
 class Response(str, Enum):
     r"""The code denoting the type of action recommended for the target audience.
     This corresponds to responseType in the CAP specification.
@@ -106,59 +106,59 @@ class AlertTypedDict(TypedDict):
 
     """
 
-    id: NotRequired[str]
-    r"""The identifier of the alert message."""
-    area_desc: NotRequired[str]
-    r"""A textual description of the area affected by the alert."""
-    geocode: NotRequired[GeocodeTypedDict]
-    r"""Lists of codes for NWS public zones and counties affected by the alert."""
     affected_zones: NotRequired[List[str]]
     r"""An array of API links for zones affected by the alert. This is an API-specific extension field and is not part of the CAP specification.
 
     """
-    references: NotRequired[List[ReferenceTypedDict]]
-    r"""A list of prior alerts that this alert updates or replaces."""
-    sent: NotRequired[datetime]
-    r"""The time of the origination of the alert message."""
-    effective: NotRequired[datetime]
-    r"""The effective time of the information of the alert message."""
-    onset: NotRequired[Nullable[datetime]]
-    r"""The expected time of the beginning of the subject event of the alert message."""
-    expires: NotRequired[datetime]
-    r"""The expiry time of the information of the alert message."""
-    ends: NotRequired[Nullable[datetime]]
-    r"""The expected end time of the subject event of the alert message."""
-    status: NotRequired[AlertStatus]
-    message_type: NotRequired[AlertMessageType]
+    area_desc: NotRequired[str]
+    r"""A textual description of the area affected by the alert."""
     category: NotRequired[Category]
     r"""The code denoting the category of the subject event of the alert message."""
-    severity: NotRequired[AlertSeverity]
     certainty: NotRequired[AlertCertainty]
-    urgency: NotRequired[AlertUrgency]
-    event: NotRequired[str]
-    r"""The text denoting the type of the subject event of the alert message."""
-    sender: NotRequired[str]
-    r"""Email address of the NWS webmaster."""
-    sender_name: NotRequired[str]
-    r"""The text naming the originator of the alert message."""
-    headline: NotRequired[Nullable[str]]
-    r"""The text headline of the alert message."""
     description: NotRequired[str]
     r"""The text describing the subject event of the alert message."""
+    effective: NotRequired[datetime]
+    r"""The effective time of the information of the alert message."""
+    ends: NotRequired[Nullable[datetime]]
+    r"""The expected end time of the subject event of the alert message."""
+    event: NotRequired[str]
+    r"""The text denoting the type of the subject event of the alert message."""
+    expires: NotRequired[datetime]
+    r"""The expiry time of the information of the alert message."""
+    geocode: NotRequired[GeocodeTypedDict]
+    r"""Lists of codes for NWS public zones and counties affected by the alert."""
+    headline: NotRequired[Nullable[str]]
+    r"""The text headline of the alert message."""
+    id: NotRequired[str]
+    r"""The identifier of the alert message."""
     instruction: NotRequired[Nullable[str]]
     r"""The text describing the recommended action to be taken by recipients of the alert message.
 
     """
-    response: NotRequired[Response]
-    r"""The code denoting the type of action recommended for the target audience.
-    This corresponds to responseType in the CAP specification.
-
-    """
+    message_type: NotRequired[AlertMessageType]
+    onset: NotRequired[Nullable[datetime]]
+    r"""The expected time of the beginning of the subject event of the alert message."""
     parameters: NotRequired[Dict[str, List[Any]]]
     r"""System-specific additional parameters associated with the alert message.
     The keys in this object correspond to parameter definitions in the NWS CAP specification.
 
     """
+    references: NotRequired[List[ReferenceTypedDict]]
+    r"""A list of prior alerts that this alert updates or replaces."""
+    response: NotRequired[Response]
+    r"""The code denoting the type of action recommended for the target audience.
+    This corresponds to responseType in the CAP specification.
+
+    """
+    sender: NotRequired[str]
+    r"""Email address of the NWS webmaster."""
+    sender_name: NotRequired[str]
+    r"""The text naming the originator of the alert message."""
+    sent: NotRequired[datetime]
+    r"""The time of the origination of the alert message."""
+    severity: NotRequired[AlertSeverity]
+    status: NotRequired[AlertStatus]
+    urgency: NotRequired[AlertUrgency]
 
 
 class Alert(BaseModel):
@@ -168,15 +168,6 @@ class Alert(BaseModel):
 
     """
 
-    id: Optional[str] = None
-    r"""The identifier of the alert message."""
-
-    area_desc: Annotated[Optional[str], pydantic.Field(alias="areaDesc")] = None
-    r"""A textual description of the area affected by the alert."""
-
-    geocode: Optional[Geocode] = None
-    r"""Lists of codes for NWS public zones and counties affected by the alert."""
-
     affected_zones: Annotated[
         Optional[List[str]], pydantic.Field(alias="affectedZones")
     ] = None
@@ -184,64 +175,49 @@ class Alert(BaseModel):
 
     """
 
-    references: Optional[List[Reference]] = None
-    r"""A list of prior alerts that this alert updates or replaces."""
-
-    sent: Optional[datetime] = None
-    r"""The time of the origination of the alert message."""
-
-    effective: Optional[datetime] = None
-    r"""The effective time of the information of the alert message."""
-
-    onset: OptionalNullable[datetime] = UNSET
-    r"""The expected time of the beginning of the subject event of the alert message."""
-
-    expires: Optional[datetime] = None
-    r"""The expiry time of the information of the alert message."""
-
-    ends: OptionalNullable[datetime] = UNSET
-    r"""The expected end time of the subject event of the alert message."""
-
-    status: Optional[AlertStatus] = None
-
-    message_type: Annotated[
-        Optional[AlertMessageType], pydantic.Field(alias="messageType")
-    ] = None
+    area_desc: Annotated[Optional[str], pydantic.Field(alias="areaDesc")] = None
+    r"""A textual description of the area affected by the alert."""
 
     category: Optional[Category] = None
     r"""The code denoting the category of the subject event of the alert message."""
 
-    severity: Optional[AlertSeverity] = None
-
     certainty: Optional[AlertCertainty] = None
 
-    urgency: Optional[AlertUrgency] = None
+    description: Optional[str] = None
+    r"""The text describing the subject event of the alert message."""
+
+    effective: Optional[datetime] = None
+    r"""The effective time of the information of the alert message."""
+
+    ends: OptionalNullable[datetime] = UNSET
+    r"""The expected end time of the subject event of the alert message."""
 
     event: Optional[str] = None
     r"""The text denoting the type of the subject event of the alert message."""
 
-    sender: Optional[str] = None
-    r"""Email address of the NWS webmaster."""
+    expires: Optional[datetime] = None
+    r"""The expiry time of the information of the alert message."""
 
-    sender_name: Annotated[Optional[str], pydantic.Field(alias="senderName")] = None
-    r"""The text naming the originator of the alert message."""
+    geocode: Optional[Geocode] = None
+    r"""Lists of codes for NWS public zones and counties affected by the alert."""
 
     headline: OptionalNullable[str] = UNSET
     r"""The text headline of the alert message."""
 
-    description: Optional[str] = None
-    r"""The text describing the subject event of the alert message."""
+    id: Optional[str] = None
+    r"""The identifier of the alert message."""
 
     instruction: OptionalNullable[str] = UNSET
     r"""The text describing the recommended action to be taken by recipients of the alert message.
 
     """
 
-    response: Optional[Response] = None
-    r"""The code denoting the type of action recommended for the target audience.
-    This corresponds to responseType in the CAP specification.
+    message_type: Annotated[
+        Optional[AlertMessageType], pydantic.Field(alias="messageType")
+    ] = None
 
-    """
+    onset: OptionalNullable[datetime] = UNSET
+    r"""The expected time of the beginning of the subject event of the alert message."""
 
     parameters: Optional[Dict[str, List[Any]]] = None
     r"""System-specific additional parameters associated with the alert message.
@@ -249,35 +225,59 @@ class Alert(BaseModel):
 
     """
 
+    references: Optional[List[Reference]] = None
+    r"""A list of prior alerts that this alert updates or replaces."""
+
+    response: Optional[Response] = None
+    r"""The code denoting the type of action recommended for the target audience.
+    This corresponds to responseType in the CAP specification.
+
+    """
+
+    sender: Optional[str] = None
+    r"""Email address of the NWS webmaster."""
+
+    sender_name: Annotated[Optional[str], pydantic.Field(alias="senderName")] = None
+    r"""The text naming the originator of the alert message."""
+
+    sent: Optional[datetime] = None
+    r"""The time of the origination of the alert message."""
+
+    severity: Optional[AlertSeverity] = None
+
+    status: Optional[AlertStatus] = None
+
+    urgency: Optional[AlertUrgency] = None
+
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):
         optional_fields = [
-            "id",
-            "areaDesc",
-            "geocode",
             "affectedZones",
-            "references",
-            "sent",
-            "effective",
-            "onset",
-            "expires",
-            "ends",
-            "status",
-            "messageType",
+            "areaDesc",
             "category",
-            "severity",
             "certainty",
-            "urgency",
+            "description",
+            "effective",
+            "ends",
             "event",
+            "expires",
+            "geocode",
+            "headline",
+            "id",
+            "instruction",
+            "messageType",
+            "onset",
+            "parameters",
+            "references",
+            "response",
             "sender",
             "senderName",
-            "headline",
-            "description",
-            "instruction",
-            "response",
-            "parameters",
+            "sent",
+            "severity",
+            "status",
+            "urgency",
         ]
-        nullable_fields = ["onset", "ends", "headline", "instruction"]
+        nullable_fields = ["ends", "headline", "instruction", "onset"]
         null_default_fields = []
 
         serialized = handler(self)

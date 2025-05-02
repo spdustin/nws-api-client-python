@@ -10,10 +10,6 @@ from typing import List, Optional
 from typing_extensions import Annotated, NotRequired, TypedDict
 
 
-class ZoneCollectionGeoJSONType(str, Enum):
-    FEATURE_COLLECTION = "FeatureCollection"
-
-
 class ZoneCollectionGeoJSONFeatureTypedDict(TypedDict):
     properties: NotRequired[ZoneTypedDict]
 
@@ -22,20 +18,24 @@ class ZoneCollectionGeoJSONFeature(BaseModel):
     properties: Optional[Zone] = None
 
 
+class ZoneCollectionGeoJSONType(str, Enum):
+    FEATURE_COLLECTION = "FeatureCollection"
+
+
 class ZoneCollectionGeoJSONTypedDict(TypedDict):
     r"""A GeoJSON feature collection. Please refer to IETF RFC 7946 for information on the GeoJSON format."""
 
-    type: ZoneCollectionGeoJSONType
     features: List[ZoneCollectionGeoJSONFeatureTypedDict]
+    type: ZoneCollectionGeoJSONType
     at_context: NotRequired[JSONLdContextUnionTypedDict]
 
 
 class ZoneCollectionGeoJSON(BaseModel):
     r"""A GeoJSON feature collection. Please refer to IETF RFC 7946 for information on the GeoJSON format."""
 
-    type: ZoneCollectionGeoJSONType
-
     features: List[ZoneCollectionGeoJSONFeature]
+
+    type: ZoneCollectionGeoJSONType
 
     at_context: Annotated[
         Optional[JSONLdContextUnion], pydantic.Field(alias="@context")

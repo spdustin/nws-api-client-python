@@ -23,167 +23,13 @@ class GridpointAtType(str, Enum):
     WX_GRIDPOINT = "wx:Gridpoint"
 
 
-class Coverage(str, Enum):
-    AREAS = "areas"
-    BRIEF = "brief"
-    CHANCE = "chance"
-    DEFINITE = "definite"
-    FEW = "few"
-    FREQUENT = "frequent"
-    INTERMITTENT = "intermittent"
-    ISOLATED = "isolated"
-    LIKELY = "likely"
-    NUMEROUS = "numerous"
-    OCCASIONAL = "occasional"
-    PATCHY = "patchy"
-    PERIODS = "periods"
-    SCATTERED = "scattered"
-    SLIGHT_CHANCE = "slight_chance"
-    WIDESPREAD = "widespread"
-
-
-class ValueWeather(str, Enum):
-    BLOWING_DUST = "blowing_dust"
-    BLOWING_SAND = "blowing_sand"
-    BLOWING_SNOW = "blowing_snow"
-    DRIZZLE = "drizzle"
-    FOG = "fog"
-    FREEZING_FOG = "freezing_fog"
-    FREEZING_DRIZZLE = "freezing_drizzle"
-    FREEZING_RAIN = "freezing_rain"
-    FREEZING_SPRAY = "freezing_spray"
-    FROST = "frost"
-    HAIL = "hail"
-    HAZE = "haze"
-    ICE_CRYSTALS = "ice_crystals"
-    ICE_FOG = "ice_fog"
-    RAIN = "rain"
-    RAIN_SHOWERS = "rain_showers"
-    SLEET = "sleet"
-    SMOKE = "smoke"
-    SNOW = "snow"
-    SNOW_SHOWERS = "snow_showers"
-    THUNDERSTORMS = "thunderstorms"
-    VOLCANIC_ASH = "volcanic_ash"
-    WATER_SPOUTS = "water_spouts"
-
-
-class GridpointIntensity(str, Enum):
-    VERY_LIGHT = "very_light"
-    LIGHT = "light"
-    MODERATE = "moderate"
-    HEAVY = "heavy"
-
-
-class Attribute(str, Enum):
-    DAMAGING_WIND = "damaging_wind"
-    DRY_THUNDERSTORMS = "dry_thunderstorms"
-    FLOODING = "flooding"
-    GUSTY_WIND = "gusty_wind"
-    HEAVY_RAIN = "heavy_rain"
-    LARGE_HAIL = "large_hail"
-    SMALL_HAIL = "small_hail"
-    TORNADOES = "tornadoes"
-
-
-class WeatherValue1TypedDict(TypedDict):
-    r"""A value object representing expected weather phenomena."""
-
-    coverage: Nullable[Coverage]
-    weather: Nullable[ValueWeather]
-    intensity: Nullable[GridpointIntensity]
-    visibility: QuantitativeValueTypedDict
-    r"""A structured value representing a measurement and its unit of measure. This object is a slighly modified version of the schema.org definition at https://schema.org/QuantitativeValue
-
-    """
-    attributes: List[Attribute]
-
-
-class WeatherValue1(BaseModel):
-    r"""A value object representing expected weather phenomena."""
-
-    coverage: Nullable[Coverage]
-
-    weather: Nullable[ValueWeather]
-
-    intensity: Nullable[GridpointIntensity]
-
-    visibility: QuantitativeValue
-    r"""A structured value representing a measurement and its unit of measure. This object is a slighly modified version of the schema.org definition at https://schema.org/QuantitativeValue
-
-    """
-
-    attributes: List[Attribute]
-
-    @model_serializer(mode="wrap")
-    def serialize_model(self, handler):
-        optional_fields = []
-        nullable_fields = ["coverage", "weather", "intensity"]
-        null_default_fields = []
-
-        serialized = handler(self)
-
-        m = {}
-
-        for n, f in type(self).model_fields.items():
-            k = f.alias or n
-            val = serialized.get(k)
-            serialized.pop(k, None)
-
-            optional_nullable = k in optional_fields and k in nullable_fields
-            is_set = (
-                self.__pydantic_fields_set__.intersection({n})
-                or k in null_default_fields
-            )  # pylint: disable=no-member
-
-            if val is not None and val != UNSET_SENTINEL:
-                m[k] = val
-            elif val != UNSET_SENTINEL and (
-                not k in optional_fields or (optional_nullable and is_set)
-            ):
-                m[k] = val
-
-        return m
-
-
-class WeatherValue2TypedDict(TypedDict):
-    valid_time: str
-    r"""A time interval in ISO 8601 format. This can be one of:
-
-    1. Start and end time
-    2. Start time and duration
-    3. Duration and end time
-    The string \"NOW\" can also be used in place of a start/end time.
-
-    """
-    value: List[WeatherValue1TypedDict]
-
-
-class WeatherValue2(BaseModel):
-    valid_time: Annotated[str, pydantic.Field(alias="validTime")]
-    r"""A time interval in ISO 8601 format. This can be one of:
-
-    1. Start and end time
-    2. Start time and duration
-    3. Duration and end time
-    The string \"NOW\" can also be used in place of a start/end time.
-
-    """
-
-    value: List[WeatherValue1]
-
-
-class GridpointWeatherTypedDict(TypedDict):
-    values: List[WeatherValue2TypedDict]
-
-
-class GridpointWeather(BaseModel):
-    values: List[WeatherValue2]
-
-
-class HazardsValue1TypedDict(TypedDict):
+class HazardsValue2TypedDict(TypedDict):
     r"""A value object representing an expected hazard."""
 
+    event_number: Nullable[int]
+    r"""Event number. If this hazard refers to a national or regional center product (such as a Storm Prediction Center convective watch), this value will be the sequence number of that product.
+
+    """
     phenomenon: str
     r"""Hazard code. This value will correspond to a P-VTEC phenomenon code as defined in NWS Directive 10-1703.
 
@@ -193,14 +39,15 @@ class HazardsValue1TypedDict(TypedDict):
     This will most frequently be \"A\" for a watch or \"Y\" for an advisory.
 
     """
+
+
+class HazardsValue2(BaseModel):
+    r"""A value object representing an expected hazard."""
+
     event_number: Nullable[int]
     r"""Event number. If this hazard refers to a national or regional center product (such as a Storm Prediction Center convective watch), this value will be the sequence number of that product.
 
     """
-
-
-class HazardsValue1(BaseModel):
-    r"""A value object representing an expected hazard."""
 
     phenomenon: str
     r"""Hazard code. This value will correspond to a P-VTEC phenomenon code as defined in NWS Directive 10-1703.
@@ -210,11 +57,6 @@ class HazardsValue1(BaseModel):
     significance: str
     r"""Significance code. This value will correspond to a P-VTEC significance code as defined in NWS Directive 10-1703.
     This will most frequently be \"A\" for a watch or \"Y\" for an advisory.
-
-    """
-
-    event_number: Nullable[int]
-    r"""Event number. If this hazard refers to a national or regional center product (such as a Storm Prediction Center convective watch), this value will be the sequence number of that product.
 
     """
 
@@ -249,23 +91,21 @@ class HazardsValue1(BaseModel):
         return m
 
 
-class HazardsValue2TypedDict(TypedDict):
+class HazardsValue1TypedDict(TypedDict):
     valid_time: str
     r"""A time interval in ISO 8601 format. This can be one of:
-
     1. Start and end time
     2. Start time and duration
     3. Duration and end time
     The string \"NOW\" can also be used in place of a start/end time.
 
     """
-    value: List[HazardsValue1TypedDict]
+    value: List[HazardsValue2TypedDict]
 
 
-class HazardsValue2(BaseModel):
+class HazardsValue1(BaseModel):
     valid_time: Annotated[str, pydantic.Field(alias="validTime")]
     r"""A time interval in ISO 8601 format. This can be one of:
-
     1. Start and end time
     2. Start time and duration
     3. Duration and end time
@@ -273,15 +113,171 @@ class HazardsValue2(BaseModel):
 
     """
 
-    value: List[HazardsValue1]
+    value: List[HazardsValue2]
 
 
 class HazardsTypedDict(TypedDict):
-    values: List[HazardsValue2TypedDict]
+    values: List[HazardsValue1TypedDict]
 
 
 class Hazards(BaseModel):
-    values: List[HazardsValue2]
+    values: List[HazardsValue1]
+
+
+class Attribute(str, Enum):
+    DAMAGING_WIND = "damaging_wind"
+    DRY_THUNDERSTORMS = "dry_thunderstorms"
+    FLOODING = "flooding"
+    GUSTY_WIND = "gusty_wind"
+    HEAVY_RAIN = "heavy_rain"
+    LARGE_HAIL = "large_hail"
+    SMALL_HAIL = "small_hail"
+    TORNADOES = "tornadoes"
+
+
+class Coverage(str, Enum):
+    AREAS = "areas"
+    BRIEF = "brief"
+    CHANCE = "chance"
+    DEFINITE = "definite"
+    FEW = "few"
+    FREQUENT = "frequent"
+    INTERMITTENT = "intermittent"
+    ISOLATED = "isolated"
+    LIKELY = "likely"
+    NUMEROUS = "numerous"
+    OCCASIONAL = "occasional"
+    PATCHY = "patchy"
+    PERIODS = "periods"
+    SCATTERED = "scattered"
+    SLIGHT_CHANCE = "slight_chance"
+    WIDESPREAD = "widespread"
+
+
+class GridpointIntensity(str, Enum):
+    VERY_LIGHT = "very_light"
+    LIGHT = "light"
+    MODERATE = "moderate"
+    HEAVY = "heavy"
+
+
+class ValueWeather(str, Enum):
+    BLOWING_DUST = "blowing_dust"
+    BLOWING_SAND = "blowing_sand"
+    BLOWING_SNOW = "blowing_snow"
+    DRIZZLE = "drizzle"
+    FOG = "fog"
+    FREEZING_FOG = "freezing_fog"
+    FREEZING_DRIZZLE = "freezing_drizzle"
+    FREEZING_RAIN = "freezing_rain"
+    FREEZING_SPRAY = "freezing_spray"
+    FROST = "frost"
+    HAIL = "hail"
+    HAZE = "haze"
+    ICE_CRYSTALS = "ice_crystals"
+    ICE_FOG = "ice_fog"
+    RAIN = "rain"
+    RAIN_SHOWERS = "rain_showers"
+    SLEET = "sleet"
+    SMOKE = "smoke"
+    SNOW = "snow"
+    SNOW_SHOWERS = "snow_showers"
+    THUNDERSTORMS = "thunderstorms"
+    VOLCANIC_ASH = "volcanic_ash"
+    WATER_SPOUTS = "water_spouts"
+
+
+class WeatherValue2TypedDict(TypedDict):
+    r"""A value object representing expected weather phenomena."""
+
+    attributes: List[Attribute]
+    coverage: Nullable[Coverage]
+    intensity: Nullable[GridpointIntensity]
+    visibility: QuantitativeValueTypedDict
+    r"""A structured value representing a measurement and its unit of measure. This object is a slighly modified version of the schema.org definition at https://schema.org/QuantitativeValue
+
+    """
+    weather: Nullable[ValueWeather]
+
+
+class WeatherValue2(BaseModel):
+    r"""A value object representing expected weather phenomena."""
+
+    attributes: List[Attribute]
+
+    coverage: Nullable[Coverage]
+
+    intensity: Nullable[GridpointIntensity]
+
+    visibility: QuantitativeValue
+    r"""A structured value representing a measurement and its unit of measure. This object is a slighly modified version of the schema.org definition at https://schema.org/QuantitativeValue
+
+    """
+
+    weather: Nullable[ValueWeather]
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = []
+        nullable_fields = ["coverage", "intensity", "weather"]
+        null_default_fields = []
+
+        serialized = handler(self)
+
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k)
+            serialized.pop(k, None)
+
+            optional_nullable = k in optional_fields and k in nullable_fields
+            is_set = (
+                self.__pydantic_fields_set__.intersection({n})
+                or k in null_default_fields
+            )  # pylint: disable=no-member
+
+            if val is not None and val != UNSET_SENTINEL:
+                m[k] = val
+            elif val != UNSET_SENTINEL and (
+                not k in optional_fields or (optional_nullable and is_set)
+            ):
+                m[k] = val
+
+        return m
+
+
+class WeatherValue1TypedDict(TypedDict):
+    valid_time: str
+    r"""A time interval in ISO 8601 format. This can be one of:
+    1. Start and end time
+    2. Start time and duration
+    3. Duration and end time
+    The string \"NOW\" can also be used in place of a start/end time.
+
+    """
+    value: List[WeatherValue2TypedDict]
+
+
+class WeatherValue1(BaseModel):
+    valid_time: Annotated[str, pydantic.Field(alias="validTime")]
+    r"""A time interval in ISO 8601 format. This can be one of:
+    1. Start and end time
+    2. Start time and duration
+    3. Duration and end time
+    The string \"NOW\" can also be used in place of a start/end time.
+
+    """
+
+    value: List[WeatherValue2]
+
+
+class GridpointWeatherTypedDict(TypedDict):
+    values: List[WeatherValue1TypedDict]
+
+
+class GridpointWeather(BaseModel):
+    values: List[WeatherValue1]
 
 
 class GridpointTypedDict(TypedDict):
@@ -349,30 +345,29 @@ class GridpointTypedDict(TypedDict):
     """
 
     at_context: NotRequired[JSONLdContextUnionTypedDict]
-    geometry: NotRequired[Nullable[str]]
-    r"""A geometry represented in Well-Known Text (WKT) format."""
     at_id: NotRequired[str]
     at_type: NotRequired[GridpointAtType]
+    elevation: NotRequired[QuantitativeValueTypedDict]
+    r"""A structured value representing a measurement and its unit of measure. This object is a slighly modified version of the schema.org definition at https://schema.org/QuantitativeValue
+
+    """
+    forecast_office: NotRequired[str]
+    geometry: NotRequired[Nullable[str]]
+    r"""A geometry represented in Well-Known Text (WKT) format."""
+    grid_id: NotRequired[str]
+    grid_x: NotRequired[int]
+    grid_y: NotRequired[int]
+    hazards: NotRequired[HazardsTypedDict]
     update_time: NotRequired[datetime]
     valid_times: NotRequired[str]
     r"""A time interval in ISO 8601 format. This can be one of:
-
     1. Start and end time
     2. Start time and duration
     3. Duration and end time
     The string \"NOW\" can also be used in place of a start/end time.
 
     """
-    elevation: NotRequired[QuantitativeValueTypedDict]
-    r"""A structured value representing a measurement and its unit of measure. This object is a slighly modified version of the schema.org definition at https://schema.org/QuantitativeValue
-
-    """
-    forecast_office: NotRequired[str]
-    grid_id: NotRequired[str]
-    grid_x: NotRequired[int]
-    grid_y: NotRequired[int]
     weather: NotRequired[GridpointWeatherTypedDict]
-    hazards: NotRequired[HazardsTypedDict]
 
 
 class Gridpoint(BaseModel):
@@ -450,26 +445,9 @@ class Gridpoint(BaseModel):
         Optional[JSONLdContextUnion], pydantic.Field(alias="@context")
     ] = None
 
-    geometry: OptionalNullable[str] = UNSET
-    r"""A geometry represented in Well-Known Text (WKT) format."""
-
     at_id: Annotated[Optional[str], pydantic.Field(alias="@id")] = None
 
     at_type: Annotated[Optional[GridpointAtType], pydantic.Field(alias="@type")] = None
-
-    update_time: Annotated[Optional[datetime], pydantic.Field(alias="updateTime")] = (
-        None
-    )
-
-    valid_times: Annotated[Optional[str], pydantic.Field(alias="validTimes")] = None
-    r"""A time interval in ISO 8601 format. This can be one of:
-
-    1. Start and end time
-    2. Start time and duration
-    3. Duration and end time
-    The string \"NOW\" can also be used in place of a start/end time.
-
-    """
 
     elevation: Optional[QuantitativeValue] = None
     r"""A structured value representing a measurement and its unit of measure. This object is a slighly modified version of the schema.org definition at https://schema.org/QuantitativeValue
@@ -480,15 +458,31 @@ class Gridpoint(BaseModel):
         Optional[str], pydantic.Field(alias="forecastOffice")
     ] = None
 
+    geometry: OptionalNullable[str] = UNSET
+    r"""A geometry represented in Well-Known Text (WKT) format."""
+
     grid_id: Annotated[Optional[str], pydantic.Field(alias="gridId")] = None
 
     grid_x: Annotated[Optional[int], pydantic.Field(alias="gridX")] = None
 
     grid_y: Annotated[Optional[int], pydantic.Field(alias="gridY")] = None
 
-    weather: Optional[GridpointWeather] = None
-
     hazards: Optional[Hazards] = None
+
+    update_time: Annotated[Optional[datetime], pydantic.Field(alias="updateTime")] = (
+        None
+    )
+
+    valid_times: Annotated[Optional[str], pydantic.Field(alias="validTimes")] = None
+    r"""A time interval in ISO 8601 format. This can be one of:
+    1. Start and end time
+    2. Start time and duration
+    3. Duration and end time
+    The string \"NOW\" can also be used in place of a start/end time.
+
+    """
+
+    weather: Optional[GridpointWeather] = None
 
     @property
     def additional_properties(self):
@@ -502,18 +496,18 @@ class Gridpoint(BaseModel):
     def serialize_model(self, handler):
         optional_fields = [
             "@context",
-            "geometry",
             "@id",
             "@type",
-            "updateTime",
-            "validTimes",
             "elevation",
             "forecastOffice",
+            "geometry",
             "gridId",
             "gridX",
             "gridY",
-            "weather",
             "hazards",
+            "updateTime",
+            "validTimes",
+            "weather",
         ]
         nullable_fields = ["geometry"]
         null_default_fields = []

@@ -19,10 +19,10 @@ class CenterWeatherAdvisoryGeoJSONType(str, Enum):
 class CenterWeatherAdvisoryGeoJSONTypedDict(TypedDict):
     r"""A GeoJSON feature. Please refer to IETF RFC 7946 for information on the GeoJSON format."""
 
-    type: CenterWeatherAdvisoryGeoJSONType
     geometry: Nullable[GeoJSONGeometryTypedDict]
     r"""A GeoJSON geometry object. Please refer to IETF RFC 7946 for information on the GeoJSON format."""
     properties: CenterWeatherAdvisoryTypedDict
+    type: CenterWeatherAdvisoryGeoJSONType
     at_context: NotRequired[JSONLdContextUnionTypedDict]
     id: NotRequired[str]
 
@@ -30,12 +30,12 @@ class CenterWeatherAdvisoryGeoJSONTypedDict(TypedDict):
 class CenterWeatherAdvisoryGeoJSON(BaseModel):
     r"""A GeoJSON feature. Please refer to IETF RFC 7946 for information on the GeoJSON format."""
 
-    type: CenterWeatherAdvisoryGeoJSONType
-
     geometry: Nullable[GeoJSONGeometry]
     r"""A GeoJSON geometry object. Please refer to IETF RFC 7946 for information on the GeoJSON format."""
 
     properties: CenterWeatherAdvisory
+
+    type: CenterWeatherAdvisoryGeoJSONType
 
     at_context: Annotated[
         Optional[JSONLdContextUnion], pydantic.Field(alias="@context")

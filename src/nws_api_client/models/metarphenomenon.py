@@ -55,8 +55,8 @@ class MetarPhenomenonTypedDict(TypedDict):
 
     intensity: Nullable[MetarPhenomenonIntensity]
     modifier: Nullable[Modifier]
-    weather: MetarPhenomenonWeather
     raw_string: str
+    weather: MetarPhenomenonWeather
     in_vicinity: NotRequired[bool]
 
 
@@ -67,9 +67,9 @@ class MetarPhenomenon(BaseModel):
 
     modifier: Nullable[Modifier]
 
-    weather: MetarPhenomenonWeather
-
     raw_string: Annotated[str, pydantic.Field(alias="rawString")]
+
+    weather: MetarPhenomenonWeather
 
     in_vicinity: Annotated[Optional[bool], pydantic.Field(alias="inVicinity")] = None
 

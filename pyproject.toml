@@ -1,6 +1,6 @@
 [project]
 name = "nws-api-client"
-version = "0.11.0"
+version = "0.12.0"
 description = "Typed Python client for the National Weather Service API"
 authors = [{ name = "Dustin Miller" },]
 readme = "README-PYPI.md"
@@ -10,14 +10,10 @@ dependencies = [
     "pydantic >=2.11.2",
 ]
 
-[project.urls]
-homepage = "https://github.com/spdustin/nws-api-client-python"
-issue = "https://github.com/spdustin/nws-api-client-python/issues"
-github = "https://github.com/spdustin/nws-api-client-python"
-
-
 [tool.poetry]
+homepage = "https://github.com/spdustin/nws-api-client-python"
 repository = "https://github.com/spdustin/nws-api-client-python.git"
+documentation = "https://github.com/spdustin/nws-api-client-python"
 packages = [
     { include = "nws_api_client", from = "src" }
 ]

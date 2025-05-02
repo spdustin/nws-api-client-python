@@ -10,10 +10,6 @@ from typing import List, Optional
 from typing_extensions import Annotated, NotRequired, TypedDict
 
 
-class CenterWeatherAdvisoryCollectionGeoJSONType(str, Enum):
-    FEATURE_COLLECTION = "FeatureCollection"
-
-
 class CenterWeatherAdvisoryCollectionGeoJSONFeatureTypedDict(TypedDict):
     properties: NotRequired[CenterWeatherAdvisoryTypedDict]
 
@@ -22,20 +18,24 @@ class CenterWeatherAdvisoryCollectionGeoJSONFeature(BaseModel):
     properties: Optional[CenterWeatherAdvisory] = None
 
 
+class CenterWeatherAdvisoryCollectionGeoJSONType(str, Enum):
+    FEATURE_COLLECTION = "FeatureCollection"
+
+
 class CenterWeatherAdvisoryCollectionGeoJSONTypedDict(TypedDict):
     r"""A GeoJSON feature collection. Please refer to IETF RFC 7946 for information on the GeoJSON format."""
 
-    type: CenterWeatherAdvisoryCollectionGeoJSONType
     features: List[CenterWeatherAdvisoryCollectionGeoJSONFeatureTypedDict]
+    type: CenterWeatherAdvisoryCollectionGeoJSONType
     at_context: NotRequired[JSONLdContextUnionTypedDict]
 
 
 class CenterWeatherAdvisoryCollectionGeoJSON(BaseModel):
     r"""A GeoJSON feature collection. Please refer to IETF RFC 7946 for information on the GeoJSON format."""
 
-    type: CenterWeatherAdvisoryCollectionGeoJSONType
-
     features: List[CenterWeatherAdvisoryCollectionGeoJSONFeature]
+
+    type: CenterWeatherAdvisoryCollectionGeoJSONType
 
     at_context: Annotated[
         Optional[JSONLdContextUnion], pydantic.Field(alias="@context")

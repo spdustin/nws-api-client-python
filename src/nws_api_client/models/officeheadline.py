@@ -19,15 +19,15 @@ from typing_extensions import Annotated, NotRequired, TypedDict
 class OfficeHeadlineTypedDict(TypedDict):
     at_context: NotRequired[JSONLdContextUnionTypedDict]
     at_id: NotRequired[str]
+    content: NotRequired[str]
     id: NotRequired[str]
-    office: NotRequired[str]
     important: NotRequired[bool]
     issuance_time: NotRequired[datetime]
     link: NotRequired[str]
     name: NotRequired[str]
-    title: NotRequired[str]
+    office: NotRequired[str]
     summary: NotRequired[Nullable[str]]
-    content: NotRequired[str]
+    title: NotRequired[str]
 
 
 class OfficeHeadline(BaseModel):
@@ -37,9 +37,9 @@ class OfficeHeadline(BaseModel):
 
     at_id: Annotated[Optional[str], pydantic.Field(alias="@id")] = None
 
-    id: Optional[str] = None
+    content: Optional[str] = None
 
-    office: Optional[str] = None
+    id: Optional[str] = None
 
     important: Optional[bool] = None
 
@@ -51,26 +51,26 @@ class OfficeHeadline(BaseModel):
 
     name: Optional[str] = None
 
-    title: Optional[str] = None
+    office: Optional[str] = None
 
     summary: OptionalNullable[str] = UNSET
 
-    content: Optional[str] = None
+    title: Optional[str] = None
 
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):
         optional_fields = [
             "@context",
             "@id",
+            "content",
             "id",
-            "office",
             "important",
             "issuanceTime",
             "link",
             "name",
-            "title",
+            "office",
             "summary",
-            "content",
+            "title",
         ]
         nullable_fields = ["summary"]
         null_default_fields = []

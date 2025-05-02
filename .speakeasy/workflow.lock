@@ -2,8 +2,8 @@ speakeasyVersion: 1.542.0
 sources:
     weather.gov API:
         sourceNamespace: weather-gov-api
-        sourceRevisionDigest: sha256:5886e457f4667408706a0d425111835414fa3652ea4727b257026fe1ae547f39
-        sourceBlobDigest: sha256:77aa88009731216010eaa1510734512872ef8eb34e30c25b28423783722bb978
+        sourceRevisionDigest: sha256:933119b29a707e713ca62bf97f369173e0cefae1617946d294f28894d5ea8084
+        sourceBlobDigest: sha256:68ed5fd3f39b5bcdfd347cac3ff62ffaed62a89d167cf2b2022b16726b451486
         tags:
             - latest
             - 2.0.0
@@ -11,10 +11,10 @@ targets:
     nws-api-client:
         source: weather.gov API
         sourceNamespace: weather-gov-api
-        sourceRevisionDigest: sha256:5886e457f4667408706a0d425111835414fa3652ea4727b257026fe1ae547f39
-        sourceBlobDigest: sha256:77aa88009731216010eaa1510734512872ef8eb34e30c25b28423783722bb978
+        sourceRevisionDigest: sha256:933119b29a707e713ca62bf97f369173e0cefae1617946d294f28894d5ea8084
+        sourceBlobDigest: sha256:68ed5fd3f39b5bcdfd347cac3ff62ffaed62a89d167cf2b2022b16726b451486
         codeSamplesNamespace: weather-gov-api-python-code-samples
-        codeSamplesRevisionDigest: sha256:254cfc4451f519a447c1825c8c8f9cff38bd993ed73f01680085118abef0f6ce
+        codeSamplesRevisionDigest: sha256:801e06e9e6ca88be1e56c76e6c321ddb03d1c65a02c1a4cded47fee96785cc8a
 workflow:
     workflowVersion: 1.0.0
     speakeasyVersion: latest
@@ -22,6 +22,12 @@ workflow:
         weather.gov API:
             inputs:
                 - location: ./openapi.yaml
+            overlays:
+                - location: ./openapi_overlay.yaml
+                - location: ./openapi_error_overlay.yaml
+            transformations:
+                - removeUnused: true
+                - cleanup: true
             registry:
                 location: registry.speakeasyapi.dev/spdustin/weather/weather-gov-api
     targets:

@@ -19,7 +19,6 @@ class GridpointGeoJSONType(str, Enum):
 class GridpointGeoJSONTypedDict(TypedDict):
     r"""A GeoJSON feature. Please refer to IETF RFC 7946 for information on the GeoJSON format."""
 
-    type: GridpointGeoJSONType
     geometry: Nullable[GeoJSONGeometryTypedDict]
     r"""A GeoJSON geometry object. Please refer to IETF RFC 7946 for information on the GeoJSON format."""
     properties: GridpointTypedDict
@@ -85,14 +84,13 @@ class GridpointGeoJSONTypedDict(TypedDict):
     * redFlagThreatIndex
 
     """
+    type: GridpointGeoJSONType
     at_context: NotRequired[JSONLdContextUnionTypedDict]
     id: NotRequired[str]
 
 
 class GridpointGeoJSON(BaseModel):
     r"""A GeoJSON feature. Please refer to IETF RFC 7946 for information on the GeoJSON format."""
-
-    type: GridpointGeoJSONType
 
     geometry: Nullable[GeoJSONGeometry]
     r"""A GeoJSON geometry object. Please refer to IETF RFC 7946 for information on the GeoJSON format."""
@@ -160,6 +158,8 @@ class GridpointGeoJSON(BaseModel):
     * redFlagThreatIndex
 
     """
+
+    type: GridpointGeoJSONType
 
     at_context: Annotated[
         Optional[JSONLdContextUnion], pydantic.Field(alias="@context")

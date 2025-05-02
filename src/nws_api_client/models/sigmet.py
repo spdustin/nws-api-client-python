@@ -16,48 +16,48 @@ from typing_extensions import Annotated, NotRequired, TypedDict
 
 
 class SigmetTypedDict(TypedDict):
-    id: NotRequired[str]
-    issue_time: NotRequired[datetime]
-    fir: NotRequired[Nullable[str]]
     atsu: NotRequired[str]
     r"""ATSU Identifier"""
-    sequence: NotRequired[Nullable[str]]
-    phenomenon: NotRequired[Nullable[str]]
-    start: NotRequired[datetime]
     end: NotRequired[datetime]
+    fir: NotRequired[Nullable[str]]
+    id: NotRequired[str]
+    issue_time: NotRequired[datetime]
+    phenomenon: NotRequired[Nullable[str]]
+    sequence: NotRequired[Nullable[str]]
+    start: NotRequired[datetime]
 
 
 class Sigmet(BaseModel):
+    atsu: Optional[str] = None
+    r"""ATSU Identifier"""
+
+    end: Optional[datetime] = None
+
+    fir: OptionalNullable[str] = UNSET
+
     id: Optional[str] = None
 
     issue_time: Annotated[Optional[datetime], pydantic.Field(alias="issueTime")] = None
 
-    fir: OptionalNullable[str] = UNSET
-
-    atsu: Optional[str] = None
-    r"""ATSU Identifier"""
+    phenomenon: OptionalNullable[str] = UNSET
 
     sequence: OptionalNullable[str] = UNSET
 
-    phenomenon: OptionalNullable[str] = UNSET
-
     start: Optional[datetime] = None
-
-    end: Optional[datetime] = None
 
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):
         optional_fields = [
+            "atsu",
+            "end",
+            "fir",
             "id",
             "issueTime",
-            "fir",
-            "atsu",
-            "sequence",
             "phenomenon",
+            "sequence",
             "start",
-            "end",
         ]
-        nullable_fields = ["fir", "sequence", "phenomenon"]
+        nullable_fields = ["fir", "phenomenon", "sequence"]
         null_default_fields = []
 
         serialized = handler(self)

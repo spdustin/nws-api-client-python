@@ -3,16 +3,16 @@
 
 ## Supported Types
 
-### `models.CenterWeatherAdvisoryGeoJSON`
-
-```python
-value: models.CenterWeatherAdvisoryGeoJSON = /* values here */
-```
-
 ### `bytes`
 
 ```python
 value: bytes = /* values here */
+```
+
+### `models.CenterWeatherAdvisoryGeoJSON`
+
+```python
+value: models.CenterWeatherAdvisoryGeoJSON = /* values here */
 ```
 
 ### `models.ProblemDetail`

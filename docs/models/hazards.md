@@ -5,4 +5,4 @@
 
 | Field                                                    | Type                                                     | Required                                                 | Description                                              |
 | -------------------------------------------------------- | -------------------------------------------------------- | -------------------------------------------------------- | -------------------------------------------------------- |
-| `values`                                                 | List[[models.HazardsValue2](../models/hazardsvalue2.md)] | :heavy_check_mark:                                       | N/A                                                      |
+| `values`                                                 | List[[models.HazardsValue1](../models/hazardsvalue1.md)] | :heavy_check_mark:                                       | N/A                                                      |

@@ -10,18 +10,18 @@ from typing_extensions import Annotated, NotRequired, TypeAliasType, TypedDict
 
 
 class ListTermsGlossaryTypedDict(TypedDict):
-    term: NotRequired[str]
-    r"""The term being defined"""
     definition: NotRequired[str]
     r"""A definition for the term"""
+    term: NotRequired[str]
+    r"""The term being defined"""
 
 
 class ListTermsGlossary(BaseModel):
-    term: Optional[str] = None
-    r"""The term being defined"""
-
     definition: Optional[str] = None
     r"""A definition for the term"""
+
+    term: Optional[str] = None
+    r"""The term being defined"""
 
 
 class ListTermsResponseBodyTypedDict(TypedDict):

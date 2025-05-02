@@ -12,6 +12,7 @@ from nws_api_client.alerts import Alerts
 from nws_api_client.aviation import Aviation
 from nws_api_client.glossary_sdk import GlossarySDK
 from nws_api_client.gridpoints import Gridpoints
+from nws_api_client.observations import Observations
 from nws_api_client.observationstations import Observationstations
 from nws_api_client.offices import Offices
 from nws_api_client.points import Points
@@ -24,7 +25,7 @@ import weakref
 
 
 class NwsClient(BaseSDK):
-    r"""weather.gov API: weather.gov API
+    r"""weather.gov API: OpenAPI Client SDK for National Weather Service API (NWS / weather.gov)
     https://www.weather.gov/documentation/services-web-api - Full API documentation
     """
 
@@ -36,16 +37,17 @@ class NwsClient(BaseSDK):
     r"""Operations related to the glossary"""
     gridpoints: Gridpoints
     r"""Operations related to gridpoints (X,Y)"""
-    observationstations: Observationstations
-    r"""Operations related to observationstations"""
     offices: Offices
     r"""Operations related to offices"""
     points: Points
     r"""Operations related to geographic points (lat,lon)"""
-    radar: Radar
-    r"""Operations related to radar stations"""
     products: Products
     r"""Operations related to products"""
+    radar: Radar
+    r"""Operations related to radar stations"""
+    observationstations: Observationstations
+    r"""Operations related to observationstations"""
+    observations: Observations
     zones: Zones
     r"""Operations related to zones"""
 
@@ -149,11 +151,12 @@ class NwsClient(BaseSDK):
         self.aviation = Aviation(self.sdk_configuration)
         self.glossary = GlossarySDK(self.sdk_configuration)
         self.gridpoints = Gridpoints(self.sdk_configuration)
-        self.observationstations = Observationstations(self.sdk_configuration)
         self.offices = Offices(self.sdk_configuration)
         self.points = Points(self.sdk_configuration)
-        self.radar = Radar(self.sdk_configuration)
         self.products = Products(self.sdk_configuration)
+        self.radar = Radar(self.sdk_configuration)
+        self.observationstations = Observationstations(self.sdk_configuration)
+        self.observations = Observations(self.sdk_configuration)
         self.zones = Zones(self.sdk_configuration)
 
     def __enter__(self):

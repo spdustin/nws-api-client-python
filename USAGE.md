@@ -13,7 +13,7 @@ with NwsClient(
     user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
 ) as nws_client:
 
-    res = nws_client.products.list_locations_by_product_type(type_id="AFD")
+    res = nws_client.products.get_locations_by_type(type_id="AFD")
 
     # Handle response
     print(res)
@@ -34,7 +34,7 @@ async def main():
         user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
     ) as nws_client:
 
-        res = await nws_client.products.list_locations_by_product_type_async(type_id="AFD")
+        res = await nws_client.products.get_locations_by_type_async(type_id="AFD")
 
         # Handle response
         print(res)

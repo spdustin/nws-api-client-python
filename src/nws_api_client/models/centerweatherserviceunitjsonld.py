@@ -19,18 +19,14 @@ class AtTypePostalAddress(str, Enum):
 
 class AddressTypedDict(TypedDict):
     at_type: NotRequired[AtTypePostalAddress]
-    street_address: NotRequired[str]
     address_locality: NotRequired[str]
     address_region: NotRequired[str]
     postal_code: NotRequired[str]
+    street_address: NotRequired[str]
 
 
 class Address(BaseModel):
     at_type: Annotated[Optional[AtTypePostalAddress], pydantic.Field(alias="@type")] = (
-        None
-    )
-
-    street_address: Annotated[Optional[str], pydantic.Field(alias="streetAddress")] = (
         None
     )
 
@@ -44,24 +40,28 @@ class Address(BaseModel):
 
     postal_code: Annotated[Optional[str], pydantic.Field(alias="postalCode")] = None
 
+    street_address: Annotated[Optional[str], pydantic.Field(alias="streetAddress")] = (
+        None
+    )
+
 
 class CenterWeatherServiceUnitJSONLdTypedDict(TypedDict):
     at_context: NotRequired[JSONLdContextUnionTypedDict]
-    at_type: NotRequired[AtTypeGovernmentOrganization]
     at_id: NotRequired[str]
+    at_type: NotRequired[AtTypeGovernmentOrganization]
+    address: NotRequired[AddressTypedDict]
+    approved_observation_stations: NotRequired[List[str]]
+    email: NotRequired[str]
+    fax_number: NotRequired[str]
     id: NotRequired[str]
     name: NotRequired[str]
-    address: NotRequired[AddressTypedDict]
-    telephone: NotRequired[str]
-    fax_number: NotRequired[str]
-    email: NotRequired[str]
-    same_as: NotRequired[str]
     nws_region: NotRequired[str]
     parent_organization: NotRequired[str]
     responsible_counties: NotRequired[List[str]]
-    responsible_forecast_zones: NotRequired[List[str]]
     responsible_fire_zones: NotRequired[List[str]]
-    approved_observation_stations: NotRequired[List[str]]
+    responsible_forecast_zones: NotRequired[List[str]]
+    same_as: NotRequired[str]
+    telephone: NotRequired[str]
 
 
 class CenterWeatherServiceUnitJSONLd(BaseModel):
@@ -69,25 +69,25 @@ class CenterWeatherServiceUnitJSONLd(BaseModel):
         Optional[JSONLdContextUnion], pydantic.Field(alias="@context")
     ] = None
 
+    at_id: Annotated[Optional[str], pydantic.Field(alias="@id")] = None
+
     at_type: Annotated[
         Optional[AtTypeGovernmentOrganization], pydantic.Field(alias="@type")
     ] = None
 
-    at_id: Annotated[Optional[str], pydantic.Field(alias="@id")] = None
+    address: Optional[Address] = None
+
+    approved_observation_stations: Annotated[
+        Optional[List[str]], pydantic.Field(alias="approvedObservationStations")
+    ] = None
+
+    email: Optional[str] = None
+
+    fax_number: Annotated[Optional[str], pydantic.Field(alias="faxNumber")] = None
 
     id: Optional[str] = None
 
     name: Optional[str] = None
-
-    address: Optional[Address] = None
-
-    telephone: Optional[str] = None
-
-    fax_number: Annotated[Optional[str], pydantic.Field(alias="faxNumber")] = None
-
-    email: Optional[str] = None
-
-    same_as: Annotated[Optional[str], pydantic.Field(alias="sameAs")] = None
 
     nws_region: Annotated[Optional[str], pydantic.Field(alias="nwsRegion")] = None
 
@@ -99,14 +99,14 @@ class CenterWeatherServiceUnitJSONLd(BaseModel):
         Optional[List[str]], pydantic.Field(alias="responsibleCounties")
     ] = None
 
-    responsible_forecast_zones: Annotated[
-        Optional[List[str]], pydantic.Field(alias="responsibleForecastZones")
-    ] = None
-
     responsible_fire_zones: Annotated[
         Optional[List[str]], pydantic.Field(alias="responsibleFireZones")
     ] = None
 
-    approved_observation_stations: Annotated[
-        Optional[List[str]], pydantic.Field(alias="approvedObservationStations")
+    responsible_forecast_zones: Annotated[
+        Optional[List[str]], pydantic.Field(alias="responsibleForecastZones")
     ] = None
+
+    same_as: Annotated[Optional[str], pydantic.Field(alias="sameAs")] = None
+
+    telephone: Optional[str] = None

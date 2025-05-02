@@ -6,58 +6,456 @@ from nws_api_client import errors, models, utils
 from nws_api_client._hooks import HookContext
 from nws_api_client.types import OptionalNullable, UNSET
 from nws_api_client.utils import get_security_from_env
-from typing import List, Mapping, Optional
+from typing import Any, List, Mapping, Optional
 
 
-class ListActiveAlertsAcceptEnum(str, Enum):
-    APPLICATION_GEO_PLUS_JSON = "application/geo+json"
-    APPLICATION_LD_PLUS_JSON = "application/ld+json"
-    APPLICATION_PROBLEM_PLUS_JSON = "application/problem+json"
-    APPLICATION_ATOM_PLUS_XML = "application/atom+xml"
-
-
-class ListActiveAlertCountsAcceptEnum(str, Enum):
-    APPLICATION_LD_PLUS_JSON = "application/ld+json"
-    APPLICATION_PROBLEM_PLUS_JSON = "application/problem+json"
-
-
-class ListActiveAlertsByZoneAcceptEnum(str, Enum):
-    APPLICATION_GEO_PLUS_JSON = "application/geo+json"
-    APPLICATION_LD_PLUS_JSON = "application/ld+json"
-    APPLICATION_PROBLEM_PLUS_JSON = "application/problem+json"
-    APPLICATION_ATOM_PLUS_XML = "application/atom+xml"
-
-
-class ListActiveAlertsByAreaAcceptEnum(str, Enum):
-    APPLICATION_GEO_PLUS_JSON = "application/geo+json"
-    APPLICATION_LD_PLUS_JSON = "application/ld+json"
-    APPLICATION_PROBLEM_PLUS_JSON = "application/problem+json"
-    APPLICATION_ATOM_PLUS_XML = "application/atom+xml"
-
-
-class ListActiveAlertsByRegionAcceptEnum(str, Enum):
-    APPLICATION_GEO_PLUS_JSON = "application/geo+json"
-    APPLICATION_LD_PLUS_JSON = "application/ld+json"
-    APPLICATION_PROBLEM_PLUS_JSON = "application/problem+json"
-    APPLICATION_ATOM_PLUS_XML = "application/atom+xml"
-
-
-class ListAlertTypesAcceptEnum(str, Enum):
-    APPLICATION_LD_PLUS_JSON = "application/ld+json"
-    APPLICATION_PROBLEM_PLUS_JSON = "application/problem+json"
-
-
-class GetAlertAcceptEnum(str, Enum):
+class GetAcceptEnum(str, Enum):
     APPLICATION_GEO_PLUS_JSON = "application/geo+json"
     APPLICATION_LD_PLUS_JSON = "application/ld+json"
     APPLICATION_PROBLEM_PLUS_JSON = "application/problem+json"
     APPLICATION_CAP_PLUS_XML = "application/cap+xml"
 
 
+class ListActiveAcceptEnum(str, Enum):
+    APPLICATION_GEO_PLUS_JSON = "application/geo+json"
+    APPLICATION_LD_PLUS_JSON = "application/ld+json"
+    APPLICATION_PROBLEM_PLUS_JSON = "application/problem+json"
+    APPLICATION_ATOM_PLUS_XML = "application/atom+xml"
+
+
+class ListActiveByAreaAcceptEnum(str, Enum):
+    APPLICATION_GEO_PLUS_JSON = "application/geo+json"
+    APPLICATION_LD_PLUS_JSON = "application/ld+json"
+    APPLICATION_PROBLEM_PLUS_JSON = "application/problem+json"
+    APPLICATION_ATOM_PLUS_XML = "application/atom+xml"
+
+
+class ListActiveByRegionAcceptEnum(str, Enum):
+    APPLICATION_GEO_PLUS_JSON = "application/geo+json"
+    APPLICATION_LD_PLUS_JSON = "application/ld+json"
+    APPLICATION_PROBLEM_PLUS_JSON = "application/problem+json"
+    APPLICATION_ATOM_PLUS_XML = "application/atom+xml"
+
+
+class ListActiveByZoneAcceptEnum(str, Enum):
+    APPLICATION_GEO_PLUS_JSON = "application/geo+json"
+    APPLICATION_LD_PLUS_JSON = "application/ld+json"
+    APPLICATION_PROBLEM_PLUS_JSON = "application/problem+json"
+    APPLICATION_ATOM_PLUS_XML = "application/atom+xml"
+
+
+class ListActiveCountAcceptEnum(str, Enum):
+    APPLICATION_LD_PLUS_JSON = "application/ld+json"
+    APPLICATION_PROBLEM_PLUS_JSON = "application/problem+json"
+
+
+class ListTypesAcceptEnum(str, Enum):
+    APPLICATION_LD_PLUS_JSON = "application/ld+json"
+    APPLICATION_PROBLEM_PLUS_JSON = "application/problem+json"
+
+
 class Alerts(BaseSDK):
     r"""Operations related to alerts"""
 
-    def list_active_alerts(
+    def get(
+        self,
+        *,
+        id: str,
+        retries: OptionalNullable[utils.RetryConfig] = UNSET,
+        server_url: Optional[str] = None,
+        timeout_ms: Optional[int] = None,
+        accept_header_override: Optional[GetAcceptEnum] = None,
+        http_headers: Optional[Mapping[str, str]] = None,
+    ) -> models.GetAlertResponse:
+        r"""Returns a specific alert
+
+        :param id: Alert identifier
+        :param retries: Override the default retry configuration for this method
+        :param server_url: Override the default server URL for this method
+        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param accept_header_override: Override the default accept header for this method
+        :param http_headers: Additional headers to set or replace on requests.
+        """
+        base_url = None
+        url_variables = None
+        if timeout_ms is None:
+            timeout_ms = self.sdk_configuration.timeout_ms
+
+        if server_url is not None:
+            base_url = server_url
+        else:
+            base_url = self._get_url(base_url, url_variables)
+
+        request = models.GetAlertRequest(
+            id=id,
+        )
+
+        req = self._build_request(
+            method="GET",
+            path="/alerts/{id}",
+            base_url=base_url,
+            url_variables=url_variables,
+            request=request,
+            request_body_required=False,
+            request_has_path_params=True,
+            request_has_query_params=True,
+            user_agent_header="user-agent",
+            accept_header_value=accept_header_override.value
+            if accept_header_override is not None
+            else "application/geo+json;q=1, application/ld+json;q=0.8, application/problem+json;q=0.5, application/cap+xml;q=0",
+            http_headers=http_headers,
+            security=self.sdk_configuration.security,
+            timeout_ms=timeout_ms,
+        )
+
+        if retries == UNSET:
+            if self.sdk_configuration.retry_config is not UNSET:
+                retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(500, 60000, 1.5, 3600000), True
+                )
+
+        retry_config = None
+        if isinstance(retries, utils.RetryConfig):
+            retry_config = (retries, ["5XX"])
+
+        http_res = self.do_request(
+            hook_ctx=HookContext(
+                base_url=base_url or "",
+                operation_id="get_alert",
+                oauth2_scopes=[],
+                security_source=get_security_from_env(
+                    self.sdk_configuration.security, models.Security
+                ),
+            ),
+            request=req,
+            error_status_codes=[
+                "400",
+                "401",
+                "403",
+                "404",
+                "407",
+                "408",
+                "413",
+                "414",
+                "415",
+                "422",
+                "429",
+                "431",
+                "4XX",
+                "500",
+                "501",
+                "502",
+                "503",
+                "504",
+                "505",
+                "506",
+                "507",
+                "508",
+                "510",
+                "511",
+                "5XX",
+            ],
+            retry_config=retry_config,
+        )
+
+        response_data: Any = None
+        if utils.match_response(http_res, "200", "application/cap+xml"):
+            http_res_bytes = utils.stream_to_bytes(http_res)
+            return models.GetAlertResponse(
+                result=http_res_bytes,
+                headers=utils.get_response_headers(http_res.headers),
+            )
+        if utils.match_response(http_res, "200", "application/geo+json"):
+            return models.GetAlertResponse(
+                result=utils.unmarshal_json(http_res.text, models.AlertGeoJSON),
+                headers=utils.get_response_headers(http_res.headers),
+            )
+        if utils.match_response(http_res, "200", "application/ld+json"):
+            return models.GetAlertResponse(
+                result=utils.unmarshal_json(http_res.text, models.AlertJSONLd),
+                headers=utils.get_response_headers(http_res.headers),
+            )
+        if utils.match_response(http_res, "404", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.NotFoundErrorData
+            )
+            raise errors.NotFoundError(data=response_data)
+        if utils.match_response(http_res, ["401", "403", "407"], "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.UnauthorizedErrorData
+            )
+            raise errors.UnauthorizedError(data=response_data)
+        if utils.match_response(http_res, "408", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.TimeoutErrorTData
+            )
+            raise errors.TimeoutErrorT(data=response_data)
+        if utils.match_response(http_res, "429", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.RateLimitedErrorData
+            )
+            raise errors.RateLimitedError(data=response_data)
+        if utils.match_response(
+            http_res, ["400", "413", "414", "415", "422", "431"], "application/json"
+        ):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.BadRequestErrorData
+            )
+            raise errors.BadRequestError(data=response_data)
+        if utils.match_response(http_res, "504", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.TimeoutErrorTData
+            )
+            raise errors.TimeoutErrorT(data=response_data)
+        if utils.match_response(http_res, ["501", "505"], "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.NotFoundErrorData
+            )
+            raise errors.NotFoundError(data=response_data)
+        if utils.match_response(
+            http_res, ["500", "502", "503", "506", "507", "508"], "application/json"
+        ):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.InternalServerErrorData
+            )
+            raise errors.InternalServerError(data=response_data)
+        if utils.match_response(http_res, "510", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.BadRequestErrorData
+            )
+            raise errors.BadRequestError(data=response_data)
+        if utils.match_response(http_res, "511", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.UnauthorizedErrorData
+            )
+            raise errors.UnauthorizedError(data=response_data)
+        if utils.match_response(http_res, "4XX", "*"):
+            http_res_text = utils.stream_to_text(http_res)
+            raise errors.APIError(
+                "API error occurred", http_res.status_code, http_res_text, http_res
+            )
+        if utils.match_response(http_res, "5XX", "*"):
+            http_res_text = utils.stream_to_text(http_res)
+            raise errors.APIError(
+                "API error occurred", http_res.status_code, http_res_text, http_res
+            )
+        if utils.match_response(http_res, "default", "application/problem+json"):
+            return models.GetAlertResponse(
+                result=utils.unmarshal_json(http_res.text, models.ProblemDetail),
+                headers=utils.get_response_headers(http_res.headers),
+            )
+
+        content_type = http_res.headers.get("Content-Type")
+        http_res_text = utils.stream_to_text(http_res)
+        raise errors.APIError(
+            f"Unexpected response received (code: {http_res.status_code}, type: {content_type})",
+            http_res.status_code,
+            http_res_text,
+            http_res,
+        )
+
+    async def get_async(
+        self,
+        *,
+        id: str,
+        retries: OptionalNullable[utils.RetryConfig] = UNSET,
+        server_url: Optional[str] = None,
+        timeout_ms: Optional[int] = None,
+        accept_header_override: Optional[GetAcceptEnum] = None,
+        http_headers: Optional[Mapping[str, str]] = None,
+    ) -> models.GetAlertResponse:
+        r"""Returns a specific alert
+
+        :param id: Alert identifier
+        :param retries: Override the default retry configuration for this method
+        :param server_url: Override the default server URL for this method
+        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param accept_header_override: Override the default accept header for this method
+        :param http_headers: Additional headers to set or replace on requests.
+        """
+        base_url = None
+        url_variables = None
+        if timeout_ms is None:
+            timeout_ms = self.sdk_configuration.timeout_ms
+
+        if server_url is not None:
+            base_url = server_url
+        else:
+            base_url = self._get_url(base_url, url_variables)
+
+        request = models.GetAlertRequest(
+            id=id,
+        )
+
+        req = self._build_request_async(
+            method="GET",
+            path="/alerts/{id}",
+            base_url=base_url,
+            url_variables=url_variables,
+            request=request,
+            request_body_required=False,
+            request_has_path_params=True,
+            request_has_query_params=True,
+            user_agent_header="user-agent",
+            accept_header_value=accept_header_override.value
+            if accept_header_override is not None
+            else "application/geo+json;q=1, application/ld+json;q=0.8, application/problem+json;q=0.5, application/cap+xml;q=0",
+            http_headers=http_headers,
+            security=self.sdk_configuration.security,
+            timeout_ms=timeout_ms,
+        )
+
+        if retries == UNSET:
+            if self.sdk_configuration.retry_config is not UNSET:
+                retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(500, 60000, 1.5, 3600000), True
+                )
+
+        retry_config = None
+        if isinstance(retries, utils.RetryConfig):
+            retry_config = (retries, ["5XX"])
+
+        http_res = await self.do_request_async(
+            hook_ctx=HookContext(
+                base_url=base_url or "",
+                operation_id="get_alert",
+                oauth2_scopes=[],
+                security_source=get_security_from_env(
+                    self.sdk_configuration.security, models.Security
+                ),
+            ),
+            request=req,
+            error_status_codes=[
+                "400",
+                "401",
+                "403",
+                "404",
+                "407",
+                "408",
+                "413",
+                "414",
+                "415",
+                "422",
+                "429",
+                "431",
+                "4XX",
+                "500",
+                "501",
+                "502",
+                "503",
+                "504",
+                "505",
+                "506",
+                "507",
+                "508",
+                "510",
+                "511",
+                "5XX",
+            ],
+            retry_config=retry_config,
+        )
+
+        response_data: Any = None
+        if utils.match_response(http_res, "200", "application/cap+xml"):
+            http_res_bytes = await utils.stream_to_bytes_async(http_res)
+            return models.GetAlertResponse(
+                result=http_res_bytes,
+                headers=utils.get_response_headers(http_res.headers),
+            )
+        if utils.match_response(http_res, "200", "application/geo+json"):
+            return models.GetAlertResponse(
+                result=utils.unmarshal_json(http_res.text, models.AlertGeoJSON),
+                headers=utils.get_response_headers(http_res.headers),
+            )
+        if utils.match_response(http_res, "200", "application/ld+json"):
+            return models.GetAlertResponse(
+                result=utils.unmarshal_json(http_res.text, models.AlertJSONLd),
+                headers=utils.get_response_headers(http_res.headers),
+            )
+        if utils.match_response(http_res, "404", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.NotFoundErrorData
+            )
+            raise errors.NotFoundError(data=response_data)
+        if utils.match_response(http_res, ["401", "403", "407"], "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.UnauthorizedErrorData
+            )
+            raise errors.UnauthorizedError(data=response_data)
+        if utils.match_response(http_res, "408", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.TimeoutErrorTData
+            )
+            raise errors.TimeoutErrorT(data=response_data)
+        if utils.match_response(http_res, "429", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.RateLimitedErrorData
+            )
+            raise errors.RateLimitedError(data=response_data)
+        if utils.match_response(
+            http_res, ["400", "413", "414", "415", "422", "431"], "application/json"
+        ):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.BadRequestErrorData
+            )
+            raise errors.BadRequestError(data=response_data)
+        if utils.match_response(http_res, "504", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.TimeoutErrorTData
+            )
+            raise errors.TimeoutErrorT(data=response_data)
+        if utils.match_response(http_res, ["501", "505"], "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.NotFoundErrorData
+            )
+            raise errors.NotFoundError(data=response_data)
+        if utils.match_response(
+            http_res, ["500", "502", "503", "506", "507", "508"], "application/json"
+        ):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.InternalServerErrorData
+            )
+            raise errors.InternalServerError(data=response_data)
+        if utils.match_response(http_res, "510", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.BadRequestErrorData
+            )
+            raise errors.BadRequestError(data=response_data)
+        if utils.match_response(http_res, "511", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.UnauthorizedErrorData
+            )
+            raise errors.UnauthorizedError(data=response_data)
+        if utils.match_response(http_res, "4XX", "*"):
+            http_res_text = await utils.stream_to_text_async(http_res)
+            raise errors.APIError(
+                "API error occurred", http_res.status_code, http_res_text, http_res
+            )
+        if utils.match_response(http_res, "5XX", "*"):
+            http_res_text = await utils.stream_to_text_async(http_res)
+            raise errors.APIError(
+                "API error occurred", http_res.status_code, http_res_text, http_res
+            )
+        if utils.match_response(http_res, "default", "application/problem+json"):
+            return models.GetAlertResponse(
+                result=utils.unmarshal_json(http_res.text, models.ProblemDetail),
+                headers=utils.get_response_headers(http_res.headers),
+            )
+
+        content_type = http_res.headers.get("Content-Type")
+        http_res_text = await utils.stream_to_text_async(http_res)
+        raise errors.APIError(
+            f"Unexpected response received (code: {http_res.status_code}, type: {content_type})",
+            http_res.status_code,
+            http_res_text,
+            http_res,
+        )
+
+    def list_active(
         self,
         *,
         status: Optional[List[models.AlertStatusParameter]] = None,
@@ -76,7 +474,7 @@ class Alerts(BaseSDK):
         retries: OptionalNullable[utils.RetryConfig] = UNSET,
         server_url: Optional[str] = None,
         timeout_ms: Optional[int] = None,
-        accept_header_override: Optional[ListActiveAlertsAcceptEnum] = None,
+        accept_header_override: Optional[ListActiveAcceptEnum] = None,
         http_headers: Optional[Mapping[str, str]] = None,
     ) -> models.ListActiveAlertsResponse:
         r"""Returns all currently active alerts
@@ -147,10 +545,14 @@ class Alerts(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(500, 60000, 1.5, 3600000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["5XX"])
 
         http_res = self.do_request(
             hook_ctx=HookContext(
@@ -162,10 +564,43 @@ class Alerts(BaseSDK):
                 ),
             ),
             request=req,
-            error_status_codes=["4XX", "5XX"],
+            error_status_codes=[
+                "400",
+                "401",
+                "403",
+                "404",
+                "407",
+                "408",
+                "413",
+                "414",
+                "415",
+                "422",
+                "429",
+                "431",
+                "4XX",
+                "500",
+                "501",
+                "502",
+                "503",
+                "504",
+                "505",
+                "506",
+                "507",
+                "508",
+                "510",
+                "511",
+                "5XX",
+            ],
             retry_config=retry_config,
         )
 
+        response_data: Any = None
+        if utils.match_response(http_res, "200", "application/atom+xml"):
+            http_res_bytes = utils.stream_to_bytes(http_res)
+            return models.ListActiveAlertsResponse(
+                result=http_res_bytes,
+                headers=utils.get_response_headers(http_res.headers),
+            )
         if utils.match_response(http_res, "200", "application/geo+json"):
             return models.ListActiveAlertsResponse(
                 result=utils.unmarshal_json(
@@ -180,12 +615,60 @@ class Alerts(BaseSDK):
                 ),
                 headers=utils.get_response_headers(http_res.headers),
             )
-        if utils.match_response(http_res, "200", "application/atom+xml"):
-            http_res_bytes = utils.stream_to_bytes(http_res)
-            return models.ListActiveAlertsResponse(
-                result=http_res_bytes,
-                headers=utils.get_response_headers(http_res.headers),
+        if utils.match_response(http_res, "404", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.NotFoundErrorData
             )
+            raise errors.NotFoundError(data=response_data)
+        if utils.match_response(http_res, ["401", "403", "407"], "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.UnauthorizedErrorData
+            )
+            raise errors.UnauthorizedError(data=response_data)
+        if utils.match_response(http_res, "408", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.TimeoutErrorTData
+            )
+            raise errors.TimeoutErrorT(data=response_data)
+        if utils.match_response(http_res, "429", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.RateLimitedErrorData
+            )
+            raise errors.RateLimitedError(data=response_data)
+        if utils.match_response(
+            http_res, ["400", "413", "414", "415", "422", "431"], "application/json"
+        ):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.BadRequestErrorData
+            )
+            raise errors.BadRequestError(data=response_data)
+        if utils.match_response(http_res, "504", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.TimeoutErrorTData
+            )
+            raise errors.TimeoutErrorT(data=response_data)
+        if utils.match_response(http_res, ["501", "505"], "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.NotFoundErrorData
+            )
+            raise errors.NotFoundError(data=response_data)
+        if utils.match_response(
+            http_res, ["500", "502", "503", "506", "507", "508"], "application/json"
+        ):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.InternalServerErrorData
+            )
+            raise errors.InternalServerError(data=response_data)
+        if utils.match_response(http_res, "510", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.BadRequestErrorData
+            )
+            raise errors.BadRequestError(data=response_data)
+        if utils.match_response(http_res, "511", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.UnauthorizedErrorData
+            )
+            raise errors.UnauthorizedError(data=response_data)
         if utils.match_response(http_res, "4XX", "*"):
             http_res_text = utils.stream_to_text(http_res)
             raise errors.APIError(
@@ -211,7 +694,7 @@ class Alerts(BaseSDK):
             http_res,
         )
 
-    async def list_active_alerts_async(
+    async def list_active_async(
         self,
         *,
         status: Optional[List[models.AlertStatusParameter]] = None,
@@ -230,7 +713,7 @@ class Alerts(BaseSDK):
         retries: OptionalNullable[utils.RetryConfig] = UNSET,
         server_url: Optional[str] = None,
         timeout_ms: Optional[int] = None,
-        accept_header_override: Optional[ListActiveAlertsAcceptEnum] = None,
+        accept_header_override: Optional[ListActiveAcceptEnum] = None,
         http_headers: Optional[Mapping[str, str]] = None,
     ) -> models.ListActiveAlertsResponse:
         r"""Returns all currently active alerts
@@ -301,10 +784,14 @@ class Alerts(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(500, 60000, 1.5, 3600000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["5XX"])
 
         http_res = await self.do_request_async(
             hook_ctx=HookContext(
@@ -316,30 +803,111 @@ class Alerts(BaseSDK):
                 ),
             ),
             request=req,
-            error_status_codes=["4XX", "5XX"],
+            error_status_codes=[
+                "400",
+                "401",
+                "403",
+                "404",
+                "407",
+                "408",
+                "413",
+                "414",
+                "415",
+                "422",
+                "429",
+                "431",
+                "4XX",
+                "500",
+                "501",
+                "502",
+                "503",
+                "504",
+                "505",
+                "506",
+                "507",
+                "508",
+                "510",
+                "511",
+                "5XX",
+            ],
             retry_config=retry_config,
         )
 
-        if utils.match_response(http_res, "200", "application/geo+json"):
-            return models.ListActiveAlertsResponse(
-                result=utils.unmarshal_json(
-                    http_res.text, models.AlertCollectionGeoJSON
-                ),
-                headers=utils.get_response_headers(http_res.headers),
-            )
-        if utils.match_response(http_res, "200", "application/ld+json"):
-            return models.ListActiveAlertsResponse(
-                result=utils.unmarshal_json(
-                    http_res.text, models.AlertCollectionJSONLd
-                ),
-                headers=utils.get_response_headers(http_res.headers),
-            )
+        response_data: Any = None
         if utils.match_response(http_res, "200", "application/atom+xml"):
             http_res_bytes = await utils.stream_to_bytes_async(http_res)
             return models.ListActiveAlertsResponse(
                 result=http_res_bytes,
                 headers=utils.get_response_headers(http_res.headers),
             )
+        if utils.match_response(http_res, "200", "application/geo+json"):
+            return models.ListActiveAlertsResponse(
+                result=utils.unmarshal_json(
+                    http_res.text, models.AlertCollectionGeoJSON
+                ),
+                headers=utils.get_response_headers(http_res.headers),
+            )
+        if utils.match_response(http_res, "200", "application/ld+json"):
+            return models.ListActiveAlertsResponse(
+                result=utils.unmarshal_json(
+                    http_res.text, models.AlertCollectionJSONLd
+                ),
+                headers=utils.get_response_headers(http_res.headers),
+            )
+        if utils.match_response(http_res, "404", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.NotFoundErrorData
+            )
+            raise errors.NotFoundError(data=response_data)
+        if utils.match_response(http_res, ["401", "403", "407"], "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.UnauthorizedErrorData
+            )
+            raise errors.UnauthorizedError(data=response_data)
+        if utils.match_response(http_res, "408", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.TimeoutErrorTData
+            )
+            raise errors.TimeoutErrorT(data=response_data)
+        if utils.match_response(http_res, "429", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.RateLimitedErrorData
+            )
+            raise errors.RateLimitedError(data=response_data)
+        if utils.match_response(
+            http_res, ["400", "413", "414", "415", "422", "431"], "application/json"
+        ):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.BadRequestErrorData
+            )
+            raise errors.BadRequestError(data=response_data)
+        if utils.match_response(http_res, "504", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.TimeoutErrorTData
+            )
+            raise errors.TimeoutErrorT(data=response_data)
+        if utils.match_response(http_res, ["501", "505"], "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.NotFoundErrorData
+            )
+            raise errors.NotFoundError(data=response_data)
+        if utils.match_response(
+            http_res, ["500", "502", "503", "506", "507", "508"], "application/json"
+        ):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.InternalServerErrorData
+            )
+            raise errors.InternalServerError(data=response_data)
+        if utils.match_response(http_res, "510", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.BadRequestErrorData
+            )
+            raise errors.BadRequestError(data=response_data)
+        if utils.match_response(http_res, "511", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.UnauthorizedErrorData
+            )
+            raise errors.UnauthorizedError(data=response_data)
         if utils.match_response(http_res, "4XX", "*"):
             http_res_text = await utils.stream_to_text_async(http_res)
             raise errors.APIError(
@@ -365,446 +933,14 @@ class Alerts(BaseSDK):
             http_res,
         )
 
-    def list_active_alert_counts(
-        self,
-        *,
-        retries: OptionalNullable[utils.RetryConfig] = UNSET,
-        server_url: Optional[str] = None,
-        timeout_ms: Optional[int] = None,
-        accept_header_override: Optional[ListActiveAlertCountsAcceptEnum] = None,
-        http_headers: Optional[Mapping[str, str]] = None,
-    ) -> models.ListActiveAlertCountsResponse:
-        r"""Returns info on the number of active alerts
-
-        :param retries: Override the default retry configuration for this method
-        :param server_url: Override the default server URL for this method
-        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
-        :param accept_header_override: Override the default accept header for this method
-        :param http_headers: Additional headers to set or replace on requests.
-        """
-        base_url = None
-        url_variables = None
-        if timeout_ms is None:
-            timeout_ms = self.sdk_configuration.timeout_ms
-
-        if server_url is not None:
-            base_url = server_url
-        else:
-            base_url = self._get_url(base_url, url_variables)
-        req = self._build_request(
-            method="GET",
-            path="/alerts/active/count",
-            base_url=base_url,
-            url_variables=url_variables,
-            request=None,
-            request_body_required=False,
-            request_has_path_params=False,
-            request_has_query_params=True,
-            user_agent_header="user-agent",
-            accept_header_value=accept_header_override.value
-            if accept_header_override is not None
-            else "application/ld+json;q=1, application/problem+json;q=0",
-            http_headers=http_headers,
-            security=self.sdk_configuration.security,
-            timeout_ms=timeout_ms,
-        )
-
-        if retries == UNSET:
-            if self.sdk_configuration.retry_config is not UNSET:
-                retries = self.sdk_configuration.retry_config
-
-        retry_config = None
-        if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
-
-        http_res = self.do_request(
-            hook_ctx=HookContext(
-                base_url=base_url or "",
-                operation_id="list_active_alert_counts",
-                oauth2_scopes=[],
-                security_source=get_security_from_env(
-                    self.sdk_configuration.security, models.Security
-                ),
-            ),
-            request=req,
-            error_status_codes=["4XX", "5XX"],
-            retry_config=retry_config,
-        )
-
-        if utils.match_response(http_res, "200", "application/ld+json"):
-            return models.ListActiveAlertCountsResponse(
-                result=utils.unmarshal_json(
-                    http_res.text, models.ListActiveAlertCountsResponseBody
-                ),
-                headers=utils.get_response_headers(http_res.headers),
-            )
-        if utils.match_response(http_res, "4XX", "*"):
-            http_res_text = utils.stream_to_text(http_res)
-            raise errors.APIError(
-                "API error occurred", http_res.status_code, http_res_text, http_res
-            )
-        if utils.match_response(http_res, "5XX", "*"):
-            http_res_text = utils.stream_to_text(http_res)
-            raise errors.APIError(
-                "API error occurred", http_res.status_code, http_res_text, http_res
-            )
-        if utils.match_response(http_res, "default", "application/problem+json"):
-            return models.ListActiveAlertCountsResponse(
-                result=utils.unmarshal_json(http_res.text, models.ProblemDetail),
-                headers=utils.get_response_headers(http_res.headers),
-            )
-
-        content_type = http_res.headers.get("Content-Type")
-        http_res_text = utils.stream_to_text(http_res)
-        raise errors.APIError(
-            f"Unexpected response received (code: {http_res.status_code}, type: {content_type})",
-            http_res.status_code,
-            http_res_text,
-            http_res,
-        )
-
-    async def list_active_alert_counts_async(
-        self,
-        *,
-        retries: OptionalNullable[utils.RetryConfig] = UNSET,
-        server_url: Optional[str] = None,
-        timeout_ms: Optional[int] = None,
-        accept_header_override: Optional[ListActiveAlertCountsAcceptEnum] = None,
-        http_headers: Optional[Mapping[str, str]] = None,
-    ) -> models.ListActiveAlertCountsResponse:
-        r"""Returns info on the number of active alerts
-
-        :param retries: Override the default retry configuration for this method
-        :param server_url: Override the default server URL for this method
-        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
-        :param accept_header_override: Override the default accept header for this method
-        :param http_headers: Additional headers to set or replace on requests.
-        """
-        base_url = None
-        url_variables = None
-        if timeout_ms is None:
-            timeout_ms = self.sdk_configuration.timeout_ms
-
-        if server_url is not None:
-            base_url = server_url
-        else:
-            base_url = self._get_url(base_url, url_variables)
-        req = self._build_request_async(
-            method="GET",
-            path="/alerts/active/count",
-            base_url=base_url,
-            url_variables=url_variables,
-            request=None,
-            request_body_required=False,
-            request_has_path_params=False,
-            request_has_query_params=True,
-            user_agent_header="user-agent",
-            accept_header_value=accept_header_override.value
-            if accept_header_override is not None
-            else "application/ld+json;q=1, application/problem+json;q=0",
-            http_headers=http_headers,
-            security=self.sdk_configuration.security,
-            timeout_ms=timeout_ms,
-        )
-
-        if retries == UNSET:
-            if self.sdk_configuration.retry_config is not UNSET:
-                retries = self.sdk_configuration.retry_config
-
-        retry_config = None
-        if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
-
-        http_res = await self.do_request_async(
-            hook_ctx=HookContext(
-                base_url=base_url or "",
-                operation_id="list_active_alert_counts",
-                oauth2_scopes=[],
-                security_source=get_security_from_env(
-                    self.sdk_configuration.security, models.Security
-                ),
-            ),
-            request=req,
-            error_status_codes=["4XX", "5XX"],
-            retry_config=retry_config,
-        )
-
-        if utils.match_response(http_res, "200", "application/ld+json"):
-            return models.ListActiveAlertCountsResponse(
-                result=utils.unmarshal_json(
-                    http_res.text, models.ListActiveAlertCountsResponseBody
-                ),
-                headers=utils.get_response_headers(http_res.headers),
-            )
-        if utils.match_response(http_res, "4XX", "*"):
-            http_res_text = await utils.stream_to_text_async(http_res)
-            raise errors.APIError(
-                "API error occurred", http_res.status_code, http_res_text, http_res
-            )
-        if utils.match_response(http_res, "5XX", "*"):
-            http_res_text = await utils.stream_to_text_async(http_res)
-            raise errors.APIError(
-                "API error occurred", http_res.status_code, http_res_text, http_res
-            )
-        if utils.match_response(http_res, "default", "application/problem+json"):
-            return models.ListActiveAlertCountsResponse(
-                result=utils.unmarshal_json(http_res.text, models.ProblemDetail),
-                headers=utils.get_response_headers(http_res.headers),
-            )
-
-        content_type = http_res.headers.get("Content-Type")
-        http_res_text = await utils.stream_to_text_async(http_res)
-        raise errors.APIError(
-            f"Unexpected response received (code: {http_res.status_code}, type: {content_type})",
-            http_res.status_code,
-            http_res_text,
-            http_res,
-        )
-
-    def list_active_alerts_by_zone(
-        self,
-        *,
-        zone_id: str,
-        retries: OptionalNullable[utils.RetryConfig] = UNSET,
-        server_url: Optional[str] = None,
-        timeout_ms: Optional[int] = None,
-        accept_header_override: Optional[ListActiveAlertsByZoneAcceptEnum] = None,
-        http_headers: Optional[Mapping[str, str]] = None,
-    ) -> models.ListActiveAlertsByZoneResponse:
-        r"""Returns active alerts for the given NWS public zone or county
-
-        :param zone_id: NWS public zone/county identifier
-        :param retries: Override the default retry configuration for this method
-        :param server_url: Override the default server URL for this method
-        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
-        :param accept_header_override: Override the default accept header for this method
-        :param http_headers: Additional headers to set or replace on requests.
-        """
-        base_url = None
-        url_variables = None
-        if timeout_ms is None:
-            timeout_ms = self.sdk_configuration.timeout_ms
-
-        if server_url is not None:
-            base_url = server_url
-        else:
-            base_url = self._get_url(base_url, url_variables)
-
-        request = models.ListActiveAlertsByZoneRequest(
-            zone_id=zone_id,
-        )
-
-        req = self._build_request(
-            method="GET",
-            path="/alerts/active/zone/{zoneId}",
-            base_url=base_url,
-            url_variables=url_variables,
-            request=request,
-            request_body_required=False,
-            request_has_path_params=True,
-            request_has_query_params=True,
-            user_agent_header="user-agent",
-            accept_header_value=accept_header_override.value
-            if accept_header_override is not None
-            else "application/geo+json;q=1, application/ld+json;q=0.8, application/problem+json;q=0.5, application/atom+xml;q=0",
-            http_headers=http_headers,
-            security=self.sdk_configuration.security,
-            timeout_ms=timeout_ms,
-        )
-
-        if retries == UNSET:
-            if self.sdk_configuration.retry_config is not UNSET:
-                retries = self.sdk_configuration.retry_config
-
-        retry_config = None
-        if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
-
-        http_res = self.do_request(
-            hook_ctx=HookContext(
-                base_url=base_url or "",
-                operation_id="list_active_alerts_by_zone",
-                oauth2_scopes=[],
-                security_source=get_security_from_env(
-                    self.sdk_configuration.security, models.Security
-                ),
-            ),
-            request=req,
-            error_status_codes=["4XX", "5XX"],
-            retry_config=retry_config,
-        )
-
-        if utils.match_response(http_res, "200", "application/geo+json"):
-            return models.ListActiveAlertsByZoneResponse(
-                result=utils.unmarshal_json(
-                    http_res.text, models.AlertCollectionGeoJSON
-                ),
-                headers=utils.get_response_headers(http_res.headers),
-            )
-        if utils.match_response(http_res, "200", "application/ld+json"):
-            return models.ListActiveAlertsByZoneResponse(
-                result=utils.unmarshal_json(
-                    http_res.text, models.AlertCollectionJSONLd
-                ),
-                headers=utils.get_response_headers(http_res.headers),
-            )
-        if utils.match_response(http_res, "200", "application/atom+xml"):
-            http_res_bytes = utils.stream_to_bytes(http_res)
-            return models.ListActiveAlertsByZoneResponse(
-                result=http_res_bytes,
-                headers=utils.get_response_headers(http_res.headers),
-            )
-        if utils.match_response(http_res, "4XX", "*"):
-            http_res_text = utils.stream_to_text(http_res)
-            raise errors.APIError(
-                "API error occurred", http_res.status_code, http_res_text, http_res
-            )
-        if utils.match_response(http_res, "5XX", "*"):
-            http_res_text = utils.stream_to_text(http_res)
-            raise errors.APIError(
-                "API error occurred", http_res.status_code, http_res_text, http_res
-            )
-        if utils.match_response(http_res, "default", "application/problem+json"):
-            return models.ListActiveAlertsByZoneResponse(
-                result=utils.unmarshal_json(http_res.text, models.ProblemDetail),
-                headers=utils.get_response_headers(http_res.headers),
-            )
-
-        content_type = http_res.headers.get("Content-Type")
-        http_res_text = utils.stream_to_text(http_res)
-        raise errors.APIError(
-            f"Unexpected response received (code: {http_res.status_code}, type: {content_type})",
-            http_res.status_code,
-            http_res_text,
-            http_res,
-        )
-
-    async def list_active_alerts_by_zone_async(
-        self,
-        *,
-        zone_id: str,
-        retries: OptionalNullable[utils.RetryConfig] = UNSET,
-        server_url: Optional[str] = None,
-        timeout_ms: Optional[int] = None,
-        accept_header_override: Optional[ListActiveAlertsByZoneAcceptEnum] = None,
-        http_headers: Optional[Mapping[str, str]] = None,
-    ) -> models.ListActiveAlertsByZoneResponse:
-        r"""Returns active alerts for the given NWS public zone or county
-
-        :param zone_id: NWS public zone/county identifier
-        :param retries: Override the default retry configuration for this method
-        :param server_url: Override the default server URL for this method
-        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
-        :param accept_header_override: Override the default accept header for this method
-        :param http_headers: Additional headers to set or replace on requests.
-        """
-        base_url = None
-        url_variables = None
-        if timeout_ms is None:
-            timeout_ms = self.sdk_configuration.timeout_ms
-
-        if server_url is not None:
-            base_url = server_url
-        else:
-            base_url = self._get_url(base_url, url_variables)
-
-        request = models.ListActiveAlertsByZoneRequest(
-            zone_id=zone_id,
-        )
-
-        req = self._build_request_async(
-            method="GET",
-            path="/alerts/active/zone/{zoneId}",
-            base_url=base_url,
-            url_variables=url_variables,
-            request=request,
-            request_body_required=False,
-            request_has_path_params=True,
-            request_has_query_params=True,
-            user_agent_header="user-agent",
-            accept_header_value=accept_header_override.value
-            if accept_header_override is not None
-            else "application/geo+json;q=1, application/ld+json;q=0.8, application/problem+json;q=0.5, application/atom+xml;q=0",
-            http_headers=http_headers,
-            security=self.sdk_configuration.security,
-            timeout_ms=timeout_ms,
-        )
-
-        if retries == UNSET:
-            if self.sdk_configuration.retry_config is not UNSET:
-                retries = self.sdk_configuration.retry_config
-
-        retry_config = None
-        if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
-
-        http_res = await self.do_request_async(
-            hook_ctx=HookContext(
-                base_url=base_url or "",
-                operation_id="list_active_alerts_by_zone",
-                oauth2_scopes=[],
-                security_source=get_security_from_env(
-                    self.sdk_configuration.security, models.Security
-                ),
-            ),
-            request=req,
-            error_status_codes=["4XX", "5XX"],
-            retry_config=retry_config,
-        )
-
-        if utils.match_response(http_res, "200", "application/geo+json"):
-            return models.ListActiveAlertsByZoneResponse(
-                result=utils.unmarshal_json(
-                    http_res.text, models.AlertCollectionGeoJSON
-                ),
-                headers=utils.get_response_headers(http_res.headers),
-            )
-        if utils.match_response(http_res, "200", "application/ld+json"):
-            return models.ListActiveAlertsByZoneResponse(
-                result=utils.unmarshal_json(
-                    http_res.text, models.AlertCollectionJSONLd
-                ),
-                headers=utils.get_response_headers(http_res.headers),
-            )
-        if utils.match_response(http_res, "200", "application/atom+xml"):
-            http_res_bytes = await utils.stream_to_bytes_async(http_res)
-            return models.ListActiveAlertsByZoneResponse(
-                result=http_res_bytes,
-                headers=utils.get_response_headers(http_res.headers),
-            )
-        if utils.match_response(http_res, "4XX", "*"):
-            http_res_text = await utils.stream_to_text_async(http_res)
-            raise errors.APIError(
-                "API error occurred", http_res.status_code, http_res_text, http_res
-            )
-        if utils.match_response(http_res, "5XX", "*"):
-            http_res_text = await utils.stream_to_text_async(http_res)
-            raise errors.APIError(
-                "API error occurred", http_res.status_code, http_res_text, http_res
-            )
-        if utils.match_response(http_res, "default", "application/problem+json"):
-            return models.ListActiveAlertsByZoneResponse(
-                result=utils.unmarshal_json(http_res.text, models.ProblemDetail),
-                headers=utils.get_response_headers(http_res.headers),
-            )
-
-        content_type = http_res.headers.get("Content-Type")
-        http_res_text = await utils.stream_to_text_async(http_res)
-        raise errors.APIError(
-            f"Unexpected response received (code: {http_res.status_code}, type: {content_type})",
-            http_res.status_code,
-            http_res_text,
-            http_res,
-        )
-
-    def list_active_alerts_by_area(
+    def list_active_by_area(
         self,
         *,
         area: models.Area,
         retries: OptionalNullable[utils.RetryConfig] = UNSET,
         server_url: Optional[str] = None,
         timeout_ms: Optional[int] = None,
-        accept_header_override: Optional[ListActiveAlertsByAreaAcceptEnum] = None,
+        accept_header_override: Optional[ListActiveByAreaAcceptEnum] = None,
         http_headers: Optional[Mapping[str, str]] = None,
     ) -> models.ListActiveAlertsByAreaResponse:
         r"""Returns active alerts for the given area (state or marine area)
@@ -851,10 +987,14 @@ class Alerts(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(500, 60000, 1.5, 3600000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["5XX"])
 
         http_res = self.do_request(
             hook_ctx=HookContext(
@@ -866,10 +1006,43 @@ class Alerts(BaseSDK):
                 ),
             ),
             request=req,
-            error_status_codes=["4XX", "5XX"],
+            error_status_codes=[
+                "400",
+                "401",
+                "403",
+                "404",
+                "407",
+                "408",
+                "413",
+                "414",
+                "415",
+                "422",
+                "429",
+                "431",
+                "4XX",
+                "500",
+                "501",
+                "502",
+                "503",
+                "504",
+                "505",
+                "506",
+                "507",
+                "508",
+                "510",
+                "511",
+                "5XX",
+            ],
             retry_config=retry_config,
         )
 
+        response_data: Any = None
+        if utils.match_response(http_res, "200", "application/atom+xml"):
+            http_res_bytes = utils.stream_to_bytes(http_res)
+            return models.ListActiveAlertsByAreaResponse(
+                result=http_res_bytes,
+                headers=utils.get_response_headers(http_res.headers),
+            )
         if utils.match_response(http_res, "200", "application/geo+json"):
             return models.ListActiveAlertsByAreaResponse(
                 result=utils.unmarshal_json(
@@ -884,12 +1057,60 @@ class Alerts(BaseSDK):
                 ),
                 headers=utils.get_response_headers(http_res.headers),
             )
-        if utils.match_response(http_res, "200", "application/atom+xml"):
-            http_res_bytes = utils.stream_to_bytes(http_res)
-            return models.ListActiveAlertsByAreaResponse(
-                result=http_res_bytes,
-                headers=utils.get_response_headers(http_res.headers),
+        if utils.match_response(http_res, "404", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.NotFoundErrorData
             )
+            raise errors.NotFoundError(data=response_data)
+        if utils.match_response(http_res, ["401", "403", "407"], "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.UnauthorizedErrorData
+            )
+            raise errors.UnauthorizedError(data=response_data)
+        if utils.match_response(http_res, "408", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.TimeoutErrorTData
+            )
+            raise errors.TimeoutErrorT(data=response_data)
+        if utils.match_response(http_res, "429", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.RateLimitedErrorData
+            )
+            raise errors.RateLimitedError(data=response_data)
+        if utils.match_response(
+            http_res, ["400", "413", "414", "415", "422", "431"], "application/json"
+        ):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.BadRequestErrorData
+            )
+            raise errors.BadRequestError(data=response_data)
+        if utils.match_response(http_res, "504", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.TimeoutErrorTData
+            )
+            raise errors.TimeoutErrorT(data=response_data)
+        if utils.match_response(http_res, ["501", "505"], "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.NotFoundErrorData
+            )
+            raise errors.NotFoundError(data=response_data)
+        if utils.match_response(
+            http_res, ["500", "502", "503", "506", "507", "508"], "application/json"
+        ):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.InternalServerErrorData
+            )
+            raise errors.InternalServerError(data=response_data)
+        if utils.match_response(http_res, "510", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.BadRequestErrorData
+            )
+            raise errors.BadRequestError(data=response_data)
+        if utils.match_response(http_res, "511", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.UnauthorizedErrorData
+            )
+            raise errors.UnauthorizedError(data=response_data)
         if utils.match_response(http_res, "4XX", "*"):
             http_res_text = utils.stream_to_text(http_res)
             raise errors.APIError(
@@ -915,14 +1136,14 @@ class Alerts(BaseSDK):
             http_res,
         )
 
-    async def list_active_alerts_by_area_async(
+    async def list_active_by_area_async(
         self,
         *,
         area: models.Area,
         retries: OptionalNullable[utils.RetryConfig] = UNSET,
         server_url: Optional[str] = None,
         timeout_ms: Optional[int] = None,
-        accept_header_override: Optional[ListActiveAlertsByAreaAcceptEnum] = None,
+        accept_header_override: Optional[ListActiveByAreaAcceptEnum] = None,
         http_headers: Optional[Mapping[str, str]] = None,
     ) -> models.ListActiveAlertsByAreaResponse:
         r"""Returns active alerts for the given area (state or marine area)
@@ -969,10 +1190,14 @@ class Alerts(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(500, 60000, 1.5, 3600000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["5XX"])
 
         http_res = await self.do_request_async(
             hook_ctx=HookContext(
@@ -984,10 +1209,43 @@ class Alerts(BaseSDK):
                 ),
             ),
             request=req,
-            error_status_codes=["4XX", "5XX"],
+            error_status_codes=[
+                "400",
+                "401",
+                "403",
+                "404",
+                "407",
+                "408",
+                "413",
+                "414",
+                "415",
+                "422",
+                "429",
+                "431",
+                "4XX",
+                "500",
+                "501",
+                "502",
+                "503",
+                "504",
+                "505",
+                "506",
+                "507",
+                "508",
+                "510",
+                "511",
+                "5XX",
+            ],
             retry_config=retry_config,
         )
 
+        response_data: Any = None
+        if utils.match_response(http_res, "200", "application/atom+xml"):
+            http_res_bytes = await utils.stream_to_bytes_async(http_res)
+            return models.ListActiveAlertsByAreaResponse(
+                result=http_res_bytes,
+                headers=utils.get_response_headers(http_res.headers),
+            )
         if utils.match_response(http_res, "200", "application/geo+json"):
             return models.ListActiveAlertsByAreaResponse(
                 result=utils.unmarshal_json(
@@ -1002,12 +1260,60 @@ class Alerts(BaseSDK):
                 ),
                 headers=utils.get_response_headers(http_res.headers),
             )
-        if utils.match_response(http_res, "200", "application/atom+xml"):
-            http_res_bytes = await utils.stream_to_bytes_async(http_res)
-            return models.ListActiveAlertsByAreaResponse(
-                result=http_res_bytes,
-                headers=utils.get_response_headers(http_res.headers),
+        if utils.match_response(http_res, "404", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.NotFoundErrorData
             )
+            raise errors.NotFoundError(data=response_data)
+        if utils.match_response(http_res, ["401", "403", "407"], "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.UnauthorizedErrorData
+            )
+            raise errors.UnauthorizedError(data=response_data)
+        if utils.match_response(http_res, "408", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.TimeoutErrorTData
+            )
+            raise errors.TimeoutErrorT(data=response_data)
+        if utils.match_response(http_res, "429", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.RateLimitedErrorData
+            )
+            raise errors.RateLimitedError(data=response_data)
+        if utils.match_response(
+            http_res, ["400", "413", "414", "415", "422", "431"], "application/json"
+        ):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.BadRequestErrorData
+            )
+            raise errors.BadRequestError(data=response_data)
+        if utils.match_response(http_res, "504", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.TimeoutErrorTData
+            )
+            raise errors.TimeoutErrorT(data=response_data)
+        if utils.match_response(http_res, ["501", "505"], "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.NotFoundErrorData
+            )
+            raise errors.NotFoundError(data=response_data)
+        if utils.match_response(
+            http_res, ["500", "502", "503", "506", "507", "508"], "application/json"
+        ):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.InternalServerErrorData
+            )
+            raise errors.InternalServerError(data=response_data)
+        if utils.match_response(http_res, "510", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.BadRequestErrorData
+            )
+            raise errors.BadRequestError(data=response_data)
+        if utils.match_response(http_res, "511", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.UnauthorizedErrorData
+            )
+            raise errors.UnauthorizedError(data=response_data)
         if utils.match_response(http_res, "4XX", "*"):
             http_res_text = await utils.stream_to_text_async(http_res)
             raise errors.APIError(
@@ -1033,14 +1339,14 @@ class Alerts(BaseSDK):
             http_res,
         )
 
-    def list_active_alerts_by_region(
+    def list_active_by_region(
         self,
         *,
         region: models.MarineRegionCode,
         retries: OptionalNullable[utils.RetryConfig] = UNSET,
         server_url: Optional[str] = None,
         timeout_ms: Optional[int] = None,
-        accept_header_override: Optional[ListActiveAlertsByRegionAcceptEnum] = None,
+        accept_header_override: Optional[ListActiveByRegionAcceptEnum] = None,
         http_headers: Optional[Mapping[str, str]] = None,
     ) -> models.ListActiveAlertsByRegionResponse:
         r"""Returns active alerts for the given marine region
@@ -1087,10 +1393,14 @@ class Alerts(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(500, 60000, 1.5, 3600000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["5XX"])
 
         http_res = self.do_request(
             hook_ctx=HookContext(
@@ -1102,10 +1412,43 @@ class Alerts(BaseSDK):
                 ),
             ),
             request=req,
-            error_status_codes=["4XX", "5XX"],
+            error_status_codes=[
+                "400",
+                "401",
+                "403",
+                "404",
+                "407",
+                "408",
+                "413",
+                "414",
+                "415",
+                "422",
+                "429",
+                "431",
+                "4XX",
+                "500",
+                "501",
+                "502",
+                "503",
+                "504",
+                "505",
+                "506",
+                "507",
+                "508",
+                "510",
+                "511",
+                "5XX",
+            ],
             retry_config=retry_config,
         )
 
+        response_data: Any = None
+        if utils.match_response(http_res, "200", "application/atom+xml"):
+            http_res_bytes = utils.stream_to_bytes(http_res)
+            return models.ListActiveAlertsByRegionResponse(
+                result=http_res_bytes,
+                headers=utils.get_response_headers(http_res.headers),
+            )
         if utils.match_response(http_res, "200", "application/geo+json"):
             return models.ListActiveAlertsByRegionResponse(
                 result=utils.unmarshal_json(
@@ -1120,12 +1463,60 @@ class Alerts(BaseSDK):
                 ),
                 headers=utils.get_response_headers(http_res.headers),
             )
-        if utils.match_response(http_res, "200", "application/atom+xml"):
-            http_res_bytes = utils.stream_to_bytes(http_res)
-            return models.ListActiveAlertsByRegionResponse(
-                result=http_res_bytes,
-                headers=utils.get_response_headers(http_res.headers),
+        if utils.match_response(http_res, "404", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.NotFoundErrorData
             )
+            raise errors.NotFoundError(data=response_data)
+        if utils.match_response(http_res, ["401", "403", "407"], "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.UnauthorizedErrorData
+            )
+            raise errors.UnauthorizedError(data=response_data)
+        if utils.match_response(http_res, "408", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.TimeoutErrorTData
+            )
+            raise errors.TimeoutErrorT(data=response_data)
+        if utils.match_response(http_res, "429", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.RateLimitedErrorData
+            )
+            raise errors.RateLimitedError(data=response_data)
+        if utils.match_response(
+            http_res, ["400", "413", "414", "415", "422", "431"], "application/json"
+        ):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.BadRequestErrorData
+            )
+            raise errors.BadRequestError(data=response_data)
+        if utils.match_response(http_res, "504", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.TimeoutErrorTData
+            )
+            raise errors.TimeoutErrorT(data=response_data)
+        if utils.match_response(http_res, ["501", "505"], "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.NotFoundErrorData
+            )
+            raise errors.NotFoundError(data=response_data)
+        if utils.match_response(
+            http_res, ["500", "502", "503", "506", "507", "508"], "application/json"
+        ):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.InternalServerErrorData
+            )
+            raise errors.InternalServerError(data=response_data)
+        if utils.match_response(http_res, "510", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.BadRequestErrorData
+            )
+            raise errors.BadRequestError(data=response_data)
+        if utils.match_response(http_res, "511", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.UnauthorizedErrorData
+            )
+            raise errors.UnauthorizedError(data=response_data)
         if utils.match_response(http_res, "4XX", "*"):
             http_res_text = utils.stream_to_text(http_res)
             raise errors.APIError(
@@ -1151,14 +1542,14 @@ class Alerts(BaseSDK):
             http_res,
         )
 
-    async def list_active_alerts_by_region_async(
+    async def list_active_by_region_async(
         self,
         *,
         region: models.MarineRegionCode,
         retries: OptionalNullable[utils.RetryConfig] = UNSET,
         server_url: Optional[str] = None,
         timeout_ms: Optional[int] = None,
-        accept_header_override: Optional[ListActiveAlertsByRegionAcceptEnum] = None,
+        accept_header_override: Optional[ListActiveByRegionAcceptEnum] = None,
         http_headers: Optional[Mapping[str, str]] = None,
     ) -> models.ListActiveAlertsByRegionResponse:
         r"""Returns active alerts for the given marine region
@@ -1205,10 +1596,14 @@ class Alerts(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(500, 60000, 1.5, 3600000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["5XX"])
 
         http_res = await self.do_request_async(
             hook_ctx=HookContext(
@@ -1220,10 +1615,43 @@ class Alerts(BaseSDK):
                 ),
             ),
             request=req,
-            error_status_codes=["4XX", "5XX"],
+            error_status_codes=[
+                "400",
+                "401",
+                "403",
+                "404",
+                "407",
+                "408",
+                "413",
+                "414",
+                "415",
+                "422",
+                "429",
+                "431",
+                "4XX",
+                "500",
+                "501",
+                "502",
+                "503",
+                "504",
+                "505",
+                "506",
+                "507",
+                "508",
+                "510",
+                "511",
+                "5XX",
+            ],
             retry_config=retry_config,
         )
 
+        response_data: Any = None
+        if utils.match_response(http_res, "200", "application/atom+xml"):
+            http_res_bytes = await utils.stream_to_bytes_async(http_res)
+            return models.ListActiveAlertsByRegionResponse(
+                result=http_res_bytes,
+                headers=utils.get_response_headers(http_res.headers),
+            )
         if utils.match_response(http_res, "200", "application/geo+json"):
             return models.ListActiveAlertsByRegionResponse(
                 result=utils.unmarshal_json(
@@ -1238,12 +1666,466 @@ class Alerts(BaseSDK):
                 ),
                 headers=utils.get_response_headers(http_res.headers),
             )
+        if utils.match_response(http_res, "404", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.NotFoundErrorData
+            )
+            raise errors.NotFoundError(data=response_data)
+        if utils.match_response(http_res, ["401", "403", "407"], "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.UnauthorizedErrorData
+            )
+            raise errors.UnauthorizedError(data=response_data)
+        if utils.match_response(http_res, "408", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.TimeoutErrorTData
+            )
+            raise errors.TimeoutErrorT(data=response_data)
+        if utils.match_response(http_res, "429", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.RateLimitedErrorData
+            )
+            raise errors.RateLimitedError(data=response_data)
+        if utils.match_response(
+            http_res, ["400", "413", "414", "415", "422", "431"], "application/json"
+        ):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.BadRequestErrorData
+            )
+            raise errors.BadRequestError(data=response_data)
+        if utils.match_response(http_res, "504", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.TimeoutErrorTData
+            )
+            raise errors.TimeoutErrorT(data=response_data)
+        if utils.match_response(http_res, ["501", "505"], "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.NotFoundErrorData
+            )
+            raise errors.NotFoundError(data=response_data)
+        if utils.match_response(
+            http_res, ["500", "502", "503", "506", "507", "508"], "application/json"
+        ):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.InternalServerErrorData
+            )
+            raise errors.InternalServerError(data=response_data)
+        if utils.match_response(http_res, "510", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.BadRequestErrorData
+            )
+            raise errors.BadRequestError(data=response_data)
+        if utils.match_response(http_res, "511", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.UnauthorizedErrorData
+            )
+            raise errors.UnauthorizedError(data=response_data)
+        if utils.match_response(http_res, "4XX", "*"):
+            http_res_text = await utils.stream_to_text_async(http_res)
+            raise errors.APIError(
+                "API error occurred", http_res.status_code, http_res_text, http_res
+            )
+        if utils.match_response(http_res, "5XX", "*"):
+            http_res_text = await utils.stream_to_text_async(http_res)
+            raise errors.APIError(
+                "API error occurred", http_res.status_code, http_res_text, http_res
+            )
+        if utils.match_response(http_res, "default", "application/problem+json"):
+            return models.ListActiveAlertsByRegionResponse(
+                result=utils.unmarshal_json(http_res.text, models.ProblemDetail),
+                headers=utils.get_response_headers(http_res.headers),
+            )
+
+        content_type = http_res.headers.get("Content-Type")
+        http_res_text = await utils.stream_to_text_async(http_res)
+        raise errors.APIError(
+            f"Unexpected response received (code: {http_res.status_code}, type: {content_type})",
+            http_res.status_code,
+            http_res_text,
+            http_res,
+        )
+
+    def list_active_by_zone(
+        self,
+        *,
+        zone_id: str,
+        retries: OptionalNullable[utils.RetryConfig] = UNSET,
+        server_url: Optional[str] = None,
+        timeout_ms: Optional[int] = None,
+        accept_header_override: Optional[ListActiveByZoneAcceptEnum] = None,
+        http_headers: Optional[Mapping[str, str]] = None,
+    ) -> models.ListActiveAlertsByZoneResponse:
+        r"""Returns active alerts for the given NWS public zone or county
+
+        :param zone_id: NWS public zone/county identifier
+        :param retries: Override the default retry configuration for this method
+        :param server_url: Override the default server URL for this method
+        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param accept_header_override: Override the default accept header for this method
+        :param http_headers: Additional headers to set or replace on requests.
+        """
+        base_url = None
+        url_variables = None
+        if timeout_ms is None:
+            timeout_ms = self.sdk_configuration.timeout_ms
+
+        if server_url is not None:
+            base_url = server_url
+        else:
+            base_url = self._get_url(base_url, url_variables)
+
+        request = models.ListActiveAlertsByZoneRequest(
+            zone_id=zone_id,
+        )
+
+        req = self._build_request(
+            method="GET",
+            path="/alerts/active/zone/{zoneId}",
+            base_url=base_url,
+            url_variables=url_variables,
+            request=request,
+            request_body_required=False,
+            request_has_path_params=True,
+            request_has_query_params=True,
+            user_agent_header="user-agent",
+            accept_header_value=accept_header_override.value
+            if accept_header_override is not None
+            else "application/geo+json;q=1, application/ld+json;q=0.8, application/problem+json;q=0.5, application/atom+xml;q=0",
+            http_headers=http_headers,
+            security=self.sdk_configuration.security,
+            timeout_ms=timeout_ms,
+        )
+
+        if retries == UNSET:
+            if self.sdk_configuration.retry_config is not UNSET:
+                retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(500, 60000, 1.5, 3600000), True
+                )
+
+        retry_config = None
+        if isinstance(retries, utils.RetryConfig):
+            retry_config = (retries, ["5XX"])
+
+        http_res = self.do_request(
+            hook_ctx=HookContext(
+                base_url=base_url or "",
+                operation_id="list_active_alerts_by_zone",
+                oauth2_scopes=[],
+                security_source=get_security_from_env(
+                    self.sdk_configuration.security, models.Security
+                ),
+            ),
+            request=req,
+            error_status_codes=[
+                "400",
+                "401",
+                "403",
+                "404",
+                "407",
+                "408",
+                "413",
+                "414",
+                "415",
+                "422",
+                "429",
+                "431",
+                "4XX",
+                "500",
+                "501",
+                "502",
+                "503",
+                "504",
+                "505",
+                "506",
+                "507",
+                "508",
+                "510",
+                "511",
+                "5XX",
+            ],
+            retry_config=retry_config,
+        )
+
+        response_data: Any = None
+        if utils.match_response(http_res, "200", "application/atom+xml"):
+            http_res_bytes = utils.stream_to_bytes(http_res)
+            return models.ListActiveAlertsByZoneResponse(
+                result=http_res_bytes,
+                headers=utils.get_response_headers(http_res.headers),
+            )
+        if utils.match_response(http_res, "200", "application/geo+json"):
+            return models.ListActiveAlertsByZoneResponse(
+                result=utils.unmarshal_json(
+                    http_res.text, models.AlertCollectionGeoJSON
+                ),
+                headers=utils.get_response_headers(http_res.headers),
+            )
+        if utils.match_response(http_res, "200", "application/ld+json"):
+            return models.ListActiveAlertsByZoneResponse(
+                result=utils.unmarshal_json(
+                    http_res.text, models.AlertCollectionJSONLd
+                ),
+                headers=utils.get_response_headers(http_res.headers),
+            )
+        if utils.match_response(http_res, "404", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.NotFoundErrorData
+            )
+            raise errors.NotFoundError(data=response_data)
+        if utils.match_response(http_res, ["401", "403", "407"], "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.UnauthorizedErrorData
+            )
+            raise errors.UnauthorizedError(data=response_data)
+        if utils.match_response(http_res, "408", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.TimeoutErrorTData
+            )
+            raise errors.TimeoutErrorT(data=response_data)
+        if utils.match_response(http_res, "429", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.RateLimitedErrorData
+            )
+            raise errors.RateLimitedError(data=response_data)
+        if utils.match_response(
+            http_res, ["400", "413", "414", "415", "422", "431"], "application/json"
+        ):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.BadRequestErrorData
+            )
+            raise errors.BadRequestError(data=response_data)
+        if utils.match_response(http_res, "504", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.TimeoutErrorTData
+            )
+            raise errors.TimeoutErrorT(data=response_data)
+        if utils.match_response(http_res, ["501", "505"], "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.NotFoundErrorData
+            )
+            raise errors.NotFoundError(data=response_data)
+        if utils.match_response(
+            http_res, ["500", "502", "503", "506", "507", "508"], "application/json"
+        ):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.InternalServerErrorData
+            )
+            raise errors.InternalServerError(data=response_data)
+        if utils.match_response(http_res, "510", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.BadRequestErrorData
+            )
+            raise errors.BadRequestError(data=response_data)
+        if utils.match_response(http_res, "511", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.UnauthorizedErrorData
+            )
+            raise errors.UnauthorizedError(data=response_data)
+        if utils.match_response(http_res, "4XX", "*"):
+            http_res_text = utils.stream_to_text(http_res)
+            raise errors.APIError(
+                "API error occurred", http_res.status_code, http_res_text, http_res
+            )
+        if utils.match_response(http_res, "5XX", "*"):
+            http_res_text = utils.stream_to_text(http_res)
+            raise errors.APIError(
+                "API error occurred", http_res.status_code, http_res_text, http_res
+            )
+        if utils.match_response(http_res, "default", "application/problem+json"):
+            return models.ListActiveAlertsByZoneResponse(
+                result=utils.unmarshal_json(http_res.text, models.ProblemDetail),
+                headers=utils.get_response_headers(http_res.headers),
+            )
+
+        content_type = http_res.headers.get("Content-Type")
+        http_res_text = utils.stream_to_text(http_res)
+        raise errors.APIError(
+            f"Unexpected response received (code: {http_res.status_code}, type: {content_type})",
+            http_res.status_code,
+            http_res_text,
+            http_res,
+        )
+
+    async def list_active_by_zone_async(
+        self,
+        *,
+        zone_id: str,
+        retries: OptionalNullable[utils.RetryConfig] = UNSET,
+        server_url: Optional[str] = None,
+        timeout_ms: Optional[int] = None,
+        accept_header_override: Optional[ListActiveByZoneAcceptEnum] = None,
+        http_headers: Optional[Mapping[str, str]] = None,
+    ) -> models.ListActiveAlertsByZoneResponse:
+        r"""Returns active alerts for the given NWS public zone or county
+
+        :param zone_id: NWS public zone/county identifier
+        :param retries: Override the default retry configuration for this method
+        :param server_url: Override the default server URL for this method
+        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param accept_header_override: Override the default accept header for this method
+        :param http_headers: Additional headers to set or replace on requests.
+        """
+        base_url = None
+        url_variables = None
+        if timeout_ms is None:
+            timeout_ms = self.sdk_configuration.timeout_ms
+
+        if server_url is not None:
+            base_url = server_url
+        else:
+            base_url = self._get_url(base_url, url_variables)
+
+        request = models.ListActiveAlertsByZoneRequest(
+            zone_id=zone_id,
+        )
+
+        req = self._build_request_async(
+            method="GET",
+            path="/alerts/active/zone/{zoneId}",
+            base_url=base_url,
+            url_variables=url_variables,
+            request=request,
+            request_body_required=False,
+            request_has_path_params=True,
+            request_has_query_params=True,
+            user_agent_header="user-agent",
+            accept_header_value=accept_header_override.value
+            if accept_header_override is not None
+            else "application/geo+json;q=1, application/ld+json;q=0.8, application/problem+json;q=0.5, application/atom+xml;q=0",
+            http_headers=http_headers,
+            security=self.sdk_configuration.security,
+            timeout_ms=timeout_ms,
+        )
+
+        if retries == UNSET:
+            if self.sdk_configuration.retry_config is not UNSET:
+                retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(500, 60000, 1.5, 3600000), True
+                )
+
+        retry_config = None
+        if isinstance(retries, utils.RetryConfig):
+            retry_config = (retries, ["5XX"])
+
+        http_res = await self.do_request_async(
+            hook_ctx=HookContext(
+                base_url=base_url or "",
+                operation_id="list_active_alerts_by_zone",
+                oauth2_scopes=[],
+                security_source=get_security_from_env(
+                    self.sdk_configuration.security, models.Security
+                ),
+            ),
+            request=req,
+            error_status_codes=[
+                "400",
+                "401",
+                "403",
+                "404",
+                "407",
+                "408",
+                "413",
+                "414",
+                "415",
+                "422",
+                "429",
+                "431",
+                "4XX",
+                "500",
+                "501",
+                "502",
+                "503",
+                "504",
+                "505",
+                "506",
+                "507",
+                "508",
+                "510",
+                "511",
+                "5XX",
+            ],
+            retry_config=retry_config,
+        )
+
+        response_data: Any = None
         if utils.match_response(http_res, "200", "application/atom+xml"):
             http_res_bytes = await utils.stream_to_bytes_async(http_res)
-            return models.ListActiveAlertsByRegionResponse(
+            return models.ListActiveAlertsByZoneResponse(
                 result=http_res_bytes,
                 headers=utils.get_response_headers(http_res.headers),
             )
+        if utils.match_response(http_res, "200", "application/geo+json"):
+            return models.ListActiveAlertsByZoneResponse(
+                result=utils.unmarshal_json(
+                    http_res.text, models.AlertCollectionGeoJSON
+                ),
+                headers=utils.get_response_headers(http_res.headers),
+            )
+        if utils.match_response(http_res, "200", "application/ld+json"):
+            return models.ListActiveAlertsByZoneResponse(
+                result=utils.unmarshal_json(
+                    http_res.text, models.AlertCollectionJSONLd
+                ),
+                headers=utils.get_response_headers(http_res.headers),
+            )
+        if utils.match_response(http_res, "404", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.NotFoundErrorData
+            )
+            raise errors.NotFoundError(data=response_data)
+        if utils.match_response(http_res, ["401", "403", "407"], "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.UnauthorizedErrorData
+            )
+            raise errors.UnauthorizedError(data=response_data)
+        if utils.match_response(http_res, "408", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.TimeoutErrorTData
+            )
+            raise errors.TimeoutErrorT(data=response_data)
+        if utils.match_response(http_res, "429", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.RateLimitedErrorData
+            )
+            raise errors.RateLimitedError(data=response_data)
+        if utils.match_response(
+            http_res, ["400", "413", "414", "415", "422", "431"], "application/json"
+        ):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.BadRequestErrorData
+            )
+            raise errors.BadRequestError(data=response_data)
+        if utils.match_response(http_res, "504", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.TimeoutErrorTData
+            )
+            raise errors.TimeoutErrorT(data=response_data)
+        if utils.match_response(http_res, ["501", "505"], "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.NotFoundErrorData
+            )
+            raise errors.NotFoundError(data=response_data)
+        if utils.match_response(
+            http_res, ["500", "502", "503", "506", "507", "508"], "application/json"
+        ):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.InternalServerErrorData
+            )
+            raise errors.InternalServerError(data=response_data)
+        if utils.match_response(http_res, "510", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.BadRequestErrorData
+            )
+            raise errors.BadRequestError(data=response_data)
+        if utils.match_response(http_res, "511", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.UnauthorizedErrorData
+            )
+            raise errors.UnauthorizedError(data=response_data)
         if utils.match_response(http_res, "4XX", "*"):
             http_res_text = await utils.stream_to_text_async(http_res)
             raise errors.APIError(
@@ -1255,7 +2137,7 @@ class Alerts(BaseSDK):
                 "API error occurred", http_res.status_code, http_res_text, http_res
             )
         if utils.match_response(http_res, "default", "application/problem+json"):
-            return models.ListActiveAlertsByRegionResponse(
+            return models.ListActiveAlertsByZoneResponse(
                 result=utils.unmarshal_json(http_res.text, models.ProblemDetail),
                 headers=utils.get_response_headers(http_res.headers),
             )
@@ -1269,13 +2151,379 @@ class Alerts(BaseSDK):
             http_res,
         )
 
-    def list_alert_types(
+    def list_active_count(
         self,
         *,
         retries: OptionalNullable[utils.RetryConfig] = UNSET,
         server_url: Optional[str] = None,
         timeout_ms: Optional[int] = None,
-        accept_header_override: Optional[ListAlertTypesAcceptEnum] = None,
+        accept_header_override: Optional[ListActiveCountAcceptEnum] = None,
+        http_headers: Optional[Mapping[str, str]] = None,
+    ) -> models.ListActiveAlertCountsResponse:
+        r"""Returns info on the number of active alerts
+
+        :param retries: Override the default retry configuration for this method
+        :param server_url: Override the default server URL for this method
+        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param accept_header_override: Override the default accept header for this method
+        :param http_headers: Additional headers to set or replace on requests.
+        """
+        base_url = None
+        url_variables = None
+        if timeout_ms is None:
+            timeout_ms = self.sdk_configuration.timeout_ms
+
+        if server_url is not None:
+            base_url = server_url
+        else:
+            base_url = self._get_url(base_url, url_variables)
+        req = self._build_request(
+            method="GET",
+            path="/alerts/active/count",
+            base_url=base_url,
+            url_variables=url_variables,
+            request=None,
+            request_body_required=False,
+            request_has_path_params=False,
+            request_has_query_params=True,
+            user_agent_header="user-agent",
+            accept_header_value=accept_header_override.value
+            if accept_header_override is not None
+            else "application/ld+json;q=1, application/problem+json;q=0",
+            http_headers=http_headers,
+            security=self.sdk_configuration.security,
+            timeout_ms=timeout_ms,
+        )
+
+        if retries == UNSET:
+            if self.sdk_configuration.retry_config is not UNSET:
+                retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(500, 60000, 1.5, 3600000), True
+                )
+
+        retry_config = None
+        if isinstance(retries, utils.RetryConfig):
+            retry_config = (retries, ["5XX"])
+
+        http_res = self.do_request(
+            hook_ctx=HookContext(
+                base_url=base_url or "",
+                operation_id="list_active_alert_counts",
+                oauth2_scopes=[],
+                security_source=get_security_from_env(
+                    self.sdk_configuration.security, models.Security
+                ),
+            ),
+            request=req,
+            error_status_codes=[
+                "400",
+                "401",
+                "403",
+                "404",
+                "407",
+                "408",
+                "413",
+                "414",
+                "415",
+                "422",
+                "429",
+                "431",
+                "4XX",
+                "500",
+                "501",
+                "502",
+                "503",
+                "504",
+                "505",
+                "506",
+                "507",
+                "508",
+                "510",
+                "511",
+                "5XX",
+            ],
+            retry_config=retry_config,
+        )
+
+        response_data: Any = None
+        if utils.match_response(http_res, "200", "application/ld+json"):
+            return models.ListActiveAlertCountsResponse(
+                result=utils.unmarshal_json(
+                    http_res.text, models.ListActiveAlertCountsResponseBody
+                ),
+                headers=utils.get_response_headers(http_res.headers),
+            )
+        if utils.match_response(http_res, "404", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.NotFoundErrorData
+            )
+            raise errors.NotFoundError(data=response_data)
+        if utils.match_response(http_res, ["401", "403", "407"], "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.UnauthorizedErrorData
+            )
+            raise errors.UnauthorizedError(data=response_data)
+        if utils.match_response(http_res, "408", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.TimeoutErrorTData
+            )
+            raise errors.TimeoutErrorT(data=response_data)
+        if utils.match_response(http_res, "429", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.RateLimitedErrorData
+            )
+            raise errors.RateLimitedError(data=response_data)
+        if utils.match_response(
+            http_res, ["400", "413", "414", "415", "422", "431"], "application/json"
+        ):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.BadRequestErrorData
+            )
+            raise errors.BadRequestError(data=response_data)
+        if utils.match_response(http_res, "504", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.TimeoutErrorTData
+            )
+            raise errors.TimeoutErrorT(data=response_data)
+        if utils.match_response(http_res, ["501", "505"], "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.NotFoundErrorData
+            )
+            raise errors.NotFoundError(data=response_data)
+        if utils.match_response(
+            http_res, ["500", "502", "503", "506", "507", "508"], "application/json"
+        ):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.InternalServerErrorData
+            )
+            raise errors.InternalServerError(data=response_data)
+        if utils.match_response(http_res, "510", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.BadRequestErrorData
+            )
+            raise errors.BadRequestError(data=response_data)
+        if utils.match_response(http_res, "511", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.UnauthorizedErrorData
+            )
+            raise errors.UnauthorizedError(data=response_data)
+        if utils.match_response(http_res, "4XX", "*"):
+            http_res_text = utils.stream_to_text(http_res)
+            raise errors.APIError(
+                "API error occurred", http_res.status_code, http_res_text, http_res
+            )
+        if utils.match_response(http_res, "5XX", "*"):
+            http_res_text = utils.stream_to_text(http_res)
+            raise errors.APIError(
+                "API error occurred", http_res.status_code, http_res_text, http_res
+            )
+        if utils.match_response(http_res, "default", "application/problem+json"):
+            return models.ListActiveAlertCountsResponse(
+                result=utils.unmarshal_json(http_res.text, models.ProblemDetail),
+                headers=utils.get_response_headers(http_res.headers),
+            )
+
+        content_type = http_res.headers.get("Content-Type")
+        http_res_text = utils.stream_to_text(http_res)
+        raise errors.APIError(
+            f"Unexpected response received (code: {http_res.status_code}, type: {content_type})",
+            http_res.status_code,
+            http_res_text,
+            http_res,
+        )
+
+    async def list_active_count_async(
+        self,
+        *,
+        retries: OptionalNullable[utils.RetryConfig] = UNSET,
+        server_url: Optional[str] = None,
+        timeout_ms: Optional[int] = None,
+        accept_header_override: Optional[ListActiveCountAcceptEnum] = None,
+        http_headers: Optional[Mapping[str, str]] = None,
+    ) -> models.ListActiveAlertCountsResponse:
+        r"""Returns info on the number of active alerts
+
+        :param retries: Override the default retry configuration for this method
+        :param server_url: Override the default server URL for this method
+        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param accept_header_override: Override the default accept header for this method
+        :param http_headers: Additional headers to set or replace on requests.
+        """
+        base_url = None
+        url_variables = None
+        if timeout_ms is None:
+            timeout_ms = self.sdk_configuration.timeout_ms
+
+        if server_url is not None:
+            base_url = server_url
+        else:
+            base_url = self._get_url(base_url, url_variables)
+        req = self._build_request_async(
+            method="GET",
+            path="/alerts/active/count",
+            base_url=base_url,
+            url_variables=url_variables,
+            request=None,
+            request_body_required=False,
+            request_has_path_params=False,
+            request_has_query_params=True,
+            user_agent_header="user-agent",
+            accept_header_value=accept_header_override.value
+            if accept_header_override is not None
+            else "application/ld+json;q=1, application/problem+json;q=0",
+            http_headers=http_headers,
+            security=self.sdk_configuration.security,
+            timeout_ms=timeout_ms,
+        )
+
+        if retries == UNSET:
+            if self.sdk_configuration.retry_config is not UNSET:
+                retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(500, 60000, 1.5, 3600000), True
+                )
+
+        retry_config = None
+        if isinstance(retries, utils.RetryConfig):
+            retry_config = (retries, ["5XX"])
+
+        http_res = await self.do_request_async(
+            hook_ctx=HookContext(
+                base_url=base_url or "",
+                operation_id="list_active_alert_counts",
+                oauth2_scopes=[],
+                security_source=get_security_from_env(
+                    self.sdk_configuration.security, models.Security
+                ),
+            ),
+            request=req,
+            error_status_codes=[
+                "400",
+                "401",
+                "403",
+                "404",
+                "407",
+                "408",
+                "413",
+                "414",
+                "415",
+                "422",
+                "429",
+                "431",
+                "4XX",
+                "500",
+                "501",
+                "502",
+                "503",
+                "504",
+                "505",
+                "506",
+                "507",
+                "508",
+                "510",
+                "511",
+                "5XX",
+            ],
+            retry_config=retry_config,
+        )
+
+        response_data: Any = None
+        if utils.match_response(http_res, "200", "application/ld+json"):
+            return models.ListActiveAlertCountsResponse(
+                result=utils.unmarshal_json(
+                    http_res.text, models.ListActiveAlertCountsResponseBody
+                ),
+                headers=utils.get_response_headers(http_res.headers),
+            )
+        if utils.match_response(http_res, "404", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.NotFoundErrorData
+            )
+            raise errors.NotFoundError(data=response_data)
+        if utils.match_response(http_res, ["401", "403", "407"], "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.UnauthorizedErrorData
+            )
+            raise errors.UnauthorizedError(data=response_data)
+        if utils.match_response(http_res, "408", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.TimeoutErrorTData
+            )
+            raise errors.TimeoutErrorT(data=response_data)
+        if utils.match_response(http_res, "429", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.RateLimitedErrorData
+            )
+            raise errors.RateLimitedError(data=response_data)
+        if utils.match_response(
+            http_res, ["400", "413", "414", "415", "422", "431"], "application/json"
+        ):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.BadRequestErrorData
+            )
+            raise errors.BadRequestError(data=response_data)
+        if utils.match_response(http_res, "504", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.TimeoutErrorTData
+            )
+            raise errors.TimeoutErrorT(data=response_data)
+        if utils.match_response(http_res, ["501", "505"], "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.NotFoundErrorData
+            )
+            raise errors.NotFoundError(data=response_data)
+        if utils.match_response(
+            http_res, ["500", "502", "503", "506", "507", "508"], "application/json"
+        ):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.InternalServerErrorData
+            )
+            raise errors.InternalServerError(data=response_data)
+        if utils.match_response(http_res, "510", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.BadRequestErrorData
+            )
+            raise errors.BadRequestError(data=response_data)
+        if utils.match_response(http_res, "511", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.UnauthorizedErrorData
+            )
+            raise errors.UnauthorizedError(data=response_data)
+        if utils.match_response(http_res, "4XX", "*"):
+            http_res_text = await utils.stream_to_text_async(http_res)
+            raise errors.APIError(
+                "API error occurred", http_res.status_code, http_res_text, http_res
+            )
+        if utils.match_response(http_res, "5XX", "*"):
+            http_res_text = await utils.stream_to_text_async(http_res)
+            raise errors.APIError(
+                "API error occurred", http_res.status_code, http_res_text, http_res
+            )
+        if utils.match_response(http_res, "default", "application/problem+json"):
+            return models.ListActiveAlertCountsResponse(
+                result=utils.unmarshal_json(http_res.text, models.ProblemDetail),
+                headers=utils.get_response_headers(http_res.headers),
+            )
+
+        content_type = http_res.headers.get("Content-Type")
+        http_res_text = await utils.stream_to_text_async(http_res)
+        raise errors.APIError(
+            f"Unexpected response received (code: {http_res.status_code}, type: {content_type})",
+            http_res.status_code,
+            http_res_text,
+            http_res,
+        )
+
+    def list_types(
+        self,
+        *,
+        retries: OptionalNullable[utils.RetryConfig] = UNSET,
+        server_url: Optional[str] = None,
+        timeout_ms: Optional[int] = None,
+        accept_header_override: Optional[ListTypesAcceptEnum] = None,
         http_headers: Optional[Mapping[str, str]] = None,
     ) -> models.ListAlertTypesResponse:
         r"""Returns a list of alert types
@@ -1316,10 +2564,14 @@ class Alerts(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(500, 60000, 1.5, 3600000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["5XX"])
 
         http_res = self.do_request(
             hook_ctx=HookContext(
@@ -1331,10 +2583,37 @@ class Alerts(BaseSDK):
                 ),
             ),
             request=req,
-            error_status_codes=["4XX", "5XX"],
+            error_status_codes=[
+                "400",
+                "401",
+                "403",
+                "404",
+                "407",
+                "408",
+                "413",
+                "414",
+                "415",
+                "422",
+                "429",
+                "431",
+                "4XX",
+                "500",
+                "501",
+                "502",
+                "503",
+                "504",
+                "505",
+                "506",
+                "507",
+                "508",
+                "510",
+                "511",
+                "5XX",
+            ],
             retry_config=retry_config,
         )
 
+        response_data: Any = None
         if utils.match_response(http_res, "200", "application/ld+json"):
             return models.ListAlertTypesResponse(
                 result=utils.unmarshal_json(
@@ -1342,6 +2621,60 @@ class Alerts(BaseSDK):
                 ),
                 headers=utils.get_response_headers(http_res.headers),
             )
+        if utils.match_response(http_res, "404", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.NotFoundErrorData
+            )
+            raise errors.NotFoundError(data=response_data)
+        if utils.match_response(http_res, ["401", "403", "407"], "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.UnauthorizedErrorData
+            )
+            raise errors.UnauthorizedError(data=response_data)
+        if utils.match_response(http_res, "408", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.TimeoutErrorTData
+            )
+            raise errors.TimeoutErrorT(data=response_data)
+        if utils.match_response(http_res, "429", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.RateLimitedErrorData
+            )
+            raise errors.RateLimitedError(data=response_data)
+        if utils.match_response(
+            http_res, ["400", "413", "414", "415", "422", "431"], "application/json"
+        ):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.BadRequestErrorData
+            )
+            raise errors.BadRequestError(data=response_data)
+        if utils.match_response(http_res, "504", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.TimeoutErrorTData
+            )
+            raise errors.TimeoutErrorT(data=response_data)
+        if utils.match_response(http_res, ["501", "505"], "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.NotFoundErrorData
+            )
+            raise errors.NotFoundError(data=response_data)
+        if utils.match_response(
+            http_res, ["500", "502", "503", "506", "507", "508"], "application/json"
+        ):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.InternalServerErrorData
+            )
+            raise errors.InternalServerError(data=response_data)
+        if utils.match_response(http_res, "510", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.BadRequestErrorData
+            )
+            raise errors.BadRequestError(data=response_data)
+        if utils.match_response(http_res, "511", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.UnauthorizedErrorData
+            )
+            raise errors.UnauthorizedError(data=response_data)
         if utils.match_response(http_res, "4XX", "*"):
             http_res_text = utils.stream_to_text(http_res)
             raise errors.APIError(
@@ -1367,13 +2700,13 @@ class Alerts(BaseSDK):
             http_res,
         )
 
-    async def list_alert_types_async(
+    async def list_types_async(
         self,
         *,
         retries: OptionalNullable[utils.RetryConfig] = UNSET,
         server_url: Optional[str] = None,
         timeout_ms: Optional[int] = None,
-        accept_header_override: Optional[ListAlertTypesAcceptEnum] = None,
+        accept_header_override: Optional[ListTypesAcceptEnum] = None,
         http_headers: Optional[Mapping[str, str]] = None,
     ) -> models.ListAlertTypesResponse:
         r"""Returns a list of alert types
@@ -1414,10 +2747,14 @@ class Alerts(BaseSDK):
         if retries == UNSET:
             if self.sdk_configuration.retry_config is not UNSET:
                 retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(500, 60000, 1.5, 3600000), True
+                )
 
         retry_config = None
         if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
+            retry_config = (retries, ["5XX"])
 
         http_res = await self.do_request_async(
             hook_ctx=HookContext(
@@ -1429,10 +2766,37 @@ class Alerts(BaseSDK):
                 ),
             ),
             request=req,
-            error_status_codes=["4XX", "5XX"],
+            error_status_codes=[
+                "400",
+                "401",
+                "403",
+                "404",
+                "407",
+                "408",
+                "413",
+                "414",
+                "415",
+                "422",
+                "429",
+                "431",
+                "4XX",
+                "500",
+                "501",
+                "502",
+                "503",
+                "504",
+                "505",
+                "506",
+                "507",
+                "508",
+                "510",
+                "511",
+                "5XX",
+            ],
             retry_config=retry_config,
         )
 
+        response_data: Any = None
         if utils.match_response(http_res, "200", "application/ld+json"):
             return models.ListAlertTypesResponse(
                 result=utils.unmarshal_json(
@@ -1440,6 +2804,60 @@ class Alerts(BaseSDK):
                 ),
                 headers=utils.get_response_headers(http_res.headers),
             )
+        if utils.match_response(http_res, "404", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.NotFoundErrorData
+            )
+            raise errors.NotFoundError(data=response_data)
+        if utils.match_response(http_res, ["401", "403", "407"], "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.UnauthorizedErrorData
+            )
+            raise errors.UnauthorizedError(data=response_data)
+        if utils.match_response(http_res, "408", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.TimeoutErrorTData
+            )
+            raise errors.TimeoutErrorT(data=response_data)
+        if utils.match_response(http_res, "429", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.RateLimitedErrorData
+            )
+            raise errors.RateLimitedError(data=response_data)
+        if utils.match_response(
+            http_res, ["400", "413", "414", "415", "422", "431"], "application/json"
+        ):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.BadRequestErrorData
+            )
+            raise errors.BadRequestError(data=response_data)
+        if utils.match_response(http_res, "504", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.TimeoutErrorTData
+            )
+            raise errors.TimeoutErrorT(data=response_data)
+        if utils.match_response(http_res, ["501", "505"], "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.NotFoundErrorData
+            )
+            raise errors.NotFoundError(data=response_data)
+        if utils.match_response(
+            http_res, ["500", "502", "503", "506", "507", "508"], "application/json"
+        ):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.InternalServerErrorData
+            )
+            raise errors.InternalServerError(data=response_data)
+        if utils.match_response(http_res, "510", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.BadRequestErrorData
+            )
+            raise errors.BadRequestError(data=response_data)
+        if utils.match_response(http_res, "511", "application/json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.UnauthorizedErrorData
+            )
+            raise errors.UnauthorizedError(data=response_data)
         if utils.match_response(http_res, "4XX", "*"):
             http_res_text = await utils.stream_to_text_async(http_res)
             raise errors.APIError(
@@ -1452,234 +2870,6 @@ class Alerts(BaseSDK):
             )
         if utils.match_response(http_res, "default", "application/problem+json"):
             return models.ListAlertTypesResponse(
-                result=utils.unmarshal_json(http_res.text, models.ProblemDetail),
-                headers=utils.get_response_headers(http_res.headers),
-            )
-
-        content_type = http_res.headers.get("Content-Type")
-        http_res_text = await utils.stream_to_text_async(http_res)
-        raise errors.APIError(
-            f"Unexpected response received (code: {http_res.status_code}, type: {content_type})",
-            http_res.status_code,
-            http_res_text,
-            http_res,
-        )
-
-    def get_alert(
-        self,
-        *,
-        id: str,
-        retries: OptionalNullable[utils.RetryConfig] = UNSET,
-        server_url: Optional[str] = None,
-        timeout_ms: Optional[int] = None,
-        accept_header_override: Optional[GetAlertAcceptEnum] = None,
-        http_headers: Optional[Mapping[str, str]] = None,
-    ) -> models.GetAlertResponse:
-        r"""Returns a specific alert
-
-        :param id: Alert identifier
-        :param retries: Override the default retry configuration for this method
-        :param server_url: Override the default server URL for this method
-        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
-        :param accept_header_override: Override the default accept header for this method
-        :param http_headers: Additional headers to set or replace on requests.
-        """
-        base_url = None
-        url_variables = None
-        if timeout_ms is None:
-            timeout_ms = self.sdk_configuration.timeout_ms
-
-        if server_url is not None:
-            base_url = server_url
-        else:
-            base_url = self._get_url(base_url, url_variables)
-
-        request = models.GetAlertRequest(
-            id=id,
-        )
-
-        req = self._build_request(
-            method="GET",
-            path="/alerts/{id}",
-            base_url=base_url,
-            url_variables=url_variables,
-            request=request,
-            request_body_required=False,
-            request_has_path_params=True,
-            request_has_query_params=True,
-            user_agent_header="user-agent",
-            accept_header_value=accept_header_override.value
-            if accept_header_override is not None
-            else "application/geo+json;q=1, application/ld+json;q=0.8, application/problem+json;q=0.5, application/cap+xml;q=0",
-            http_headers=http_headers,
-            security=self.sdk_configuration.security,
-            timeout_ms=timeout_ms,
-        )
-
-        if retries == UNSET:
-            if self.sdk_configuration.retry_config is not UNSET:
-                retries = self.sdk_configuration.retry_config
-
-        retry_config = None
-        if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
-
-        http_res = self.do_request(
-            hook_ctx=HookContext(
-                base_url=base_url or "",
-                operation_id="get_alert",
-                oauth2_scopes=[],
-                security_source=get_security_from_env(
-                    self.sdk_configuration.security, models.Security
-                ),
-            ),
-            request=req,
-            error_status_codes=["4XX", "5XX"],
-            retry_config=retry_config,
-        )
-
-        if utils.match_response(http_res, "200", "application/geo+json"):
-            return models.GetAlertResponse(
-                result=utils.unmarshal_json(http_res.text, models.AlertGeoJSON),
-                headers=utils.get_response_headers(http_res.headers),
-            )
-        if utils.match_response(http_res, "200", "application/ld+json"):
-            return models.GetAlertResponse(
-                result=utils.unmarshal_json(http_res.text, models.AlertJSONLd),
-                headers=utils.get_response_headers(http_res.headers),
-            )
-        if utils.match_response(http_res, "200", "application/cap+xml"):
-            http_res_bytes = utils.stream_to_bytes(http_res)
-            return models.GetAlertResponse(
-                result=http_res_bytes,
-                headers=utils.get_response_headers(http_res.headers),
-            )
-        if utils.match_response(http_res, "4XX", "*"):
-            http_res_text = utils.stream_to_text(http_res)
-            raise errors.APIError(
-                "API error occurred", http_res.status_code, http_res_text, http_res
-            )
-        if utils.match_response(http_res, "5XX", "*"):
-            http_res_text = utils.stream_to_text(http_res)
-            raise errors.APIError(
-                "API error occurred", http_res.status_code, http_res_text, http_res
-            )
-        if utils.match_response(http_res, "default", "application/problem+json"):
-            return models.GetAlertResponse(
-                result=utils.unmarshal_json(http_res.text, models.ProblemDetail),
-                headers=utils.get_response_headers(http_res.headers),
-            )
-
-        content_type = http_res.headers.get("Content-Type")
-        http_res_text = utils.stream_to_text(http_res)
-        raise errors.APIError(
-            f"Unexpected response received (code: {http_res.status_code}, type: {content_type})",
-            http_res.status_code,
-            http_res_text,
-            http_res,
-        )
-
-    async def get_alert_async(
-        self,
-        *,
-        id: str,
-        retries: OptionalNullable[utils.RetryConfig] = UNSET,
-        server_url: Optional[str] = None,
-        timeout_ms: Optional[int] = None,
-        accept_header_override: Optional[GetAlertAcceptEnum] = None,
-        http_headers: Optional[Mapping[str, str]] = None,
-    ) -> models.GetAlertResponse:
-        r"""Returns a specific alert
-
-        :param id: Alert identifier
-        :param retries: Override the default retry configuration for this method
-        :param server_url: Override the default server URL for this method
-        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
-        :param accept_header_override: Override the default accept header for this method
-        :param http_headers: Additional headers to set or replace on requests.
-        """
-        base_url = None
-        url_variables = None
-        if timeout_ms is None:
-            timeout_ms = self.sdk_configuration.timeout_ms
-
-        if server_url is not None:
-            base_url = server_url
-        else:
-            base_url = self._get_url(base_url, url_variables)
-
-        request = models.GetAlertRequest(
-            id=id,
-        )
-
-        req = self._build_request_async(
-            method="GET",
-            path="/alerts/{id}",
-            base_url=base_url,
-            url_variables=url_variables,
-            request=request,
-            request_body_required=False,
-            request_has_path_params=True,
-            request_has_query_params=True,
-            user_agent_header="user-agent",
-            accept_header_value=accept_header_override.value
-            if accept_header_override is not None
-            else "application/geo+json;q=1, application/ld+json;q=0.8, application/problem+json;q=0.5, application/cap+xml;q=0",
-            http_headers=http_headers,
-            security=self.sdk_configuration.security,
-            timeout_ms=timeout_ms,
-        )
-
-        if retries == UNSET:
-            if self.sdk_configuration.retry_config is not UNSET:
-                retries = self.sdk_configuration.retry_config
-
-        retry_config = None
-        if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["429", "500", "502", "503", "504"])
-
-        http_res = await self.do_request_async(
-            hook_ctx=HookContext(
-                base_url=base_url or "",
-                operation_id="get_alert",
-                oauth2_scopes=[],
-                security_source=get_security_from_env(
-                    self.sdk_configuration.security, models.Security
-                ),
-            ),
-            request=req,
-            error_status_codes=["4XX", "5XX"],
-            retry_config=retry_config,
-        )
-
-        if utils.match_response(http_res, "200", "application/geo+json"):
-            return models.GetAlertResponse(
-                result=utils.unmarshal_json(http_res.text, models.AlertGeoJSON),
-                headers=utils.get_response_headers(http_res.headers),
-            )
-        if utils.match_response(http_res, "200", "application/ld+json"):
-            return models.GetAlertResponse(
-                result=utils.unmarshal_json(http_res.text, models.AlertJSONLd),
-                headers=utils.get_response_headers(http_res.headers),
-            )
-        if utils.match_response(http_res, "200", "application/cap+xml"):
-            http_res_bytes = await utils.stream_to_bytes_async(http_res)
-            return models.GetAlertResponse(
-                result=http_res_bytes,
-                headers=utils.get_response_headers(http_res.headers),
-            )
-        if utils.match_response(http_res, "4XX", "*"):
-            http_res_text = await utils.stream_to_text_async(http_res)
-            raise errors.APIError(
-                "API error occurred", http_res.status_code, http_res_text, http_res
-            )
-        if utils.match_response(http_res, "5XX", "*"):
-            http_res_text = await utils.stream_to_text_async(http_res)
-            raise errors.APIError(
-                "API error occurred", http_res.status_code, http_res_text, http_res
-            )
-        if utils.match_response(http_res, "default", "application/problem+json"):
-            return models.GetAlertResponse(
                 result=utils.unmarshal_json(http_res.text, models.ProblemDetail),
                 headers=utils.get_response_headers(http_res.headers),
             )

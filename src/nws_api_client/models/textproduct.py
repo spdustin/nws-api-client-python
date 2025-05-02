@@ -13,12 +13,12 @@ class TextProductTypedDict(TypedDict):
     at_context: NotRequired[JSONLdContextUnionTypedDict]
     at_id: NotRequired[str]
     id: NotRequired[str]
-    wmo_collective_id: NotRequired[str]
-    issuing_office: NotRequired[str]
     issuance_time: NotRequired[datetime]
+    issuing_office: NotRequired[str]
     product_code: NotRequired[str]
     product_name: NotRequired[str]
     product_text: NotRequired[str]
+    wmo_collective_id: NotRequired[str]
 
 
 class TextProduct(BaseModel):
@@ -30,20 +30,20 @@ class TextProduct(BaseModel):
 
     id: Optional[str] = None
 
-    wmo_collective_id: Annotated[
-        Optional[str], pydantic.Field(alias="wmoCollectiveId")
+    issuance_time: Annotated[
+        Optional[datetime], pydantic.Field(alias="issuanceTime")
     ] = None
 
     issuing_office: Annotated[Optional[str], pydantic.Field(alias="issuingOffice")] = (
         None
     )
 
-    issuance_time: Annotated[
-        Optional[datetime], pydantic.Field(alias="issuanceTime")
-    ] = None
-
     product_code: Annotated[Optional[str], pydantic.Field(alias="productCode")] = None
 
     product_name: Annotated[Optional[str], pydantic.Field(alias="productName")] = None
 
     product_text: Annotated[Optional[str], pydantic.Field(alias="productText")] = None
+
+    wmo_collective_id: Annotated[
+        Optional[str], pydantic.Field(alias="wmoCollectiveId")
+    ] = None

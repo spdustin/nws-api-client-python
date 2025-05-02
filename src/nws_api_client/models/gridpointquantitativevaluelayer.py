@@ -11,7 +11,6 @@ from typing_extensions import Annotated, NotRequired, TypedDict
 class GridpointQuantitativeValueLayerValueTypedDict(TypedDict):
     valid_time: str
     r"""A time interval in ISO 8601 format. This can be one of:
-
     1. Start and end time
     2. Start time and duration
     3. Duration and end time
@@ -24,7 +23,6 @@ class GridpointQuantitativeValueLayerValueTypedDict(TypedDict):
 class GridpointQuantitativeValueLayerValue(BaseModel):
     valid_time: Annotated[str, pydantic.Field(alias="validTime")]
     r"""A time interval in ISO 8601 format. This can be one of:
-
     1. Start and end time
     2. Start time and duration
     3. Duration and end time

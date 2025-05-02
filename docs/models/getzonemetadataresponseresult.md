@@ -3,10 +3,10 @@
 
 ## Supported Types
 
-### `models.ZoneGeoJSON`
+### `models.ProblemDetail`
 
 ```python
-value: models.ZoneGeoJSON = /* values here */
+value: models.ProblemDetail = /* values here */
 ```
 
 ### `models.Zone`
@@ -15,9 +15,9 @@ value: models.ZoneGeoJSON = /* values here */
 value: models.Zone = /* values here */
 ```
 
-### `models.ProblemDetail`
+### `models.ZoneGeoJSON`
 
 ```python
-value: models.ProblemDetail = /* values here */
+value: models.ZoneGeoJSON = /* values here */
 ```
 

@@ -10,33 +10,33 @@ from typing_extensions import Annotated, NotRequired, TypedDict
 
 
 class CenterWeatherAdvisoryTypedDict(TypedDict):
-    id: NotRequired[str]
-    issue_time: NotRequired[datetime]
     cwsu: NotRequired[NWSCenterWeatherServiceUnitID]
     r"""Three-letter identifier for a Center Weather Service Unit (CWSU)."""
+    end: NotRequired[datetime]
+    id: NotRequired[str]
+    issue_time: NotRequired[datetime]
+    observed_property: NotRequired[str]
     sequence: NotRequired[int]
     start: NotRequired[datetime]
-    end: NotRequired[datetime]
-    observed_property: NotRequired[str]
     text: NotRequired[str]
 
 
 class CenterWeatherAdvisory(BaseModel):
+    cwsu: Optional[NWSCenterWeatherServiceUnitID] = None
+    r"""Three-letter identifier for a Center Weather Service Unit (CWSU)."""
+
+    end: Optional[datetime] = None
+
     id: Optional[str] = None
 
     issue_time: Annotated[Optional[datetime], pydantic.Field(alias="issueTime")] = None
 
-    cwsu: Optional[NWSCenterWeatherServiceUnitID] = None
-    r"""Three-letter identifier for a Center Weather Service Unit (CWSU)."""
+    observed_property: Annotated[
+        Optional[str], pydantic.Field(alias="observedProperty")
+    ] = None
 
     sequence: Optional[int] = None
 
     start: Optional[datetime] = None
-
-    end: Optional[datetime] = None
-
-    observed_property: Annotated[
-        Optional[str], pydantic.Field(alias="observedProperty")
-    ] = None
 
     text: Optional[str] = None

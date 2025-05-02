@@ -22,29 +22,28 @@ class GridpointForecastJSONLdTypedDict(TypedDict):
     at_context: JSONLdContextUnionTypedDict
     geometry: Nullable[str]
     r"""A geometry represented in Well-Known Text (WKT) format."""
-    units: NotRequired[GridpointForecastUnits]
-    r"""Denotes the units used in the textual portions of the forecast."""
+    elevation: NotRequired[QuantitativeValueTypedDict]
+    r"""A structured value representing a measurement and its unit of measure. This object is a slighly modified version of the schema.org definition at https://schema.org/QuantitativeValue
+
+    """
     forecast_generator: NotRequired[str]
     r"""The internal generator class used to create the forecast text (used for NWS debugging)."""
     generated_at: NotRequired[datetime]
     r"""The time this forecast data was generated."""
+    periods: NotRequired[List[GridpointForecastPeriodTypedDict]]
+    r"""An array of forecast periods."""
+    units: NotRequired[GridpointForecastUnits]
+    r"""Denotes the units used in the textual portions of the forecast."""
     update_time: NotRequired[datetime]
     r"""The last update time of the data this forecast was generated from."""
     valid_times: NotRequired[str]
     r"""A time interval in ISO 8601 format. This can be one of:
-
     1. Start and end time
     2. Start time and duration
     3. Duration and end time
     The string \"NOW\" can also be used in place of a start/end time.
 
     """
-    elevation: NotRequired[QuantitativeValueTypedDict]
-    r"""A structured value representing a measurement and its unit of measure. This object is a slighly modified version of the schema.org definition at https://schema.org/QuantitativeValue
-
-    """
-    periods: NotRequired[List[GridpointForecastPeriodTypedDict]]
-    r"""An array of forecast periods."""
 
 
 class GridpointForecastJSONLd(BaseModel):
@@ -55,8 +54,10 @@ class GridpointForecastJSONLd(BaseModel):
     geometry: Nullable[str]
     r"""A geometry represented in Well-Known Text (WKT) format."""
 
-    units: Optional[GridpointForecastUnits] = GridpointForecastUnits.US
-    r"""Denotes the units used in the textual portions of the forecast."""
+    elevation: Optional[QuantitativeValue] = None
+    r"""A structured value representing a measurement and its unit of measure. This object is a slighly modified version of the schema.org definition at https://schema.org/QuantitativeValue
+
+    """
 
     forecast_generator: Annotated[
         Optional[str], pydantic.Field(alias="forecastGenerator")
@@ -68,6 +69,12 @@ class GridpointForecastJSONLd(BaseModel):
     )
     r"""The time this forecast data was generated."""
 
+    periods: Optional[List[GridpointForecastPeriod]] = None
+    r"""An array of forecast periods."""
+
+    units: Optional[GridpointForecastUnits] = GridpointForecastUnits.US
+    r"""Denotes the units used in the textual portions of the forecast."""
+
     update_time: Annotated[Optional[datetime], pydantic.Field(alias="updateTime")] = (
         None
     )
@@ -75,7 +82,6 @@ class GridpointForecastJSONLd(BaseModel):
 
     valid_times: Annotated[Optional[str], pydantic.Field(alias="validTimes")] = None
     r"""A time interval in ISO 8601 format. This can be one of:
-
     1. Start and end time
     2. Start time and duration
     3. Duration and end time
@@ -83,24 +89,16 @@ class GridpointForecastJSONLd(BaseModel):
 
     """
 
-    elevation: Optional[QuantitativeValue] = None
-    r"""A structured value representing a measurement and its unit of measure. This object is a slighly modified version of the schema.org definition at https://schema.org/QuantitativeValue
-
-    """
-
-    periods: Optional[List[GridpointForecastPeriod]] = None
-    r"""An array of forecast periods."""
-
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):
         optional_fields = [
-            "units",
+            "elevation",
             "forecastGenerator",
             "generatedAt",
+            "periods",
+            "units",
             "updateTime",
             "validTimes",
-            "elevation",
-            "periods",
         ]
         nullable_fields = ["geometry"]
         null_default_fields = []

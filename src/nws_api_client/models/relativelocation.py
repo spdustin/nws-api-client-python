@@ -8,29 +8,29 @@ from typing_extensions import NotRequired, TypedDict
 
 
 class RelativeLocationTypedDict(TypedDict):
-    city: NotRequired[str]
-    state: NotRequired[str]
-    distance: NotRequired[QuantitativeValueTypedDict]
-    r"""A structured value representing a measurement and its unit of measure. This object is a slighly modified version of the schema.org definition at https://schema.org/QuantitativeValue
-
-    """
     bearing: NotRequired[QuantitativeValueTypedDict]
     r"""A structured value representing a measurement and its unit of measure. This object is a slighly modified version of the schema.org definition at https://schema.org/QuantitativeValue
 
     """
+    city: NotRequired[str]
+    distance: NotRequired[QuantitativeValueTypedDict]
+    r"""A structured value representing a measurement and its unit of measure. This object is a slighly modified version of the schema.org definition at https://schema.org/QuantitativeValue
+
+    """
+    state: NotRequired[str]
 
 
 class RelativeLocation(BaseModel):
-    city: Optional[str] = None
+    bearing: Optional[QuantitativeValue] = None
+    r"""A structured value representing a measurement and its unit of measure. This object is a slighly modified version of the schema.org definition at https://schema.org/QuantitativeValue
 
-    state: Optional[str] = None
+    """
+
+    city: Optional[str] = None
 
     distance: Optional[QuantitativeValue] = None
     r"""A structured value representing a measurement and its unit of measure. This object is a slighly modified version of the schema.org definition at https://schema.org/QuantitativeValue
 
     """
 
-    bearing: Optional[QuantitativeValue] = None
-    r"""A structured value representing a measurement and its unit of measure. This object is a slighly modified version of the schema.org definition at https://schema.org/QuantitativeValue
-
-    """
+    state: Optional[str] = None

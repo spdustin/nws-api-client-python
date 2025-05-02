@@ -7,15 +7,64 @@ Operations related to alerts
 
 ### Available Operations
 
-* [list_active_alerts](#list_active_alerts) - Returns all currently active alerts
-* [list_active_alert_counts](#list_active_alert_counts) - Returns info on the number of active alerts
-* [list_active_alerts_by_zone](#list_active_alerts_by_zone) - Returns active alerts for the given NWS public zone or county
-* [list_active_alerts_by_area](#list_active_alerts_by_area) - Returns active alerts for the given area (state or marine area)
-* [list_active_alerts_by_region](#list_active_alerts_by_region) - Returns active alerts for the given marine region
-* [list_alert_types](#list_alert_types) - Returns a list of alert types
-* [get_alert](#get_alert) - Returns a specific alert
+* [get](#get) - Returns a specific alert
+* [list_active](#list_active) - Returns all currently active alerts
+* [list_active_by_area](#list_active_by_area) - Returns active alerts for the given area (state or marine area)
+* [list_active_by_region](#list_active_by_region) - Returns active alerts for the given marine region
+* [list_active_by_zone](#list_active_by_zone) - Returns active alerts for the given NWS public zone or county
+* [list_active_count](#list_active_count) - Returns info on the number of active alerts
+* [list_types](#list_types) - Returns a list of alert types
 
-## list_active_alerts
+## get
+
+Returns a specific alert
+
+### Example Usage
+
+```python
+from nws_api_client import NwsClient
+import os
+
+
+with NwsClient(
+    user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
+) as nws_client:
+
+    res = nws_client.alerts.get(id="<id>")
+
+    # Handle response
+    print(res)
+
+```
+
+### Parameters
+
+| Parameter                                                           | Type                                                                | Required                                                            | Description                                                         |
+| ------------------------------------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------- |
+| `id`                                                                | *str*                                                               | :heavy_check_mark:                                                  | Alert identifier                                                    |
+| `retries`                                                           | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)    | :heavy_minus_sign:                                                  | Configuration to override the default retry behavior of the client. |
+
+### Response
+
+**[models.GetAlertResponse](../../models/getalertresponse.md)**
+
+### Errors
+
+| Error Type                   | Status Code                  | Content Type                 |
+| ---------------------------- | ---------------------------- | ---------------------------- |
+| errors.NotFoundError         | 404                          | application/json             |
+| errors.UnauthorizedError     | 401, 403, 407                | application/json             |
+| errors.TimeoutErrorT         | 408                          | application/json             |
+| errors.RateLimitedError      | 429                          | application/json             |
+| errors.BadRequestError       | 400, 413, 414, 415, 422, 431 | application/json             |
+| errors.TimeoutErrorT         | 504                          | application/json             |
+| errors.NotFoundError         | 501, 505                     | application/json             |
+| errors.InternalServerError   | 500, 502, 503, 506, 507, 508 | application/json             |
+| errors.BadRequestError       | 510                          | application/json             |
+| errors.UnauthorizedError     | 511                          | application/json             |
+| errors.APIError              | 4XX, 5XX                     | \*/\*                        |
+
+## list_active
 
 Returns all currently active alerts
 
@@ -30,7 +79,7 @@ with NwsClient(
     user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
 ) as nws_client:
 
-    res = nws_client.alerts.list_active_alerts()
+    res = nws_client.alerts.list_active()
 
     # Handle response
     print(res)
@@ -62,88 +111,21 @@ with NwsClient(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.APIError | 4XX, 5XX        | \*/\*           |
+| Error Type                   | Status Code                  | Content Type                 |
+| ---------------------------- | ---------------------------- | ---------------------------- |
+| errors.NotFoundError         | 404                          | application/json             |
+| errors.UnauthorizedError     | 401, 403, 407                | application/json             |
+| errors.TimeoutErrorT         | 408                          | application/json             |
+| errors.RateLimitedError      | 429                          | application/json             |
+| errors.BadRequestError       | 400, 413, 414, 415, 422, 431 | application/json             |
+| errors.TimeoutErrorT         | 504                          | application/json             |
+| errors.NotFoundError         | 501, 505                     | application/json             |
+| errors.InternalServerError   | 500, 502, 503, 506, 507, 508 | application/json             |
+| errors.BadRequestError       | 510                          | application/json             |
+| errors.UnauthorizedError     | 511                          | application/json             |
+| errors.APIError              | 4XX, 5XX                     | \*/\*                        |
 
-## list_active_alert_counts
-
-Returns info on the number of active alerts
-
-### Example Usage
-
-```python
-from nws_api_client import NwsClient
-import os
-
-
-with NwsClient(
-    user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
-) as nws_client:
-
-    res = nws_client.alerts.list_active_alert_counts()
-
-    # Handle response
-    print(res)
-
-```
-
-### Parameters
-
-| Parameter                                                           | Type                                                                | Required                                                            | Description                                                         |
-| ------------------------------------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------- |
-| `retries`                                                           | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)    | :heavy_minus_sign:                                                  | Configuration to override the default retry behavior of the client. |
-
-### Response
-
-**[models.ListActiveAlertCountsResponse](../../models/listactivealertcountsresponse.md)**
-
-### Errors
-
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.APIError | 4XX, 5XX        | \*/\*           |
-
-## list_active_alerts_by_zone
-
-Returns active alerts for the given NWS public zone or county
-
-### Example Usage
-
-```python
-from nws_api_client import NwsClient
-import os
-
-
-with NwsClient(
-    user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
-) as nws_client:
-
-    res = nws_client.alerts.list_active_alerts_by_zone(zone_id="<id>")
-
-    # Handle response
-    print(res)
-
-```
-
-### Parameters
-
-| Parameter                                                           | Type                                                                | Required                                                            | Description                                                         |
-| ------------------------------------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------- |
-| `zone_id`                                                           | *str*                                                               | :heavy_check_mark:                                                  | NWS public zone/county identifier                                   |
-| `retries`                                                           | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)    | :heavy_minus_sign:                                                  | Configuration to override the default retry behavior of the client. |
-
-### Response
-
-**[models.ListActiveAlertsByZoneResponse](../../models/listactivealertsbyzoneresponse.md)**
-
-### Errors
-
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.APIError | 4XX, 5XX        | \*/\*           |
-
-## list_active_alerts_by_area
+## list_active_by_area
 
 Returns active alerts for the given area (state or marine area)
 
@@ -158,7 +140,7 @@ with NwsClient(
     user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
 ) as nws_client:
 
-    res = nws_client.alerts.list_active_alerts_by_area(area=models.Area.PH)
+    res = nws_client.alerts.list_active_by_area(area=models.Area.PH)
 
     # Handle response
     print(res)
@@ -178,11 +160,21 @@ with NwsClient(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.APIError | 4XX, 5XX        | \*/\*           |
+| Error Type                   | Status Code                  | Content Type                 |
+| ---------------------------- | ---------------------------- | ---------------------------- |
+| errors.NotFoundError         | 404                          | application/json             |
+| errors.UnauthorizedError     | 401, 403, 407                | application/json             |
+| errors.TimeoutErrorT         | 408                          | application/json             |
+| errors.RateLimitedError      | 429                          | application/json             |
+| errors.BadRequestError       | 400, 413, 414, 415, 422, 431 | application/json             |
+| errors.TimeoutErrorT         | 504                          | application/json             |
+| errors.NotFoundError         | 501, 505                     | application/json             |
+| errors.InternalServerError   | 500, 502, 503, 506, 507, 508 | application/json             |
+| errors.BadRequestError       | 510                          | application/json             |
+| errors.UnauthorizedError     | 511                          | application/json             |
+| errors.APIError              | 4XX, 5XX                     | \*/\*                        |
 
-## list_active_alerts_by_region
+## list_active_by_region
 
 Returns active alerts for the given marine region
 
@@ -197,7 +189,7 @@ with NwsClient(
     user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
 ) as nws_client:
 
-    res = nws_client.alerts.list_active_alerts_by_region(region=models.MarineRegionCode.AT)
+    res = nws_client.alerts.list_active_by_region(region=models.MarineRegionCode.AT)
 
     # Handle response
     print(res)
@@ -217,11 +209,118 @@ with NwsClient(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.APIError | 4XX, 5XX        | \*/\*           |
+| Error Type                   | Status Code                  | Content Type                 |
+| ---------------------------- | ---------------------------- | ---------------------------- |
+| errors.NotFoundError         | 404                          | application/json             |
+| errors.UnauthorizedError     | 401, 403, 407                | application/json             |
+| errors.TimeoutErrorT         | 408                          | application/json             |
+| errors.RateLimitedError      | 429                          | application/json             |
+| errors.BadRequestError       | 400, 413, 414, 415, 422, 431 | application/json             |
+| errors.TimeoutErrorT         | 504                          | application/json             |
+| errors.NotFoundError         | 501, 505                     | application/json             |
+| errors.InternalServerError   | 500, 502, 503, 506, 507, 508 | application/json             |
+| errors.BadRequestError       | 510                          | application/json             |
+| errors.UnauthorizedError     | 511                          | application/json             |
+| errors.APIError              | 4XX, 5XX                     | \*/\*                        |
 
-## list_alert_types
+## list_active_by_zone
+
+Returns active alerts for the given NWS public zone or county
+
+### Example Usage
+
+```python
+from nws_api_client import NwsClient
+import os
+
+
+with NwsClient(
+    user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
+) as nws_client:
+
+    res = nws_client.alerts.list_active_by_zone(zone_id="<id>")
+
+    # Handle response
+    print(res)
+
+```
+
+### Parameters
+
+| Parameter                                                           | Type                                                                | Required                                                            | Description                                                         |
+| ------------------------------------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------- |
+| `zone_id`                                                           | *str*                                                               | :heavy_check_mark:                                                  | NWS public zone/county identifier                                   |
+| `retries`                                                           | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)    | :heavy_minus_sign:                                                  | Configuration to override the default retry behavior of the client. |
+
+### Response
+
+**[models.ListActiveAlertsByZoneResponse](../../models/listactivealertsbyzoneresponse.md)**
+
+### Errors
+
+| Error Type                   | Status Code                  | Content Type                 |
+| ---------------------------- | ---------------------------- | ---------------------------- |
+| errors.NotFoundError         | 404                          | application/json             |
+| errors.UnauthorizedError     | 401, 403, 407                | application/json             |
+| errors.TimeoutErrorT         | 408                          | application/json             |
+| errors.RateLimitedError      | 429                          | application/json             |
+| errors.BadRequestError       | 400, 413, 414, 415, 422, 431 | application/json             |
+| errors.TimeoutErrorT         | 504                          | application/json             |
+| errors.NotFoundError         | 501, 505                     | application/json             |
+| errors.InternalServerError   | 500, 502, 503, 506, 507, 508 | application/json             |
+| errors.BadRequestError       | 510                          | application/json             |
+| errors.UnauthorizedError     | 511                          | application/json             |
+| errors.APIError              | 4XX, 5XX                     | \*/\*                        |
+
+## list_active_count
+
+Returns info on the number of active alerts
+
+### Example Usage
+
+```python
+from nws_api_client import NwsClient
+import os
+
+
+with NwsClient(
+    user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
+) as nws_client:
+
+    res = nws_client.alerts.list_active_count()
+
+    # Handle response
+    print(res)
+
+```
+
+### Parameters
+
+| Parameter                                                           | Type                                                                | Required                                                            | Description                                                         |
+| ------------------------------------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------- |
+| `retries`                                                           | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)    | :heavy_minus_sign:                                                  | Configuration to override the default retry behavior of the client. |
+
+### Response
+
+**[models.ListActiveAlertCountsResponse](../../models/listactivealertcountsresponse.md)**
+
+### Errors
+
+| Error Type                   | Status Code                  | Content Type                 |
+| ---------------------------- | ---------------------------- | ---------------------------- |
+| errors.NotFoundError         | 404                          | application/json             |
+| errors.UnauthorizedError     | 401, 403, 407                | application/json             |
+| errors.TimeoutErrorT         | 408                          | application/json             |
+| errors.RateLimitedError      | 429                          | application/json             |
+| errors.BadRequestError       | 400, 413, 414, 415, 422, 431 | application/json             |
+| errors.TimeoutErrorT         | 504                          | application/json             |
+| errors.NotFoundError         | 501, 505                     | application/json             |
+| errors.InternalServerError   | 500, 502, 503, 506, 507, 508 | application/json             |
+| errors.BadRequestError       | 510                          | application/json             |
+| errors.UnauthorizedError     | 511                          | application/json             |
+| errors.APIError              | 4XX, 5XX                     | \*/\*                        |
+
+## list_types
 
 Returns a list of alert types
 
@@ -236,7 +335,7 @@ with NwsClient(
     user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
 ) as nws_client:
 
-    res = nws_client.alerts.list_alert_types()
+    res = nws_client.alerts.list_types()
 
     # Handle response
     print(res)
@@ -255,45 +354,16 @@ with NwsClient(
 
 ### Errors
 
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.APIError | 4XX, 5XX        | \*/\*           |
-
-## get_alert
-
-Returns a specific alert
-
-### Example Usage
-
-```python
-from nws_api_client import NwsClient
-import os
-
-
-with NwsClient(
-    user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
-) as nws_client:
-
-    res = nws_client.alerts.get_alert(id="<id>")
-
-    # Handle response
-    print(res)
-
-```
-
-### Parameters
-
-| Parameter                                                           | Type                                                                | Required                                                            | Description                                                         |
-| ------------------------------------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------- |
-| `id`                                                                | *str*                                                               | :heavy_check_mark:                                                  | Alert identifier                                                    |
-| `retries`                                                           | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)    | :heavy_minus_sign:                                                  | Configuration to override the default retry behavior of the client. |
-
-### Response
-
-**[models.GetAlertResponse](../../models/getalertresponse.md)**
-
-### Errors
-
-| Error Type      | Status Code     | Content Type    |
-| --------------- | --------------- | --------------- |
-| errors.APIError | 4XX, 5XX        | \*/\*           |
+| Error Type                   | Status Code                  | Content Type                 |
+| ---------------------------- | ---------------------------- | ---------------------------- |
+| errors.NotFoundError         | 404                          | application/json             |
+| errors.UnauthorizedError     | 401, 403, 407                | application/json             |
+| errors.TimeoutErrorT         | 408                          | application/json             |
+| errors.RateLimitedError      | 429                          | application/json             |
+| errors.BadRequestError       | 400, 413, 414, 415, 422, 431 | application/json             |
+| errors.TimeoutErrorT         | 504                          | application/json             |
+| errors.NotFoundError         | 501, 505                     | application/json             |
+| errors.InternalServerError   | 500, 502, 503, 506, 507, 508 | application/json             |
+| errors.BadRequestError       | 510                          | application/json             |
+| errors.UnauthorizedError     | 511                          | application/json             |
+| errors.APIError              | 4XX, 5XX                     | \*/\*                        |

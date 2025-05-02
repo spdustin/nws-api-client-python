@@ -3,16 +3,16 @@
 
 ## Supported Types
 
-### `models.GridpointGeoJSON`
-
-```python
-value: models.GridpointGeoJSON = /* values here */
-```
-
 ### `models.Gridpoint`
 
 ```python
 value: models.Gridpoint = /* values here */
+```
+
+### `models.GridpointGeoJSON`
+
+```python
+value: models.GridpointGeoJSON = /* values here */
 ```
 
 ### `models.ProblemDetail`

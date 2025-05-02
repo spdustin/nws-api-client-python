@@ -18,25 +18,25 @@ class AlertAtomFeedAuthor(BaseModel):
 class AlertAtomFeedTypedDict(TypedDict):
     r"""An alert feed in Atom format"""
 
-    id: NotRequired[str]
-    generator: NotRequired[str]
-    updated: NotRequired[str]
     author: NotRequired[AlertAtomFeedAuthorTypedDict]
-    title: NotRequired[str]
     entry: NotRequired[List[AlertAtomEntryTypedDict]]
+    generator: NotRequired[str]
+    id: NotRequired[str]
+    title: NotRequired[str]
+    updated: NotRequired[str]
 
 
 class AlertAtomFeed(BaseModel):
     r"""An alert feed in Atom format"""
 
-    id: Optional[str] = None
+    author: Optional[AlertAtomFeedAuthor] = None
+
+    entry: Optional[List[AlertAtomEntry]] = None
 
     generator: Optional[str] = None
 
-    updated: Optional[str] = None
-
-    author: Optional[AlertAtomFeedAuthor] = None
+    id: Optional[str] = None
 
     title: Optional[str] = None
 
-    entry: Optional[List[AlertAtomEntry]] = None
+    updated: Optional[str] = None
