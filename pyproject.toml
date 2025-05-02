@@ -10,6 +10,12 @@ dependencies = [
     "pydantic >=2.11.2",
 ]
 
+[project.urls]
+homepage = "https://github.com/spdustin/nws-api-client-python"
+issue = "https://github.com/spdustin/nws-api-client-python/issues"
+github = "https://github.com/spdustin/nws-api-client-python"
+
+
 [tool.poetry]
 repository = "https://github.com/spdustin/nws-api-client-python.git"
 packages = [
