@@ -12,11 +12,14 @@ permissions:
                 description: Force generation of SDKs
                 type: boolean
                 default: false
+            mode:
+                description: "optionally: set a specific mode to generate, default is pr"
+                type: string
             set_version:
                 description: optionally set a specific SDK version
                 type: string
             target:
-                description: 'optionally: set a specific target to generate, default is all'
+                description: "optionally: set a specific target to generate, default is all"
                 type: string
     schedule:
         - cron: 0 0 * * *
@@ -28,6 +31,7 @@ jobs:
             mode: pr
             set_version: ${{ github.event.inputs.set_version }}
             target: ${{ github.event.inputs.target }}
+            signed_commits: true
         secrets:
             github_access_token: ${{ secrets.GITHUB_TOKEN }}
             pypi_token: ${{ secrets.PYPI_TOKEN }}

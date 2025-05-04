@@ -1,0 +1,365 @@
+overlay: 1.0.0
+info:
+  title: OperationID Overlays - MODIFIED National Weather Service weather.gov API
+  version: 0.0.1
+actions:
+  - target: $["paths"]["/gridpoints/{wfo}/{gridpoint}/stations"]["get"]
+    update:
+      x-speakeasy-name-override: listGridpointStations
+    x-speakeasy-metadata:
+      after: sdk.geographic.listGridpointStations()
+      before: sdk.Geographic.get_gridpoint_observation_stations()
+      type: method-name
+  - target: $["paths"]["/radar/queues/{host}"]["get"]
+    update:
+      x-speakeasy-name-override: getQueue
+    x-speakeasy-metadata:
+      after: sdk.radar.getQueue()
+      before: sdk.Radar.get_radar_station_queue()
+      type: method-name
+  - target: $["paths"]["/aviation/cwsus/{cwsuId}/cwas"]["get"]
+    update:
+      x-speakeasy-name-override: getCenterWeatherAdvisories
+    x-speakeasy-metadata:
+      after: sdk.alerts.getCenterWeatherAdvisories()
+      before: sdk.Alerts.get_cwas_by_cwsu()
+      type: method-name
+  - target: $["paths"]["/zones/{type}/{zoneId}/forecast"]["get"]
+    update:
+      x-speakeasy-name-override: getForZone
+    x-speakeasy-metadata:
+      after: sdk.forecasts.getForZone()
+      before: sdk.Forecasts.get_zone_forecast()
+      type: method-name
+  - target: $["paths"]["/alerts/active"]["get"]
+    update:
+      x-speakeasy-name-override: getActive
+    x-speakeasy-metadata:
+      after: sdk.alerts.getActive()
+      before: sdk.Alerts.get_active_alerts()
+      type: method-name
+  - target: $["paths"]["/stations/{stationId}"]["get"]
+    update:
+      x-speakeasy-group: stations
+      x-speakeasy-name-override: get
+    x-speakeasy-metadata:
+      after: sdk.stations.get()
+      before: sdk.Metadata.get_observation_station_info()
+      type: method-name
+  - target: $["paths"]["/alerts/active/region/{region}"]["get"]
+    update:
+      x-speakeasy-name-override: getActiveByRegion
+    x-speakeasy-metadata:
+      after: sdk.alerts.getActiveByRegion()
+      before: sdk.Alerts.get_active_alerts_by_marine_region()
+      type: method-name
+  - target: $["paths"]["/stations"]["get"]
+    update:
+      x-speakeasy-name-override: getStations
+    x-speakeasy-metadata:
+      after: sdk.metadata.getStations()
+      before: sdk.Metadata.get_observation_stations()
+      type: method-name
+  - target: $["paths"]["/products/types"]["get"]
+    update:
+      x-speakeasy-name-override: getTypes
+    x-speakeasy-metadata:
+      after: sdk.products.getTypes()
+      before: sdk.Products.get_product_types()
+      type: method-name
+  - target: $["paths"]["/aviation/sigmets/{atsu}"]["get"]
+    update:
+      x-speakeasy-name-override: getSigmetsByAtsu
+    x-speakeasy-metadata:
+      after: sdk.alerts.getSigmetsByAtsu()
+      before: sdk.Alerts.get_sigmets_by_atsu()
+      type: method-name
+  - target: $["paths"]["/gridpoints/{wfo}/{gridpoint}/forecast/hourly"]["get"]
+    update:
+      x-speakeasy-name-override: getHourly
+    x-speakeasy-metadata:
+      after: sdk.forecasts.getHourly()
+      before: sdk.Forecasts.get_hourly_forecast()
+      type: method-name
+  - target: $["paths"]["/gridpoints/{wfo}/{gridpoint}"]["get"]
+    update:
+      x-speakeasy-name-override: getRaw
+    x-speakeasy-metadata:
+      after: sdk.forecasts.getRaw()
+      before: sdk.Forecasts.get_forecast_raw()
+      type: method-name
+  - target: $["paths"]["/stations/{stationId}/observations/{timestamp}"]["get"]
+    update:
+      x-speakeasy-name-override: getObservation
+    x-speakeasy-metadata:
+      after: sdk.conditions.getObservation()
+      before: sdk.Conditions.get_observation()
+      type: method-name
+  - target: $["paths"]["/zones/forecast/{zoneId}/observations"]["get"]
+    update:
+      x-speakeasy-name-override: listZoneObservations
+    x-speakeasy-metadata:
+      after: sdk.conditions.listZoneObservations()
+      before: sdk.Conditions.get_zone_observations()
+      type: method-name
+  - target: $["paths"]["/radar/profilers/{stationId}"]["get"]
+    update:
+      x-speakeasy-name-override: getProfiler
+    x-speakeasy-metadata:
+      after: sdk.radar.getProfiler()
+      before: sdk.Radar.get_radar_profiler_info()
+      type: method-name
+  - target: $["paths"]["/offices/{officeId}"]["get"]
+    update:
+      x-speakeasy-name-override: getOffice
+    x-speakeasy-metadata:
+      after: sdk.metadata.getOffice()
+      before: sdk.Metadata.get_office_info()
+      type: method-name
+  - target: $["paths"]["/radar/stations/{stationId}"]["get"]
+    update:
+      x-speakeasy-group: radarStations
+      x-speakeasy-name-override: get
+    x-speakeasy-metadata:
+      after: sdk.radarStations.get()
+      before: sdk.Radar.get_radar_station_info()
+      type: method-name
+  - target: $["paths"]["/products/types/{typeId}/locations"]["get"]
+    update:
+      x-speakeasy-name-override: listLocationsByType
+    x-speakeasy-metadata:
+      after: sdk.products.listLocationsByType()
+      before: sdk.Products.get_locations_by_product_type()
+      type: method-name
+  - target: $["paths"]["/stations/{stationId}/observations/latest"]["get"]
+    update:
+      x-speakeasy-name-override: getLatestObservation
+    x-speakeasy-metadata:
+      after: sdk.conditions.getLatestObservation()
+      before: sdk.Conditions.get_latest_observation()
+      type: method-name
+  - target: $["paths"]["/aviation/sigmets"]["get"]
+    update:
+      x-speakeasy-name-override: listSigmets
+    x-speakeasy-metadata:
+      after: sdk.alerts.listSigmets()
+      before: sdk.Alerts.get_sigmets()
+      type: method-name
+  - target: $["paths"]["/stations/{stationId}/tafs"]["get"]
+    update:
+      x-speakeasy-name-override: getTafs
+    x-speakeasy-metadata:
+      after: sdk.forecasts.getTafs()
+      before: sdk.Forecasts.get_tafs()
+      type: method-name
+  - target: $["paths"]["/alerts/types"]["get"]
+    update:
+      x-speakeasy-name-override: listTypes
+    x-speakeasy-metadata:
+      after: sdk.alerts.listTypes()
+      before: sdk.Alerts.get_alert_types()
+      type: method-name
+  - target: $["paths"]["/glossary"]["get"]
+    update:
+      x-speakeasy-name-override: listGlossaryTerms
+    x-speakeasy-metadata:
+      after: sdk.products.listGlossaryTerms()
+      before: sdk.Products.get_glossary_terms()
+      type: method-name
+  - target: $["paths"]["/stations/{stationId}/tafs/{date}/{time}"]["get"]
+    update:
+      x-speakeasy-name-override: getTaf
+    x-speakeasy-metadata:
+      after: sdk.forecasts.getTaf()
+      before: sdk.Forecasts.get_taf()
+      type: method-name
+  - target: $["paths"]["/products"]["get"]
+    update:
+      x-speakeasy-name-override: list
+    x-speakeasy-metadata:
+      after: sdk.products.list()
+      before: sdk.Products.get_products()
+      type: method-name
+  - target: $["paths"]["/radar/stations/{stationId}/alarms"]["get"]
+    update:
+      x-speakeasy-name-override: getStationAlarms
+    x-speakeasy-metadata:
+      after: sdk.radar.getStationAlarms()
+      before: sdk.Radar.get_radar_station_alarms()
+      type: method-name
+  - target: $["paths"]["/aviation/cwsus/{cwsuId}/cwas/{date}/{sequence}"]["get"]
+    update:
+      x-speakeasy-name-override: getCwasByCwsu
+    x-speakeasy-metadata:
+      after: sdk.alerts.getCwasByCwsu()
+      before: sdk.Alerts.get_cwas_by_cwsu_for_date_and_sequence()
+      type: method-name
+  - target: $["paths"]["/radar/servers"]["get"]
+    update:
+      x-speakeasy-name-override: listServers
+    x-speakeasy-metadata:
+      after: sdk.radar.listServers()
+      before: sdk.Radar.get_radar_servers()
+      type: method-name
+  - target: $["paths"]["/aviation/sigmets/{atsu}/{date}/{time}"]["get"]
+    update:
+      x-speakeasy-name-override: getSigmet
+    x-speakeasy-metadata:
+      after: sdk.alerts.getSigmet()
+      before: sdk.Alerts.get_sigmet()
+      type: method-name
+  - target: $["paths"]["/offices/{officeId}/headlines/{headlineId}"]["get"]
+    update:
+      x-speakeasy-name-override: getOfficeHeadline
+    x-speakeasy-metadata:
+      after: sdk.products.getOfficeHeadline()
+      before: sdk.Products.get_office_headline()
+      type: method-name
+  - target: $["paths"]["/products/types/{typeId}/locations/{locationId}"]["get"]
+    update:
+      x-speakeasy-name-override: listByTypeAndLocation
+    x-speakeasy-metadata:
+      after: sdk.products.listByTypeAndLocation()
+      before: sdk.Products.get_products_by_type_and_location()
+      type: method-name
+  - target: $["paths"]["/alerts/active/zone/{zoneId}"]["get"]
+    update:
+      x-speakeasy-name-override: getActiveByZone
+    x-speakeasy-metadata:
+      after: sdk.alerts.getActiveByZone()
+      before: sdk.Alerts.get_active_alerts_by_zone()
+      type: method-name
+  - target: $["paths"]["/zones/{type}/{zoneId}"]["get"]
+    update:
+      x-speakeasy-name-override: getZone
+    x-speakeasy-metadata:
+      after: sdk.metadata.getZone()
+      before: sdk.Metadata.get_zone_info()
+      type: method-name
+  - target: $["paths"]["/alerts/{id}"]["get"]
+    update:
+      x-speakeasy-name-override: getById
+    x-speakeasy-metadata:
+      after: sdk.alerts.getById()
+      before: sdk.Alerts.get_alert()
+      type: method-name
+  - target: $["paths"]["/zones/forecast/{zoneId}/stations"]["get"]
+    update:
+      x-speakeasy-name-override: getZoneStations
+    x-speakeasy-metadata:
+      after: sdk.metadata.getZoneStations()
+      before: sdk.Metadata.get_zone_stations()
+      type: method-name
+  - target: $["paths"]["/aviation/sigmets/{atsu}/{date}"]["get"]
+    update:
+      x-speakeasy-name-override: getSigmetsByAtsuForDate
+    x-speakeasy-metadata:
+      after: sdk.alerts.getSigmetsByAtsuForDate()
+      before: sdk.Alerts.get_sigmets_by_atsu_for_date()
+      type: method-name
+  - target: $["paths"]["/gridpoints/{wfo}/{gridpoint}/forecast"]["get"]
+    update:
+      x-speakeasy-name-override: get
+    x-speakeasy-metadata:
+      after: sdk.forecasts.get()
+      before: sdk.Forecasts.get_forecast()
+      type: method-name
+  - target: $["paths"]["/alerts/active/count"]["get"]
+    update:
+      x-speakeasy-name-override: getActiveCount
+    x-speakeasy-metadata:
+      after: sdk.alerts.getActiveCount()
+      before: sdk.Alerts.get_active_alerts_count()
+      type: method-name
+  - target: $["paths"]["/points/{point}"]["get"]
+    update:
+      x-speakeasy-name-override: getPointInfo
+    x-speakeasy-metadata:
+      after: sdk.metadata.getPointInfo()
+      before: sdk.Metadata.get_lat_long_info()
+      type: method-name
+  - target: $["paths"]["/products/types/{typeId}"]["get"]
+    update:
+      x-speakeasy-name-override: getByType
+    x-speakeasy-metadata:
+      after: sdk.products.getByType()
+      before: sdk.Products.get_products_by_type()
+      type: method-name
+  - target: $["paths"]["/stations/{stationId}/observations"]["get"]
+    update:
+      x-speakeasy-group: stations
+      x-speakeasy-name-override: getObservations
+    x-speakeasy-metadata:
+      after: sdk.stations.getObservations()
+      before: sdk.Conditions.get_observations()
+      type: method-name
+  - target: $["paths"]["/zones/{type}"]["get"]
+    update:
+      x-speakeasy-name-override: getZonesByType
+    x-speakeasy-metadata:
+      after: sdk.geographic.getZonesByType()
+      before: sdk.Geographic.get_zones_by_type()
+      type: method-name
+  - target: $["paths"]["/offices/{officeId}/headlines"]["get"]
+    update:
+      x-speakeasy-name-override: getOfficeHeadlines
+    x-speakeasy-metadata:
+      after: sdk.products.getOfficeHeadlines()
+      before: sdk.Products.get_office_headlines()
+      type: method-name
+  - target: $["paths"]["/products/locations/{locationId}/types"]["get"]
+    update:
+      x-speakeasy-name-override: listTypesByLocation
+    x-speakeasy-metadata:
+      after: sdk.products.listTypesByLocation()
+      before: sdk.Products.get_product_types_by_location()
+      type: method-name
+  - target: $["paths"]["/alerts/active/area/{area}"]["get"]
+    update:
+      x-speakeasy-name-override: listActiveByArea
+    x-speakeasy-metadata:
+      after: sdk.alerts.listActiveByArea()
+      before: sdk.Alerts.get_active_alerts_by_area()
+      type: method-name
+  - target: $["paths"]["/products/{productId}"]["get"]
+    update:
+      x-speakeasy-name-override: get
+    x-speakeasy-metadata:
+      after: sdk.products.get()
+      before: sdk.Products.get_product()
+      type: method-name
+  - target: $["paths"]["/products/locations"]["get"]
+    update:
+      x-speakeasy-name-override: listLocations
+    x-speakeasy-metadata:
+      after: sdk.products.listLocations()
+      before: sdk.Products.get_product_locations()
+      type: method-name
+  - target: $["paths"]["/aviation/cwsus/{cwsuId}"]["get"]
+    update:
+      x-speakeasy-name-override: getCwsu
+    x-speakeasy-metadata:
+      after: sdk.geographic.getCwsu()
+      before: sdk.Geographic.get_cwsu()
+      type: method-name
+  - target: $["paths"]["/radar/servers/{id}"]["get"]
+    update:
+      x-speakeasy-name-override: getServer
+    x-speakeasy-metadata:
+      after: sdk.radar.getServer()
+      before: sdk.Radar.get_radar_server()
+      type: method-name
+  - target: $["paths"]["/zones"]["get"]
+    update:
+      x-speakeasy-name-override: listZones
+    x-speakeasy-metadata:
+      after: sdk.geographic.listZones()
+      before: sdk.Geographic.get_zones()
+      type: method-name
+  - target: $["paths"]["/radar/stations"]["get"]
+    update:
+      x-speakeasy-name-override: getStations
+    x-speakeasy-metadata:
+      after: sdk.radar.getStations()
+      before: sdk.Radar.get_radar_stations()
+      type: method-name

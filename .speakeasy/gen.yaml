@@ -3,7 +3,8 @@ generation:
   devContainers:
     enabled: true
     schemaPath: openapi.yaml
-  sdkClassName: NwsClient
+  sdkClassName: NwsApiClient
+  maintainOpenAPIOrder: false
   usageSnippets:
     optionalPropertyRendering: withExample
   useClassNamesForArrayFields: true
@@ -18,19 +19,19 @@ generation:
     oAuth2ClientCredentialsEnabled: false
     oAuth2PasswordEnabled: false
 python:
-  version: 0.12.0
+  version: 0.13.0
   additionalDependencies:
     dev: {}
     main: {}
   authors:
     - Dustin Miller
   clientServerStatusCodesAsErrors: true
-  defaultErrorName: APIError
-  description: Typed Python client for the National Weather Service API
+  defaultErrorName: NWSAPIError
+  description: OpenAPI Client SDK for National Weather Service API (NWS / weather.gov)
   documentationUrl: https://github.com/spdustin/nws-api-client-python
   enableCustomCodeRegions: false
   enumFormat: enum
-  envVarPrefix: NWSCLIENT
+  envVarPrefix: NWS_API_CLIENT
   fixFlags:
     responseRequiredSep2024: true
   flattenGlobalSecurity: true
@@ -40,11 +41,11 @@ python:
   imports:
     option: openapi
     paths:
-      callbacks: ""
-      errors: errors
-      operations: ""
-      shared: ""
-      webhooks: ""
+      callbacks: models/callbacks
+      errors: models/errors
+      operations: models/operations
+      shared: models/components
+      webhooks: models/webhooks
   inputModelSuffix: input
   maxMethodParams: 999
   methodArguments: infer-optional-args

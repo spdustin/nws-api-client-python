@@ -5,11 +5,12 @@ sources:
         inputs:
             - location: ./openapi.yaml
         overlays:
-            - location: ./openapi_overlay.yaml
-            - location: ./openapi_error_overlay.yaml
+            - location: ./openapi_overlay_errors.yaml
+            - location: ./openapi_overlay_operations.yaml
         transformations:
             - removeUnused: true
             - cleanup: true
+        output: ./merged_openapi.yaml
         registry:
             location: registry.speakeasyapi.dev/spdustin/weather/weather-gov-api
 targets:
@@ -20,6 +21,7 @@ targets:
             pypi:
                 token: $pypi_token
         codeSamples:
+            output: ./code_samples.yaml
             registry:
                 location: registry.speakeasyapi.dev/spdustin/weather/weather-gov-api-python-code-samples
             labelOverride:

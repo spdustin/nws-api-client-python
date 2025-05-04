@@ -1,49 +1,42 @@
-openapi: 3.0.3
+openapi: 3.1.0
 info:
-  title: weather.gov API
+  title: MODIFIED National Weather Service weather.gov API
   description: OpenAPI Client SDK for National Weather Service API (NWS / weather.gov)
-  version: 2.0.0
+  version: 3.1.0
+  contact:
+    name: Dustin Miller
+    url: https://github.com/spdustin/nws-api-client-python
 servers:
   - url: https://api.weather.gov
     description: Production server
-x-speakeasy-retries:
-  strategy: backoff
-  backoff:
-    initialInterval: 500 # 500 milliseconds
-    maxInterval: 60000 # 60 seconds
-    maxElapsedTime: 3600000 # 1 hour
-    exponent: 1.5
-  statusCodes:
-    - 5XX
-  retryConnectionErrors: true
+x-speakeasy-globals:
+  parameters:
+    - $ref: "#/components/parameters/NWSOfficeId"
 tags:
-  - name: alerts
-    description: Operations related to alerts
-  - name: aviation
+  - name: Alerts
+    description: Operations related to alerts, advisories, SIGMETS, etc.
+  - name: Aviation
     description: Operations related to aviation weather
-  - name: glossary
-    description: Operations related to the glossary
-  - name: gridpoints
-    description: Operations related to gridpoints (X,Y)
-  - name: offices
-    description: Operations related to offices
-  - name: points
-    description: Operations related to geographic points (lat,lon)
-  - name: products
-    description: Operations related to products
-  - name: radar
+  - name: Conditions
+    description: Operations related to current conditions
+  - name: Forecasts
+    description: Operations related to forecasts
+  - name: Geographic
+    description: Operations that return data specific to NWS zones, counties, states, NWS grid points, or latitude/longitude coordinates
+  - name: Metadata
+    description: Operations that return metadata about an NWS resource/entity
+  - name: Products
+    description: Operations related to NWS text products
+  - name: Radar
     description: Operations related to radar stations
-  - name: observationstations
-    description: Operations related to observationstations
-  - name: zones
-    description: Operations related to zones
 paths:
   /alerts/active:
     get:
-      description: Returns all currently active alerts
+      summary: Returns filtered (or all) currently active alerts
+      operationId: get_active_alerts
       tags:
-        - alerts
-      operationId: list_active_alerts
+        - Alerts
+        - Geographic
       parameters:
         - $ref: "#/components/parameters/AlertStatus"
         - $ref: "#/components/parameters/AlertMessageType"
@@ -61,185 +54,55 @@ paths:
       responses:
         "200":
           $ref: "#/components/responses/AlertCollection"
-        default:
-          $ref: "#/components/responses/Error"
+        "301":
+          $ref: "#/components/responses/Redirect"
+        "400":
+          $ref: "#/components/responses/ClientError"
   /alerts/active/count:
     get:
-      description: Returns info on the number of active alerts
+      summary: Returns info on the number of active alerts
+      operationId: get_active_alerts_count
       tags:
-        - alerts
-      operationId: list_active_alert_counts
+        - Alerts
       responses:
         "200":
-          description: A data structure showing the counts of active alerts broken down by various categories
-          headers:
-            X-Correlation-Id:
-              $ref: "#/components/headers/CorrelationId"
-            X-Request-Id:
-              $ref: "#/components/headers/RequestId"
-            X-Server-Id:
-              $ref: "#/components/headers/ServerId"
-          content:
-            application/ld+json:
-              schema:
-                type: object
-                properties:
-                  total:
-                    minimum: 0
-                    type: integer
-                    description: The total number of active alerts
-                  land:
-                    minimum: 0
-                    type: integer
-                    description: The total number of active alerts affecting land zones
-                  marine:
-                    minimum: 0
-                    type: integer
-                    description: The total number of active alerts affecting marine zones
-                  regions:
-                    type: object
-                    description: Active alerts by marine region
-                    additionalProperties:
-                      minimum: 1
-                      type: integer
-                  areas:
-                    type: object
-                    description: Active alerts by area (state/territory)
-                    additionalProperties:
-                      minimum: 1
-                      type: integer
-                  zones:
-                    type: object
-                    description: Active alerts by NWS public zone or county code
-                    additionalProperties:
-                      minimum: 1
-                      type: integer
-        default:
-          $ref: "#/components/responses/Error"
-      parameters: []
-  /alerts/active/zone/{zoneId}:
-    get:
-      description: Returns active alerts for the given NWS public zone or county
-      tags:
-        - alerts
-      operationId: list_active_alerts_by_zone
-      responses:
-        "200":
-          $ref: "#/components/responses/AlertCollection"
-        default:
-          $ref: "#/components/responses/Error"
-      parameters: []
+          $ref: "#/components/responses/AlertsActiveCount"
+        "400":
+          $ref: "#/components/responses/ClientError"
+  "/alerts/active/zone/{zoneId}":
     parameters:
       - $ref: "#/components/parameters/NWSZoneId"
-  /alerts/active/area/{area}:
     get:
-      description: Returns active alerts for the given area (state or marine area)
+      summary: Returns active alerts for the given NWS public zone/county identifier
+      operationId: get_active_alerts_by_zone
       tags:
-        - alerts
-      operationId: list_active_alerts_by_area
-      parameters:
-        - name: area
-          in: path
-          required: true
-          description: State or marine area code
-          style: simple # comma-delimited, default for path
-          explode: false # default for path
-          schema:
-            type: string
-            enum:
-              # State/Territory codes
-              - AL # Alabama
-              - AK # Alaska
-              - AS # American Samoa
-              - AR # Arkansas
-              - AZ # Arizona
-              - CA # California
-              - CO # Colorado
-              - CT # Connecticut
-              - DE # Delaware
-              - DC # District of Columbia
-              - FL # Florida
-              - GA # Georgia
-              - GU # Guam
-              - HI # Hawaii
-              - ID # Idaho
-              - IL # Illinois
-              - IN # Indiana
-              - IA # Iowa
-              - KS # Kansas
-              - KY # Kentucky
-              - LA # Louisiana
-              - ME # Maine
-              - MD # Maryland
-              - MA # Massachusetts
-              - MI # Michigan
-              - MN # Minnesota
-              - MS # Mississippi
-              - MO # Missouri
-              - MT # Montana
-              - NE # Nebraska
-              - NV # Nevada
-              - NH # New Hampshire
-              - NJ # New Jersey
-              - NM # New Mexico
-              - NY # New York
-              - NC # North Carolina
-              - ND # North Dakota
-              - OH # Ohio
-              - OK # Oklahoma
-              - OR # Oregon
-              - PA # Pennsylvania
-              - PR # Puerto Rico
-              - RI # Rhode Island
-              - SC # South Carolina
-              - SD # South Dakota
-              - TN # Tennessee
-              - TX # Texas
-              - UT # Utah
-              - VT # Vermont
-              - VI # U.S. Virgin Islands
-              - VA # Virginia
-              - WA # Washington
-              - WV # West Virginia
-              - WI # Wisconsin
-              - WY # Wyoming
-              - MP # Northern Mariana Islands
-              - PW # Palau
-              - FM # Federated States of Micronesia
-              - MH # Marshall Islands
-              # Marine area codes
-              - AM # Western Atlantic
-              - AN # Atlantic – north
-              - GM # Gulf of Mexico
-              - LC # Lake St. Clair
-              - LE # Lake Erie
-              - LH # Lake Huron
-              - LM # Lake Michigan
-              - LO # Lake Ontario
-              - LS # Lake Superior
-              - PH # Central Pacific
-              - PK # North Pacific – Alaska
-              - PM # Western Pacific
-              - PS # South Central Pacific
-              - PZ # Eastern North Pacific
-              - SL # St. Lawrence River
+        - Alerts
+        - Geographic
       responses:
         "200":
           $ref: "#/components/responses/AlertCollection"
-        default:
-          $ref: "#/components/responses/Error"
-  /alerts/active/region/{region}:
+        "400":
+          $ref: "#/components/responses/ClientError"
+  "/alerts/active/area/{area}":
+    parameters:
+      - name: area
+        in: path
+        description: State or Marine Area ID
+        required: true
+        schema:
+          $ref: "#/components/schemas/AreaCode"
     get:
-      description: Returns active alerts for the given marine region
+      summary: Returns active alerts for the given state or marine area
+      operationId: get_active_alerts_by_area
       tags:
-        - alerts
-      operationId: list_active_alerts_by_region
+        - Alerts
+        - Geographic
       responses:
         "200":
           $ref: "#/components/responses/AlertCollection"
-        default:
-          $ref: "#/components/responses/Error"
-      parameters: []
+        "400":
+          $ref: "#/components/responses/ClientError"
+  "/alerts/active/region/{region}":
     parameters:
       - name: region
         in: path
@@ -247,51 +110,44 @@ paths:
         required: true
         schema:
           $ref: "#/components/schemas/MarineRegionCode"
-  /alerts/types:
     get:
-      description: Returns a list of alert types
+      summary: Returns active alerts for the given marine region
+      operationId: get_active_alerts_by_marine_region
       tags:
-        - alerts
-      operationId: list_alert_types
+        - Alerts
+        - Geographic
       responses:
         "200":
-          description: A list of recognized event types
-          headers:
-            X-Correlation-Id:
-              $ref: "#/components/headers/CorrelationId"
-            X-Request-Id:
-              $ref: "#/components/headers/RequestId"
-            X-Server-Id:
-              $ref: "#/components/headers/ServerId"
-          content:
-            application/ld+json:
-              schema:
-                type: object
-                properties:
-                  eventTypes:
-                    type: array
-                    items:
-                      type: string
-                    description: A list of recognized event types
-        default:
-          $ref: "#/components/responses/Error"
-      parameters: []
-  /alerts/{id}:
+          $ref: "#/components/responses/AlertCollection"
+        "400":
+          $ref: "#/components/responses/ClientError"
+  /alerts/types:
     get:
-      description: Returns a specific alert
+      summary: Returns a list of alert types
+      operationId: get_alert_types
       tags:
-        - alerts
+        - Alerts
+      responses:
+        "200":
+          $ref: "#/components/responses/AlertsTypes"
+        "400":
+          $ref: "#/components/responses/ClientError"
+  "/alerts/{id}":
+    parameters:
+      - name: id
+        in: path
+        description: Alert identifier
+        required: true
+        schema:
+          $ref: "#/components/schemas/AlertId"
+    get:
+      summary: Returns a specific alert
       operationId: get_alert
+      tags:
+        - Alerts
       responses:
         "200":
           description: An alert record
-          headers:
-            X-Correlation-Id:
-              $ref: "#/components/headers/CorrelationId"
-            X-Request-Id:
-              $ref: "#/components/headers/RequestId"
-            X-Server-Id:
-              $ref: "#/components/headers/ServerId"
           content:
             application/geo+json:
               schema:
@@ -305,24 +161,17 @@ paths:
           x-url-content-negotiation-extensions:
             json: application/geo+json
             cap: application/cap+xml
-        default:
-          $ref: "#/components/responses/Error"
-      parameters: []
+        "400":
+          $ref: "#/components/responses/ClientError"
+  "/aviation/cwsus/{cwsuId}":
     parameters:
-      - name: id
-        in: path
-        description: Alert identifier
-        required: true
-        schema:
-          $ref: "#/components/schemas/AlertId"
-  /aviation/cwsus/{cwsuId}:
+      - $ref: "#/components/parameters/NWSCenterWeatherServiceUnitId"
     get:
-      description: Returns metadata about a Center Weather Service Unit
+      summary: Returns metadata about a Center Weather Service Unit
       operationId: get_cwsu
       tags:
-        - aviation
-      parameters:
-        - $ref: "#/components/parameters/NWSCenterWeatherServiceUnitId"
+        - Geographic
+        - Aviation
       responses:
         "200":
           description: success
@@ -330,16 +179,17 @@ paths:
             application/ld+json:
               schema:
                 $ref: "#/components/schemas/CenterWeatherServiceUnitJsonLd"
-        default:
-          $ref: "#/components/responses/Error"
-  /aviation/cwsus/{cwsuId}/cwas:
+        "400":
+          $ref: "#/components/responses/ClientError"
+  "/aviation/cwsus/{cwsuId}/cwas":
+    parameters:
+      - $ref: "#/components/parameters/NWSCenterWeatherServiceUnitId"
     get:
-      description: Returns a list of Center Weather Advisories from a CWSU
-      operationId: list_cwas
+      summary: Returns a list of Center Weather Advisories from a CWSU
+      operationId: get_cwas_by_cwsu
       tags:
-        - aviation
-      parameters:
-        - $ref: "#/components/parameters/NWSCenterWeatherServiceUnitId"
+        - Alerts
+        - Aviation
       responses:
         "200":
           description: success
@@ -347,24 +197,25 @@ paths:
             application/geo+json:
               schema:
                 $ref: "#/components/schemas/CenterWeatherAdvisoryCollectionGeoJson"
-        default:
-          $ref: "#/components/responses/Error"
-  /aviation/cwsus/{cwsuId}/cwas/{date}/{sequence}:
+        "400":
+          $ref: "#/components/responses/ClientError"
+  "/aviation/cwsus/{cwsuId}/cwas/{date}/{sequence}":
+    parameters:
+      - $ref: "#/components/parameters/NWSCenterWeatherServiceUnitId"
+      - $ref: "#/components/parameters/Date"
+      - name: sequence
+        in: path
+        description: Sequence number
+        required: true
+        schema:
+          minimum: 100
+          type: integer
     get:
-      description: Returns a list of Center Weather Advisories from a CWSU
-      operationId: list_cwas_by_date_and_sequence
+      summary: Returns a list of CWAs from a CWSU for a specific date and sequence
+      operationId: get_cwas_by_cwsu_for_date_and_sequence
       tags:
-        - aviation
-      parameters:
-        - $ref: "#/components/parameters/NWSCenterWeatherServiceUnitId"
-        - $ref: "#/components/parameters/Date"
-        - name: sequence
-          in: path
-          description: Sequence number
-          required: true
-          schema:
-            minimum: 100
-            type: integer
+        - Alerts
+        - Aviation
       responses:
         "200":
           description: success
@@ -374,14 +225,15 @@ paths:
                 $ref: "#/components/schemas/CenterWeatherAdvisoryGeoJson"
             application/vnd.noaa.uswx+xml:
               schema: {}
-        default:
-          $ref: "#/components/responses/Error"
+        "400":
+          $ref: "#/components/responses/ClientError"
   /aviation/sigmets:
     get:
-      description: Returns a list of SIGMET/AIRMETs
-      operationId: list_sigmets
+      summary: Returns a list of SIGMET/AIRMETs
+      operationId: get_sigmets
       tags:
-        - aviation
+        - Alerts
+        - Aviation
       parameters:
         - $ref: "#/components/parameters/QueryStartTime"
         - $ref: "#/components/parameters/QueryEndTime"
@@ -403,16 +255,17 @@ paths:
             application/geo+json:
               schema:
                 $ref: "#/components/schemas/SigmetCollectionGeoJson"
-        default:
-          $ref: "#/components/responses/Error"
-  /aviation/sigmets/{atsu}:
+        "400":
+          $ref: "#/components/responses/ClientError"
+  "/aviation/sigmets/{atsu}":
+    parameters:
+      - $ref: "#/components/parameters/ATSUIdentifier"
     get:
-      description: Returns a list of SIGMET/AIRMETs for the specified ATSU
-      operationId: list_sigmets_by_atsu
+      summary: Returns a list of SIGMET/AIRMETs for the specified ATSU
+      operationId: get_sigmets_by_atsu
       tags:
-        - aviation
-      parameters:
-        - $ref: "#/components/parameters/ATSUIdentifier"
+        - Alerts
+        - Aviation
       responses:
         "200":
           description: success
@@ -420,17 +273,18 @@ paths:
             application/geo+json:
               schema:
                 $ref: "#/components/schemas/SigmetCollectionGeoJson"
-        default:
-          $ref: "#/components/responses/Error"
-  /aviation/sigmets/{atsu}/{date}:
+        "400":
+          $ref: "#/components/responses/ClientError"
+  "/aviation/sigmets/{atsu}/{date}":
+    parameters:
+      - $ref: "#/components/parameters/ATSUIdentifier"
+      - $ref: "#/components/parameters/Date"
     get:
-      description: Returns a list of SIGMET/AIRMETs for the specified ATSU for the specified date
-      operationId: list_sigmets_by_atsu_and_date
+      summary: Returns a list of SIGMET/AIRMETs for the specified ATSU for the specified date
+      operationId: get_sigmets_by_atsu_for_date
       tags:
-        - aviation
-      parameters:
-        - $ref: "#/components/parameters/ATSUIdentifier"
-        - $ref: "#/components/parameters/Date"
+        - Alerts
+        - Aviation
       responses:
         "200":
           description: success
@@ -438,18 +292,19 @@ paths:
             application/geo+json:
               schema:
                 $ref: "#/components/schemas/SigmetCollectionGeoJson"
-        default:
-          $ref: "#/components/responses/Error"
-  /aviation/sigmets/{atsu}/{date}/{time}:
+        "400":
+          $ref: "#/components/responses/ClientError"
+  "/aviation/sigmets/{atsu}/{date}/{time}":
+    parameters:
+      - $ref: "#/components/parameters/ATSUIdentifier"
+      - $ref: "#/components/parameters/Date"
+      - $ref: "#/components/parameters/Time"
     get:
-      description: Returns a specific SIGMET/AIRMET
+      summary: Returns a specific SIGMET/AIRMET
       operationId: get_sigmet
       tags:
-        - aviation
-      parameters:
-        - $ref: "#/components/parameters/ATSUIdentifier"
-        - $ref: "#/components/parameters/Date"
-        - $ref: "#/components/parameters/Time"
+        - Alerts
+        - Aviation
       responses:
         "200":
           description: success
@@ -459,63 +314,32 @@ paths:
                 $ref: "#/components/schemas/SigmetGeoJson"
             application/vnd.noaa.uswx+xml:
               schema: {}
-        default:
-          $ref: "#/components/responses/Error"
+        "400":
+          $ref: "#/components/responses/ClientError"
   /glossary:
     get:
-      description: Returns glossary terms
-      operationId: list_terms
+      summary: List glossary terms
+      operationId: get_glossary_terms
       tags:
-        - glossary
+        - Products
       responses:
         "200":
-          description: A set of glossary terms
-          headers:
-            X-Correlation-Id:
-              $ref: "#/components/headers/CorrelationId"
-            X-Request-Id:
-              $ref: "#/components/headers/RequestId"
-            X-Server-Id:
-              $ref: "#/components/headers/ServerId"
-          content:
-            application/ld+json:
-              schema:
-                type: object
-                properties:
-                  "@context":
-                    $ref: "#/components/schemas/JsonLdContext"
-                  glossary:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        term:
-                          type: string
-                          description: The term being defined
-                        definition:
-                          type: string
-                          description: A definition for the term
-                    description: A list of glossary terms
-        default:
-          $ref: "#/components/responses/Error"
-      parameters: []
-  /gridpoints/{wfo}/{point}:
+          $ref: "#/components/responses/Glossary"
+        "400":
+          $ref: "#/components/responses/ClientError"
+  "/gridpoints/{wfo}/{gridpoint}":
+    parameters:
+      - $ref: "#/components/parameters/GridpointWFO"
+      - $ref: "#/components/parameters/Gridpoint"
     get:
-      description: Returns raw numerical forecast data for a 2.5km grid area
-      operationId: get_gridpoint_raw_forecast
+      summary: Returns raw numerical forecast data for a 2.5km grid area
+      operationId: get_forecast_raw
       tags:
-        - gridpoints
-      parameters: []
+        - Forecasts
+        - Geographic
       responses:
         "200":
           description: Gridpoint forecast data
-          headers:
-            X-Correlation-Id:
-              $ref: "#/components/headers/CorrelationId"
-            X-Request-Id:
-              $ref: "#/components/headers/RequestId"
-            X-Server-Id:
-              $ref: "#/components/headers/ServerId"
           content:
             application/geo+json:
               schema:
@@ -523,91 +347,88 @@ paths:
             application/ld+json:
               schema:
                 $ref: "#/components/schemas/GridpointJsonLd"
-        default:
-          $ref: "#/components/responses/Error"
+        "400":
+          $ref: "#/components/responses/ClientError"
+  "/gridpoints/{wfo}/{gridpoint}/forecast":
     parameters:
       - $ref: "#/components/parameters/GridpointWFO"
-      - $ref: "#/components/parameters/GridpointPoint"
-  /gridpoints/{wfo}/{point}/forecast:
+      - $ref: "#/components/parameters/Gridpoint"
     get:
-      description: Returns a textual forecast for a 2.5km grid area
-      operationId: get_gridpoint_forecast
+      summary: Returns a textual forecast for a 2.5km grid area
+      operationId: get_forecast
       tags:
-        - gridpoints
+        - Forecasts
+        - Geographic
       parameters:
         - $ref: "#/components/parameters/GridpointForecastFeatureFlags"
         - $ref: "#/components/parameters/GridpointForecastUnits"
       responses:
         "200":
           $ref: "#/components/responses/GridpointForecast"
-        default:
-          $ref: "#/components/responses/Error"
+        "400":
+          $ref: "#/components/responses/ClientError"
+  "/gridpoints/{wfo}/{gridpoint}/forecast/hourly":
     parameters:
       - $ref: "#/components/parameters/GridpointWFO"
-      - $ref: "#/components/parameters/GridpointPoint"
-  /gridpoints/{wfo}/{point}/forecast/hourly:
+      - $ref: "#/components/parameters/Gridpoint"
     get:
-      description: Returns a textual hourly forecast for a 2.5km grid area
-      operationId: get_gridpoint_hourly_forecast
+      summary: Returns a textual hourly forecast for a 2.5km grid area
+      operationId: get_hourly_forecast
       tags:
-        - gridpoints
+        - Forecasts
+        - Geographic
       parameters:
         - $ref: "#/components/parameters/GridpointForecastFeatureFlags"
         - $ref: "#/components/parameters/GridpointForecastUnits"
       responses:
         "200":
           $ref: "#/components/responses/GridpointForecast"
-        default:
-          $ref: "#/components/responses/Error"
+        "400":
+          $ref: "#/components/responses/ClientError"
+  "/gridpoints/{wfo}/{gridpoint}/stations":
     parameters:
       - $ref: "#/components/parameters/GridpointWFO"
-      - $ref: "#/components/parameters/GridpointPoint"
-  /gridpoints/{wfo}/{point}/stations:
+      - $ref: "#/components/parameters/Gridpoint"
     get:
-      description: Returns a list of observation stations usable for a given 2.5km grid area
-      operationId: list_observation_stations_by_gridpoint
+      summary: Returns a list of observation stations usable for a given 2.5km grid area
+      operationId: get_gridpoint_observation_stations
       tags:
-        - gridpoints
+        - Geographic
+      parameters:
+        - $ref: "#/components/parameters/Limit"
+        - $ref: "#/components/parameters/PaginationCursor"
       responses:
         "200":
           $ref: "#/components/responses/ObservationStationCollection"
-        default:
-          $ref: "#/components/responses/Error"
-      parameters: []
+        "400":
+          $ref: "#/components/responses/ClientError"
+  "/stations/{stationId}/observations":
     parameters:
-      - $ref: "#/components/parameters/GridpointWFO"
-      - $ref: "#/components/parameters/GridpointPoint"
-      - $ref: "#/components/parameters/Limit"
-      - $ref: "#/components/parameters/PaginationCursor"
-  /stations/{stationId}/observations:
+      - $ref: "#/components/parameters/ObservationStationId"
     get:
-      description: Returns a list of observations for a given station
-      operationId: list_observations_by_station
+      summary: Returns a list of observations for a given station
+      operationId: get_observations
       tags:
-        - observationstations
+        - Conditions
+        - Geographic
       parameters:
         - $ref: "#/components/parameters/QueryStartTime"
         - $ref: "#/components/parameters/QueryEndTime"
-        - name: limit
-          in: query
-          description: Limit
-          schema:
-            maximum: 500
-            minimum: 1
-            type: integer
+        - $ref: "#/components/parameters/Limit"
       responses:
         "200":
           $ref: "#/components/responses/ObservationCollection"
-        default:
-          $ref: "#/components/responses/Error"
+        "400":
+          $ref: "#/components/responses/ClientError"
+  "/stations/{stationId}/observations/latest":
     parameters:
       - $ref: "#/components/parameters/ObservationStationId"
-  /stations/{stationId}/observations/latest:
     get:
-      description: Returns the latest observation for a station
-      operationId: get_latest_observation_by_station
+      summary: Returns the latest observation for a station
+      operationId: get_latest_observation
       tags:
-        - observationstations
+        - Conditions
+        - Geographic
       parameters:
         - name: require_qc
           in: query
@@ -617,113 +438,94 @@ paths:
       responses:
         "200":
           $ref: "#/components/responses/Observation"
-        default:
-          $ref: "#/components/responses/Error"
+        "400":
+          $ref: "#/components/responses/ClientError"
+  "/stations/{stationId}/observations/{timestamp}":
     parameters:
       - $ref: "#/components/parameters/ObservationStationId"
-  /stations/{stationId}/observations/{time}:
+      - name: timestamp
+        in: path
+        description: Timestamp of requested observation (YYYY-MM-DDThh:mm:ssZ or YYYY-MM-DDThh:mm:ss+hh:mm)
+        required: true
+        schema:
+          type: string
+          format: date-time
     get:
-      description: Returns a single observation.
-      operationId: get_observation_by_station
+      summary: Returns a single observation
+      operationId: get_observation
       tags:
-        - observationstations
-      parameters:
-        - name: time
-          in: path
-          description: Timestamp of requested observation
-          required: true
-          schema:
-            type: string
-            format: date-time
+        - Conditions
+        - Geographic
       responses:
         "200":
           $ref: "#/components/responses/Observation"
-        default:
-          $ref: "#/components/responses/Error"
+        "400":
+          $ref: "#/components/responses/ClientError"
+  "/stations/{stationId}/tafs":
     parameters:
       - $ref: "#/components/parameters/ObservationStationId"
-  /stations/{stationId}/tafs:
     get:
-      description: Returns Terminal Aerodrome Forecasts for the specified airport station.
-      operationId: list_tafs
+      summary: Returns Terminal Aerodrome Forecasts for the specified airport station.
+      operationId: get_tafs
       tags:
-        - observationstations
-      parameters:
-        - $ref: "#/components/parameters/ObservationStationId"
+        - Forecasts
+        - Aviation
       responses:
         "200":
           description: success
           content:
             application/ld+json:
               schema: {}
-        default:
-          $ref: "#/components/responses/Error"
-  /stations/{stationId}/tafs/{date}/{time}:
+        "400":
+          $ref: "#/components/responses/ClientError"
+  "/stations/{stationId}/tafs/{date}/{time}":
+    parameters:
+      - $ref: "#/components/parameters/ObservationStationId"
+      - $ref: "#/components/parameters/Date"
+      - $ref: "#/components/parameters/Time"
     get:
-      description: Returns a single Terminal Aerodrome Forecast.
+      summary: Returns a single Terminal Aerodrome Forecast
       operationId: get_taf
       tags:
-        - observationstations
-      parameters:
-        - $ref: "#/components/parameters/ObservationStationId"
-        - $ref: "#/components/parameters/Date"
-        - $ref: "#/components/parameters/Time"
+        - Forecasts
+        - Aviation
       responses:
         "200":
           description: success
           content:
             application/vnd.wmo.iwxxm+xml:
               schema: {}
-        default:
-          $ref: "#/components/responses/Error"
+        "400":
+          $ref: "#/components/responses/ClientError"
   /stations:
     get:
-      description: Returns a list of observation stations.
-      operationId: list_observation_stations
+      summary: Returns a list of observation stations.
+      operationId: get_observation_stations
       tags:
-        - observationstations
+        - Metadata
+        - Geographic
       parameters:
-        - name: id
-          in: query
-          description: Filter by observation station ID
-          style: form
-          explode: false
-          schema:
-            type: array
-            items:
-              type: string
-        - name: state
-          in: query
-          description: Filter by state/marine area code
-          style: form
-          explode: false
-          schema:
-            type: array
-            items:
-              $ref: "#/components/schemas/AreaCode"
+        - $ref: "#/components/parameters/QueryIdArray"
+        - $ref: "#/components/parameters/QueryStateArray"
         - $ref: "#/components/parameters/Limit"
         - $ref: "#/components/parameters/PaginationCursor"
       responses:
         "200":
           $ref: "#/components/responses/ObservationStationCollection"
-        default:
-          $ref: "#/components/responses/Error"
-  /stations/{stationId}:
+        "400":
+          $ref: "#/components/responses/ClientError"
+  "/stations/{stationId}":
+    parameters:
+      - $ref: "#/components/parameters/ObservationStationId"
     get:
-      description: Returns metadata about a given observation station
-      operationId: get_observation_station_metadata
+      summary: Returns metadata about a given observation station
+      operationId: get_observation_station_info
       tags:
-        - observationstations
+        - Metadata
+        - Geographic
       responses:
         "200":
           description: success
-          headers:
-            X-Correlation-Id:
-              $ref: "#/components/headers/CorrelationId"
-            X-Request-Id:
-              $ref: "#/components/headers/RequestId"
-            X-Server-Id:
-              $ref: "#/components/headers/ServerId"
           content:
             application/geo+json:
               schema:
@@ -731,96 +533,78 @@ paths:
             application/ld+json:
               schema:
                 $ref: "#/components/schemas/ObservationStationJsonLd"
-        default:
-          $ref: "#/components/responses/Error"
-      parameters: []
+        "400":
+          $ref: "#/components/responses/ClientError"
+  "/offices/{officeId}":
     parameters:
-      - $ref: "#/components/parameters/ObservationStationId"
-  /offices/{officeId}:
+      - $ref: "#/components/parameters/NWSOfficeId"
     get:
-      description: Returns metadata about a NWS forecast office
-      operationId: get_office_metadata
+      summary: Returns metadata about a NWS forecast office
+      operationId: get_office_info
       tags:
-        - offices
-      parameters:
-        - $ref: "#/components/parameters/NWSOfficeId"
-      responses:
-        "200":
-          $ref: "#/components/responses/Error"
-        default:
-          $ref: "#/components/responses/Error"
-  /offices/{officeId}/headlines/{headlineId}:
-    get:
-      description: Returns a specific news headline for a given NWS office
-      operationId: get_office_headline
-      tags:
-        - offices
+        - Metadata
+        - Geographic
       responses:
         "200":
           description: success
-          headers:
-            X-Correlation-Id:
-              $ref: "#/components/headers/CorrelationId"
-            X-Request-Id:
-              $ref: "#/components/headers/RequestId"
-            X-Server-Id:
-              $ref: "#/components/headers/ServerId"
+          content:
+            application/ld+json:
+              schema:
+                $ref: "#/components/schemas/Office"
+        "400":
+          $ref: "#/components/responses/ClientError"
+  "/offices/{officeId}/headlines/{headlineId}":
+    parameters:
+      - $ref: "#/components/parameters/NWSOfficeId"
+      - name: headlineId
+        in: path
+        description: Headline record ID
+        required: true
+        schema:
+          type: string
+    get:
+      summary: Returns a specific news headline for a given NWS office
+      operationId: get_office_headline
+      tags:
+        - Products
+      responses:
+        "200":
+          description: success
           content:
             application/ld+json:
               schema:
                 $ref: "#/components/schemas/OfficeHeadline"
-        default:
-          $ref: "#/components/responses/Error"
-      parameters:
-        - $ref: "#/components/parameters/NWSOfficeId"
-        - name: headlineId
-          in: path
-          required: true
-          description: Headline record ID
-          style: simple
-          explode: false
-          schema:
-            type: string
-  /offices/{officeId}/headlines:
+        "400":
+          $ref: "#/components/responses/ClientError"
+  "/offices/{officeId}/headlines":
+    parameters:
+      - $ref: "#/components/parameters/NWSOfficeId"
     get:
-      description: Returns a list of news headlines for a given NWS office
-      operationId: list_office_headlines
+      summary: Returns a list of news headlines for a given NWS office
+      operationId: get_office_headlines
       tags:
-        - offices
+        - Products
       responses:
         "200":
           description: success
-          headers:
-            X-Correlation-Id:
-              $ref: "#/components/headers/CorrelationId"
-            X-Request-Id:
-              $ref: "#/components/headers/RequestId"
-            X-Server-Id:
-              $ref: "#/components/headers/ServerId"
           content:
             application/ld+json:
               schema:
                 $ref: "#/components/schemas/OfficeHeadlineCollection"
-        default:
-          $ref: "#/components/responses/Error"
-      parameters:
-        - $ref: "#/components/parameters/NWSOfficeId"
-  /points/{point}:
+        "400":
+          $ref: "#/components/responses/ClientError"
+  "/points/{point}":
+    parameters:
+      - $ref: "#/components/parameters/PathPoint"
     get:
-      description: Returns metadata about a given latitude/longitude point
-      operationId: get_point_metadata
+      summary: Returns metadata (inc. forecast gridpoint) about a given lat,long pair
+      operationId: get_lat_long_info
       tags:
-        - points
+        - Metadata
+        - Geographic
       responses:
         "200":
           description: success
-          headers:
-            X-Correlation-Id:
-              $ref: "#/components/headers/CorrelationId"
-            X-Request-Id:
-              $ref: "#/components/headers/RequestId"
-            X-Server-Id:
-              $ref: "#/components/headers/ServerId"
           content:
             application/geo+json:
               schema:
@@ -828,17 +612,15 @@ paths:
             application/ld+json:
               schema:
                 $ref: "#/components/schemas/PointJsonLd"
-        default:
-          $ref: "#/components/responses/Error"
-      parameters: []
-    parameters:
-      - $ref: "#/components/parameters/PathPoint"
+        "400":
+          $ref: "#/components/responses/ClientError"
   /radar/servers:
     get:
-      description: Returns a list of radar servers
-      operationId: list_radar_servers
+      summary: Returns a list of radar servers
+      operationId: get_radar_servers
       tags:
-        - radar
+        - Radar
+        - Metadata
       parameters:
         - name: reportingHost
           in: query
@@ -848,45 +630,12 @@ paths:
       responses:
         "200":
           description: success
-          headers:
-            X-Correlation-Id:
-              $ref: "#/components/headers/CorrelationId"
-            X-Request-Id:
-              $ref: "#/components/headers/RequestId"
-            X-Server-Id:
-              $ref: "#/components/headers/ServerId"
           content:
             application/ld+json:
               schema: {}
-        default:
-          $ref: "#/components/responses/Error"
-  /radar/servers/{id}:
-    get:
-      description: Returns metadata about a given radar server
-      operationId: get_radar_server_metadata
-      tags:
-        - radar
-      parameters:
-        - name: reportingHost
-          in: query
-          description: Show records from specific reporting host
-          schema:
-            type: string
-      responses:
-        "200":
-          description: success
-          headers:
-            X-Correlation-Id:
-              $ref: "#/components/headers/CorrelationId"
-            X-Request-Id:
-              $ref: "#/components/headers/RequestId"
-            X-Server-Id:
-              $ref: "#/components/headers/ServerId"
-          content:
-            application/ld+json:
-              schema: {}
-        default:
-          $ref: "#/components/responses/Error"
+        "400":
+          $ref: "#/components/responses/ClientError"
+  "/radar/servers/{id}":
     parameters:
       - name: id
         in: path
@@ -894,56 +643,61 @@ paths:
         required: true
         schema:
           type: string
+    get:
+      summary: Returns metadata about a given radar server
+      operationId: get_radar_server
+      tags:
+        - Radar
+        - Metadata
+      parameters:
+        - name: reportingHost
+          in: query
+          description: Show records from specific reporting host
+          schema:
+            type: string
+      responses:
+        "200":
+          description: success
+          content:
+            application/ld+json:
+              schema: {}
+        "400":
+          $ref: "#/components/responses/ClientError"
   /radar/stations:
     get:
-      description: Returns a list of radar stations
-      operationId: list_radar_stations
+      summary: Returns a list of radar stations
+      operationId: get_radar_stations
       tags:
-        - radar
+        - Radar
+        - Metadata
       parameters:
-        - name: stationType
-          in: query
-          description: Limit results to a specific station type or types
-          style: form
-          explode: false
-          schema:
-            type: array
-            items:
-              pattern: ^[A-Za-z0-9-]+$
-              type: string
-        - name: reportingHost
-          in: query
-          description: Show RDA and latency info from specific reporting host
-          schema:
-            type: string
-        - name: host
-          in: query
-          description: Show latency info from specific LDM host
-          schema:
-            type: string
+        - $ref: "#/components/parameters/QueryStationTypeArray"
+        - $ref: "#/components/parameters/QueryReportingHost"
+        - $ref: "#/components/parameters/QueryHost"
       responses:
         "200":
           description: success
-          headers:
-            X-Correlation-Id:
-              $ref: "#/components/headers/CorrelationId"
-            X-Request-Id:
-              $ref: "#/components/headers/RequestId"
-            X-Server-Id:
-              $ref: "#/components/headers/ServerId"
           content:
             application/geo+json:
               schema: {}
             application/ld+json:
               schema: {}
-        default:
-          $ref: "#/components/responses/Error"
-  /radar/stations/{stationId}:
+        "400":
+          $ref: "#/components/responses/ClientError"
+  "/radar/stations/{stationId}":
+    parameters:
+      - name: stationId
+        in: path
+        description: Radar station ID
+        required: true
+        schema:
+          type: string
     get:
-      description: Returns metadata about a given radar station
-      operationId: get_radar_station_metadata
+      summary: Returns metadata about a given radar station
+      operationId: get_radar_station_info
       tags:
-        - radar
+        - Radar
+        - Metadata
       parameters:
         - name: reportingHost
           in: query
@@ -958,20 +712,14 @@ paths:
       responses:
         "200":
           description: success
-          headers:
-            X-Correlation-Id:
-              $ref: "#/components/headers/CorrelationId"
-            X-Request-Id:
-              $ref: "#/components/headers/RequestId"
-            X-Server-Id:
-              $ref: "#/components/headers/ServerId"
           content:
             application/geo+json:
               schema: {}
             application/ld+json:
               schema: {}
-        default:
-          $ref: "#/components/responses/Error"
+        "400":
+          $ref: "#/components/responses/ClientError"
+  "/radar/stations/{stationId}/alarms":
     parameters:
       - name: stationId
         in: path
@@ -979,49 +727,36 @@ paths:
         required: true
         schema:
           type: string
-  /radar/stations/{stationId}/alarms:
     get:
-      description: Returns metadata about a given radar station alarms
-      operationId: get_radar_station_alarms_metadata
+      summary: Returns metadata about a given radar station alarms
+      operationId: get_radar_station_alarms
       tags:
-        - radar
+        - Radar
+        - Metadata
       responses:
         "200":
           description: success
-          headers:
-            X-Correlation-Id:
-              $ref: "#/components/headers/CorrelationId"
-            X-Request-Id:
-              $ref: "#/components/headers/RequestId"
-            X-Server-Id:
-              $ref: "#/components/headers/ServerId"
           content:
             application/ld+json:
               schema: {}
-        default:
-          $ref: "#/components/responses/Error"
-      parameters: []
+        "400":
+          $ref: "#/components/responses/ClientError"
+  "/radar/queues/{host}":
     parameters:
-      - name: stationId
+      - name: host
         in: path
-        description: Radar station ID
+        description: LDM host
         required: true
         schema:
           type: string
-  /radar/queues/{host}:
     get:
-      description: Returns metadata about a given radar queue
-      operationId: get_radar_queue_metadata
+      summary: Returns metadata about a given radar queue
+      operationId: get_radar_station_queue
       tags:
-        - radar
+        - Radar
+        - Metadata
       parameters:
-        - name: limit
-          in: query
-          description: Record limit
-          schema:
-            maximum: 500
-            minimum: 1
-            type: integer
+        - $ref: "#/components/parameters/Limit"
         - name: arrived
           in: query
           description: Range for arrival time
@@ -1061,31 +796,25 @@ paths:
       responses:
         "200":
           description: success
-          headers:
-            X-Correlation-Id:
-              $ref: "#/components/headers/CorrelationId"
-            X-Request-Id:
-              $ref: "#/components/headers/RequestId"
-            X-Server-Id:
-              $ref: "#/components/headers/ServerId"
           content:
             application/ld+json:
               schema: {}
-        default:
-          $ref: "#/components/responses/Error"
+        "400":
+          $ref: "#/components/responses/ClientError"
+  "/radar/profilers/{stationId}":
     parameters:
-      - name: host
+      - name: stationId
         in: path
-        description: LDM host
+        description: Profiler station ID
         required: true
         schema:
           type: string
-  /radar/profilers/{stationId}:
     get:
-      description: Returns metadata about a given radar wind profiler
-      operationId: get_radar_wind_profiler_metadata
+      summary: Returns metadata about a given radar wind profiler
+      operationId: get_radar_profiler_info
       tags:
-        - radar
+        - Radar
+        - Metadata
       parameters:
         - name: time
           in: query
@@ -1100,31 +829,17 @@ paths:
       responses:
         "200":
           description: success
-          headers:
-            X-Correlation-Id:
-              $ref: "#/components/headers/CorrelationId"
-            X-Request-Id:
-              $ref: "#/components/headers/RequestId"
-            X-Server-Id:
-              $ref: "#/components/headers/ServerId"
           content:
             application/ld+json:
               schema: {}
-        default:
-          $ref: "#/components/responses/Error"
-    parameters:
-      - name: stationId
-        in: path
-        description: Profiler station ID
-        required: true
-        schema:
-          type: string
+        "400":
+          $ref: "#/components/responses/ClientError"
   /products:
     get:
-      description: Returns a list of text products
-      operationId: list_products
+      summary: Returns a list of text products
+      operationId: get_products
       tags:
-        - products
+        - Products
       parameters:
         - name: location
           in: query
@@ -1135,18 +850,8 @@ paths:
             type: array
             items:
               type: string
-        - name: start
-          in: query
-          description: Start time
-          schema:
-            type: string
-            format: date-time
-        - name: end
-          in: query
-          description: End time
-          schema:
-            type: string
-            format: date-time
+        - $ref: "#/components/parameters/QueryStartTime"
+        - $ref: "#/components/parameters/QueryEndTime"
         - name: office
           in: query
           description: Issuing office
@@ -1177,98 +882,47 @@ paths:
             items:
               pattern: ^\w{3}$
               type: string
-        - name: limit
-          in: query
-          description: Limit
-          schema:
-            maximum: 500
-            minimum: 1
-            type: integer
+        - $ref: "#/components/parameters/Limit"
       responses:
         "200":
           description: success
-          headers:
-            X-Correlation-Id:
-              $ref: "#/components/headers/CorrelationId"
-            X-Request-Id:
-              $ref: "#/components/headers/RequestId"
-            X-Server-Id:
-              $ref: "#/components/headers/ServerId"
           content:
             application/ld+json:
               schema:
                 $ref: "#/components/schemas/TextProductCollection"
-        default:
-          $ref: "#/components/responses/Error"
+        "400":
+          $ref: "#/components/responses/ClientError"
   /products/locations:
     get:
-      description: Returns a list of valid text product issuance locations
-      operationId: list_product_locations
+      summary: Returns a list of valid text product issuance locations
+      operationId: get_product_locations
       tags:
-        - products
+        - Products
       responses:
         "200":
           description: success
-          headers:
-            X-Correlation-Id:
-              $ref: "#/components/headers/CorrelationId"
-            X-Request-Id:
-              $ref: "#/components/headers/RequestId"
-            X-Server-Id:
-              $ref: "#/components/headers/ServerId"
           content:
             application/ld+json:
               schema:
                 $ref: "#/components/schemas/TextProductLocationCollection"
-        default:
-          $ref: "#/components/responses/Error"
-      parameters: []
+        "400":
+          $ref: "#/components/responses/ClientError"
   /products/types:
     get:
-      description: Returns a list of valid text product types and codes
-      operationId: list_product_types
+      summary: Returns a list of valid text product types and codes
+      operationId: get_product_types
       tags:
-        - products
+        - Products
       responses:
         "200":
           description: success
-          headers:
-            X-Correlation-Id:
-              $ref: "#/components/headers/CorrelationId"
-            X-Request-Id:
-              $ref: "#/components/headers/RequestId"
-            X-Server-Id:
-              $ref: "#/components/headers/ServerId"
           content:
             application/ld+json:
               schema:
                 $ref: "#/components/schemas/TextProductTypeCollection"
-        default:
-          $ref: "#/components/responses/Error"
-      parameters: []
-  /products/{productId}:
-    get:
-      description: Returns a specific text product
-      operationId: get_product_by_id
-      tags:
-        - products
-      responses:
-        "200":
-          description: success
-          headers:
-            X-Correlation-Id:
-              $ref: "#/components/headers/CorrelationId"
-            X-Request-Id:
-              $ref: "#/components/headers/RequestId"
-            X-Server-Id:
-              $ref: "#/components/headers/ServerId"
-          content:
-            application/ld+json:
-              schema:
-                $ref: "#/components/schemas/TextProduct"
-        default:
-          $ref: "#/components/responses/Error"
-      parameters: []
+        "400":
+          $ref: "#/components/responses/ClientError"
+  "/products/{productId}":
     parameters:
       - name: productId
         in: path
@@ -1276,29 +930,21 @@ paths:
         required: true
         schema:
           type: string
-  /products/types/{typeId}:
     get:
-      description: Returns a list of text products of a given type
-      operationId: list_products_by_type
+      summary: Returns a specific text product
+      operationId: get_product
       tags:
-        - products
+        - Products
       responses:
         "200":
           description: success
-          headers:
-            X-Correlation-Id:
-              $ref: "#/components/headers/CorrelationId"
-            X-Request-Id:
-              $ref: "#/components/headers/RequestId"
-            X-Server-Id:
-              $ref: "#/components/headers/ServerId"
           content:
             application/ld+json:
               schema:
-                $ref: "#/components/schemas/TextProductCollection"
-        default:
-          $ref: "#/components/responses/Error"
-      parameters: []
+                $ref: "#/components/schemas/TextProduct"
+        "400":
+          $ref: "#/components/responses/ClientError"
+  "/products/types/{typeId}":
     parameters:
       - name: typeId
         in: path
@@ -1306,94 +952,65 @@ paths:
         required: true
         schema:
           type: string
-  /products/types/{typeId}/locations:
     get:
-      description: Returns a list of valid text product issuance locations for a given product type
-      operationId: list_locations_by_product_type
+      summary: Returns a list of text products of a given type
+      operationId: get_products_by_type
       tags:
-        - products
-      x-speakeasy-usage-example:
-        title: Get Locations for a Text Product Type
-        description: Get a list of locations that issue a particular forecast text product (like "AFD" for "Area Forecast Discussion")
-        position: 2
+        - Products
       responses:
         "200":
           description: success
-          headers:
-            X-Correlation-Id:
-              $ref: "#/components/headers/CorrelationId"
-            X-Request-Id:
-              $ref: "#/components/headers/RequestId"
-            X-Server-Id:
-              $ref: "#/components/headers/ServerId"
+          content:
+            application/ld+json:
+              schema:
+                $ref: "#/components/schemas/TextProductCollection"
+        "400":
+          $ref: "#/components/responses/ClientError"
+  "/products/types/{typeId}/locations":
+    parameters:
+      - name: typeId
+        in: path
+        description: .
+        required: true
+        schema:
+          type: string
+    get:
+      summary: Returns a list of valid text product issuance locations for a given product type
+      operationId: get_locations_by_product_type
+      tags:
+        - Products
+      responses:
+        "200":
+          description: success
           content:
             application/ld+json:
               schema:
                 $ref: "#/components/schemas/TextProductLocationCollection"
-        default:
-          $ref: "#/components/responses/Error"
-      parameters: []
+        "400":
+          $ref: "#/components/responses/ClientError"
+  "/products/locations/{locationId}/types":
     parameters:
-      - name: typeId
+      - name: locationId
         in: path
         description: .
         required: true
-        example: AFD
         schema:
           type: string
-  /products/locations/{locationId}/types:
     get:
-      description: Returns a list of valid text product types for a given issuance location
-      operationId: list_product_types_by_location
+      summary: Returns a list of valid text product types for a given issuance location
+      operationId: get_product_types_by_location
       tags:
-        - products
+        - Products
       responses:
         "200":
           description: success
-          headers:
-            X-Correlation-Id:
-              $ref: "#/components/headers/CorrelationId"
-            X-Request-Id:
-              $ref: "#/components/headers/RequestId"
-            X-Server-Id:
-              $ref: "#/components/headers/ServerId"
           content:
             application/ld+json:
               schema:
                 $ref: "#/components/schemas/TextProductTypeCollection"
-        default:
-          $ref: "#/components/responses/Error"
-      parameters: []
-    parameters:
-      - name: locationId
-        in: path
-        description: .
-        required: true
-        schema:
-          type: string
-  /products/types/{typeId}/locations/{locationId}:
-    get:
-      description: Returns a list of text products of a given type for a given issuance location
-      operationId: list_products_by_type_and_location
-      tags:
-        - products
-      responses:
-        "200":
-          description: success
-          headers:
-            X-Correlation-Id:
-              $ref: "#/components/headers/CorrelationId"
-            X-Request-Id:
-              $ref: "#/components/headers/RequestId"
-            X-Server-Id:
-              $ref: "#/components/headers/ServerId"
-          content:
-            application/ld+json:
-              schema:
-                $ref: "#/components/schemas/TextProductCollection"
-        default:
-          $ref: "#/components/responses/Error"
-      parameters: []
+        "400":
+          $ref: "#/components/responses/ClientError"
+  "/products/types/{typeId}/locations/{locationId}":
     parameters:
       - name: typeId
         in: path
@@ -1401,18 +1018,38 @@ paths:
         required: true
         schema:
           type: string
+          example: AFD
       - name: locationId
         in: path
         description: .
         required: true
         schema:
           type: string
+          example: LOT
+    get:
+      summary: Returns a list of text products of a given type for a given issuance location
+      operationId: get_products_by_type_and_location
+      tags:
+        - Products
+      x-speakeasy-usage-example:
+        title: Text Products
+        description: Get your local NWS office's Area Forecast Discussion
+
+      responses:
+        "200":
+          description: success
+          content:
+            application/ld+json:
+              schema:
+                $ref: "#/components/schemas/TextProductCollection"
+        "400":
+          $ref: "#/components/responses/ClientError"
   /zones:
     get:
-      description: Returns a list of zones
-      operationId: list_zones
+      summary: Returns a list of zones
+      operationId: get_zones
       tags:
-        - zones
+        - Geographic
       parameters:
         - name: id
           in: query
@@ -1460,12 +1097,7 @@ paths:
           description: Include geometry in results (true/false)
           schema:
             type: boolean
-        - name: limit
-          in: query
-          description: Limit
-          schema:
-            minimum: 1
-            type: integer
+        - $ref: "#/components/parameters/LimitFull"
         - name: effective
           in: query
           description: Effective date/time
@@ -1475,13 +1107,6 @@ paths:
       responses:
         "200":
           description: success
-          headers:
-            X-Correlation-Id:
-              $ref: "#/components/headers/CorrelationId"
-            X-Request-Id:
-              $ref: "#/components/headers/RequestId"
-            X-Server-Id:
-              $ref: "#/components/headers/ServerId"
           content:
             application/geo+json:
               schema:
@@ -1489,92 +1114,9 @@ paths:
             application/ld+json:
               schema:
                 $ref: "#/components/schemas/ZoneCollectionJsonLd"
-        default:
-          $ref: "#/components/responses/Error"
-  /zones/{type}:
-    get:
-      description: Returns a list of zones of a given type
-      operationId: list_zones_by_type
-      tags:
-        - zones
-      parameters:
-        - name: id
-          in: query
-          description: Zone ID (forecast or county)
-          style: form
-          explode: false
-          schema:
-            type: array
-            items:
-              $ref: "#/components/schemas/NWSZoneID"
-        - name: area
-          in: query
-          description: State/marine area code
-          style: form
-          explode: false
-          schema:
-            type: array
-            items:
-              $ref: "#/components/schemas/AreaCode"
-        - name: region
-          in: query
-          description: Region code
-          style: form
-          explode: false
-          schema:
-            type: array
-            items:
-              $ref: "#/components/schemas/RegionCode"
-        - name: type
-          in: query
-          description: Zone type
-          style: form
-          explode: false
-          schema:
-            type: array
-            items:
-              $ref: "#/components/schemas/NWSZoneType"
-        - name: point
-          in: query
-          description: Point (latitude,longitude)
-          schema:
-            $ref: "#/components/schemas/PointString"
-        - name: include_geometry
-          in: query
-          description: Include geometry in results (true/false)
-          schema:
-            type: boolean
-        - name: limit
-          in: query
-          description: Limit
-          schema:
-            minimum: 1
-            type: integer
-        - name: effective
-          in: query
-          description: Effective date/time
-          schema:
-            type: string
-            format: date-time
-      responses:
-        "200":
-          description: success
-          headers:
-            X-Correlation-Id:
-              $ref: "#/components/headers/CorrelationId"
-            X-Request-Id:
-              $ref: "#/components/headers/RequestId"
-            X-Server-Id:
-              $ref: "#/components/headers/ServerId"
-          content:
-            application/geo+json:
-              schema:
-                $ref: "#/components/schemas/ZoneCollectionGeoJson"
-            application/ld+json:
-              schema:
-                $ref: "#/components/schemas/ZoneCollectionJsonLd"
-        default:
-          $ref: "#/components/responses/Error"
+        "400":
+          $ref: "#/components/responses/ClientError"
+  "/zones/{type}":
     parameters:
       - name: type
         in: path
@@ -1582,12 +1124,92 @@ paths:
         required: true
         schema:
           $ref: "#/components/schemas/NWSZoneType"
-  /zones/{type}/{zoneId}:
     get:
-      description: Returns metadata about a given zone
-      operationId: get_zone_metadata
+      summary: Returns a list of zones of a given type
+      operationId: get_zones_by_type
       tags:
-        - zones
+        - Geographic
+      parameters:
+        - name: id
+          in: query
+          description: Zone ID (forecast or county)
+          style: form
+          explode: false
+          schema:
+            type: array
+            items:
+              $ref: "#/components/schemas/NWSZoneID"
+        - name: area
+          in: query
+          description: State/marine area code
+          style: form
+          explode: false
+          schema:
+            type: array
+            items:
+              $ref: "#/components/schemas/AreaCode"
+        - name: region
+          in: query
+          description: Region code
+          style: form
+          explode: false
+          schema:
+            type: array
+            items:
+              $ref: "#/components/schemas/RegionCode"
+        - name: type
+          in: query
+          description: Zone type
+          style: form
+          explode: false
+          schema:
+            type: array
+            items:
+              $ref: "#/components/schemas/NWSZoneType"
+        - name: point
+          in: query
+          description: Point (latitude,longitude)
+          schema:
+            $ref: "#/components/schemas/PointString"
+        - name: include_geometry
+          in: query
+          description: Include geometry in results (true/false)
+          schema:
+            type: boolean
+        - $ref: "#/components/parameters/LimitFull"
+        - name: effective
+          in: query
+          description: Effective date/time
+          schema:
+            type: string
+            format: date-time
+      responses:
+        "200":
+          description: success
+          content:
+            application/geo+json:
+              schema:
+                $ref: "#/components/schemas/ZoneCollectionGeoJson"
+            application/ld+json:
+              schema:
+                $ref: "#/components/schemas/ZoneCollectionJsonLd"
+        "400":
+          $ref: "#/components/responses/ClientError"
+  "/zones/{type}/{zoneId}":
+    parameters:
+      - name: type
+        in: path
+        description: Zone type
+        required: true
+        schema:
+          $ref: "#/components/schemas/NWSZoneType"
+      - $ref: "#/components/parameters/NWSZoneId"
+    get:
+      summary: Returns metadata about a given zone
+      operationId: get_zone_info
+      tags:
+        - Metadata
+        - Geographic
       parameters:
         - name: effective
           in: query
@@ -1598,13 +1220,6 @@ paths:
       responses:
         "200":
           description: success
-          headers:
-            X-Correlation-Id:
-              $ref: "#/components/headers/CorrelationId"
-            X-Request-Id:
-              $ref: "#/components/headers/RequestId"
-            X-Server-Id:
-              $ref: "#/components/headers/ServerId"
           content:
             application/geo+json:
               schema:
@@ -1612,42 +1227,9 @@ paths:
             application/ld+json:
               schema:
                 $ref: "#/components/schemas/ZoneJsonLd"
-        default:
-          $ref: "#/components/responses/Error"
-    parameters:
-      - name: type
-        in: path
-        description: Zone type
-        required: true
-        schema:
-          $ref: "#/components/schemas/NWSZoneType"
-      - $ref: "#/components/parameters/NWSZoneId"
-  /zones/{type}/{zoneId}/forecast:
-    get:
-      description: Returns the current zone forecast for a given zone
-      operationId: get_zone_forecast
-      tags:
-        - zones
-      responses:
-        "200":
-          description: success
-          headers:
-            X-Correlation-Id:
-              $ref: "#/components/headers/CorrelationId"
-            X-Request-Id:
-              $ref: "#/components/headers/RequestId"
-            X-Server-Id:
-              $ref: "#/components/headers/ServerId"
-          content:
-            application/geo+json:
-              schema:
-                $ref: "#/components/schemas/ZoneForecastGeoJson"
-            application/ld+json:
-              schema:
-                $ref: "#/components/schemas/ZoneForecastJsonLd"
-        default:
-          $ref: "#/components/responses/Error"
-      parameters: []
+        "400":
+          $ref: "#/components/responses/ClientError"
+  "/zones/{type}/{zoneId}/forecast":
     parameters:
       - name: type
         in: path
@@ -1656,42 +1238,40 @@ paths:
         schema:
           type: string
       - $ref: "#/components/parameters/NWSZoneId"
-  /zones/forecast/{zoneId}/observations:
     get:
-      description: Returns a list of observations for a given zone
-      operationId: list_observations_by_zone
+      summary: Returns the current zone forecast for a given zone
+      operationId: get_zone_forecast
       tags:
-        - zones
-      parameters:
-        - name: start
-          in: query
-          description: Start date/time
-          schema:
-            type: string
-            format: date-time
-        - name: end
-          in: query
-          description: End date/time
-          schema:
-            type: string
-            format: date-time
-        - name: limit
-          in: query
-          description: Limit
-          schema:
-            maximum: 500
-            minimum: 1
-            type: integer
+        - Forecasts
+        - Geographic
       responses:
         "200":
           description: success
-          headers:
-            X-Correlation-Id:
-              $ref: "#/components/headers/CorrelationId"
-            X-Request-Id:
-              $ref: "#/components/headers/RequestId"
-            X-Server-Id:
-              $ref: "#/components/headers/ServerId"
+          content:
+            application/geo+json:
+              schema:
+                $ref: "#/components/schemas/ZoneForecastGeoJson"
+            application/ld+json:
+              schema:
+                $ref: "#/components/schemas/ZoneForecastJsonLd"
+        "400":
+          $ref: "#/components/responses/ClientError"
+  "/zones/forecast/{zoneId}/observations":
+    parameters:
+      - $ref: "#/components/parameters/NWSZoneId"
+    get:
+      summary: Returns a list of observations for a given zone
+      operationId: get_zone_observations
+      tags:
+        - Conditions
+        - Geographic
+      parameters:
+        - $ref: "#/components/parameters/QueryStartTime"
+        - $ref: "#/components/parameters/QueryEndTime"
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: success
           content:
             application/geo+json:
               schema:
@@ -1699,28 +1279,87 @@ paths:
             application/ld+json:
               schema:
                 $ref: "#/components/schemas/ObservationCollectionJsonLd"
-        default:
-          $ref: "#/components/responses/Error"
+        "400":
+          $ref: "#/components/responses/ClientError"
+  "/zones/forecast/{zoneId}/stations":
     parameters:
       - $ref: "#/components/parameters/NWSZoneId"
-  /zones/forecast/{zoneId}/stations:
     get:
-      description: Returns a list of observation stations for a given zone
-      operationId: list_observation_stations_by_zone
+      summary: Returns a list of observation stations for a given zone
+      operationId: get_zone_stations
       tags:
-        - zones
+        - Metadata
+        - Geographic
+      parameters:
+        - $ref: "#/components/parameters/Limit"
+        - $ref: "#/components/parameters/PaginationCursor"
       responses:
         "200":
           $ref: "#/components/responses/ObservationStationCollection"
-        default:
-          $ref: "#/components/responses/Error"
-      parameters: []
-    parameters:
-      - $ref: "#/components/parameters/NWSZoneId"
-      - $ref: "#/components/parameters/Limit"
-      - $ref: "#/components/parameters/PaginationCursor"
+        "400":
+          $ref: "#/components/responses/ClientError"
 components:
   schemas:
+    AlertsActiveCount:
+      type: object
+      properties:
+        total:
+          minimum: 0
+          type: integer
+          description: The total number of active alerts
+        land:
+          minimum: 0
+          type: integer
+          description: The total number of active alerts affecting land zones
+        marine:
+          minimum: 0
+          type: integer
+          description: The total number of active alerts affecting marine zones
+        regions:
+          type: object
+          description: Active alerts by marine region
+          additionalProperties:
+            minimum: 1
+            type: integer
+        areas:
+          type: object
+          description: Active alerts by area (state/territory)
+          additionalProperties:
+            minimum: 1
+            type: integer
+        zones:
+          type: object
+          description: Active alerts by NWS public zone or county code
+          additionalProperties:
+            minimum: 1
+            type: integer
+    AlertsTypes:
+      type: object
+      properties:
+        eventTypes:
+          type: array
+          items:
+            type: string
+          description: A list of recognized event types
+    Glossary:
+      type: object
+      properties:
+        "@context":
+          $ref: "#/components/schemas/JsonLdContext"
+        glossary:
+          type: array
+          items:
+            $ref: "#/components/schemas/GlossaryTerm"
+          description: A list of glossary terms
+    GlossaryTerm:
+      type: object
+      properties:
+        term:
+          type: string
+          description: The term being defined
+        definition:
+          type: string
+          description: A definition for the term
     Alert:
       type: object
       properties:
@@ -1749,8 +1388,7 @@ components:
           items:
             type: string
             format: uri
-          description: |
-            An array of API links for zones affected by the alert. This is an API-specific extension field and is not part of the CAP specification.
+          description: An array of API links for zones affected by the alert. This is an API-specific extension field and is not part of the CAP specification.
         references:
           type: array
           items:
@@ -1780,18 +1418,18 @@ components:
           format: date-time
         onset:
           type: string
+          nullable: true
           description: The expected time of the beginning of the subject event of the alert message.
           format: date-time
-          nullable: true
         expires:
           type: string
           description: The expiry time of the information of the alert message.
           format: date-time
         ends:
           type: string
+          nullable: true
           description: The expected end time of the subject event of the alert message.
           format: date-time
-          nullable: true
         status:
           $ref: "#/components/schemas/AlertStatus"
         messageType:
@@ -1829,16 +1467,15 @@ components:
           description: The text naming the originator of the alert message.
         headline:
           type: string
-          description: The text headline of the alert message.
           nullable: true
+          description: The text headline of the alert message.
         description:
           type: string
           description: The text describing the subject event of the alert message.
         instruction:
           type: string
-          description: |
-            The text describing the recommended action to be taken by recipients of the alert message.
           nullable: true
+          description: The text describing the recommended action to be taken by recipients of the alert message.
         response:
           enum:
             - Shelter
@@ -1851,21 +1488,14 @@ components:
             - AllClear
             - None
           type: string
-          description: |
-            The code denoting the type of action recommended for the target audience.
-            This corresponds to responseType in the CAP specification.
+          description: The code denoting the type of action recommended for the target audience. This corresponds to responseType in the CAP specification.
         parameters:
           type: object
-          description: |
-            System-specific additional parameters associated with the alert message.
-            The keys in this object correspond to parameter definitions in the NWS CAP specification.
+          description: System-specific additional parameters associated with the alert message. The keys in this object correspond to parameter definitions in the NWS CAP specification.
           additionalProperties:
             type: array
             items: {}
-      description: |
-        An object representing a public alert message.
-        Unless otherwise noted, the fields in this object correspond to the National Weather Service CAP v1.2 specification, which extends the OASIS Common Alerting Protocol (CAP) v1.2 specification and USA Integrated Public Alert and Warning System (IPAWS) Profile v1.0. Refer to this documentation for more complete information.
-        http://docs.oasis-open.org/emergency/cap/v1.2/CAP-v1.2-os.html http://docs.oasis-open.org/emergency/cap/v1.2/ipaws-profile/v1.0/cs01/cap-v1.2-ipaws-profile-cs01.html https://alerts.weather.gov/#technical-notes-v12
+      description: An object representing a public alert message. Unless otherwise noted, the fields in this object correspond to the National Weather Service CAP v1.2 specification, which extends the OASIS Common Alerting Protocol (CAP) v1.2 specification and USA Integrated Public Alert and Warning System (IPAWS) Profile v1.0. Refer to this documentation for more complete information. http://docs.oasis-open.org/emergency/cap/v1.2/CAP-v1.2-os.html http://docs.oasis-open.org/emergency/cap/v1.2/ipaws-profile/v1.0/cs01/cap-v1.2-ipaws-profile-cs01.html https://alerts.weather.gov/#technical-notes-v12
     AlertCollection:
       type: object
       properties:
@@ -1921,6 +1551,7 @@ components:
     AlertId:
       type: string
       description: The identifier of the alert message.
+      example: "urn:oid:2.49.0.1.840.0.404b3149af6da23b497bb9705fadc6ead564a967.005.1"
     AlertCertainty:
       enum:
         - Observed
@@ -2097,104 +1728,15 @@ components:
         name: feed
         namespace: http://www.w3.org/2005/Atom
     AreaCode:
-      description: |
-        State, territory, and marine area codes.
-        Marine area code as defined in NWS Directive 10-302:
-        * AM: Western North Atlantic Ocean and along U.S. East Coast south of Currituck Beach Light NC following the coastline into Gulf of Mexico to Ocean Reef FL including the Caribbean
-        * AN: Western North Atlantic Ocean and along U.S. East Coast from Canadian border south to Currituck Beach Light NC
-        * GM: Gulf of Mexico and along the U.S. Gulf Coast from the Mexican border to Ocean Reef FL
-        * LC: Lake St. Clair
-        * LE: Lake Erie
-        * LH: Lake Huron
-        * LM: Lake Michigan
-        * LO: Lake Ontario
-        * LS: Lake Superior
-        * PH: Central Pacific Ocean including Hawaiian waters
-        * PK: North Pacific Ocean near Alaska and along Alaska coastline including the Bering Sea and the Gulf of Alaska
-        * PM: Western Pacific Ocean including Mariana Island waters
-        * PS: South Central Pacific Ocean including American Samoa waters
-        * PZ: Eastern North Pacific Ocean and along U.S. West Coast from Canadian border to Mexican border
-        * SL: St. Lawrence River above St. Regis
-      type: string
-      enum:
-        - AL
-        - AK
-        - AS
-        - AR
-        - AZ
-        - CA
-        - CO
-        - CT
-        - DE
-        - DC
-        - FL
-        - GA
-        - GU
-        - HI
-        - ID
-        - IL
-        - IN
-        - IA
-        - KS
-        - KY
-        - LA
-        - ME
-        - MD
-        - MA
-        - MI
-        - MN
-        - MS
-        - MO
-        - MT
-        - NE
-        - NV
-        - NH
-        - NJ
-        - NM
-        - NY
-        - NC
-        - ND
-        - OH
-        - OK
-        - OR
-        - PA
-        - PR
-        - RI
-        - SC
-        - SD
-        - TN
-        - TX
-        - UT
-        - VT
-        - VI
-        - VA
-        - WA
-        - WV
-        - WI
-        - WY
-        - MP
-        - PW
-        - FM
-        - MH
-        - AM
-        - AN
-        - GM
-        - LC
-        - LE
-        - LH
-        - LM
-        - LO
-        - LS
-        - PH
-        - PK
-        - PM
-        - PS
-        - PZ
-        - SL
+      oneOf:
+        - $ref: "#/components/schemas/StateTerritoryCode"
+        - $ref: "#/components/schemas/MarineAreaCode"
+      description: State/territory codes and marine area codes
     ATSUIdentifier:
       pattern: ^[A-Z]{3,4}$
       type: string
       description: ATSU Identifier
+      example: KKCI
     CenterWeatherAdvisoryCollectionGeoJson:
       allOf:
         - $ref: "#/components/schemas/GeoJsonFeatureCollection"
@@ -2244,11 +1786,12 @@ components:
       type: string
       description: Date (in YYYY-MM-DD format).
       format: date
+      example: "2025-02-23"
     GeometryString:
       type: string
+      nullable: true
       description: A geometry represented in Well-Known Text (WKT) format.
       format: wkt
-      nullable: true
     GeoJsonBoundingBox:
       minItems: 4
       type: array
@@ -2354,6 +1897,7 @@ components:
             bbox:
               $ref: "#/components/schemas/GeoJsonBoundingBox"
       description: A GeoJSON geometry object. Please refer to IETF RFC 7946 for information on the GeoJSON format.
+      type: object
       nullable: true
     GeoJsonFeature:
       required:
@@ -2468,7 +2012,6 @@ components:
                       properties:
                         coverage:
                           enum:
-                            - null
                             - areas
                             - brief
                             - chance
@@ -2485,11 +2028,11 @@ components:
                             - scattered
                             - slight_chance
                             - widespread
+                            - null
                           type: string
                           nullable: true
                         weather:
                           enum:
-                            - null
                             - blowing_dust
                             - blowing_sand
                             - blowing_snow
@@ -2513,15 +2056,16 @@ components:
                             - thunderstorms
                             - volcanic_ash
                             - water_spouts
+                            - null
                           type: string
                           nullable: true
                         intensity:
                           enum:
-                            - null
                             - very_light
                             - light
                             - moderate
                             - heavy
+                            - null
                           type: string
                           nullable: true
                         visibility:
@@ -2569,82 +2113,21 @@ components:
                         phenomenon:
                           pattern: ^\w{2}$
                           type: string
-                          description: |
-                            Hazard code. This value will correspond to a P-VTEC phenomenon code as defined in NWS Directive 10-1703.
+                          description: Hazard code. This value will correspond to a P-VTEC phenomenon code as defined in NWS Directive 10-1703.
                         significance:
                           pattern: ^\w$
                           type: string
-                          description: |
-                            Significance code. This value will correspond to a P-VTEC significance code as defined in NWS Directive 10-1703.
-                            This will most frequently be "A" for a watch or "Y" for an advisory.
+                          description: Significance code. This value will correspond to a P-VTEC significance code as defined in NWS Directive 10-1703. This will most frequently be "A" for a watch or "Y" for an advisory.
                         event_number:
                           type: integer
-                          description: |
-                            Event number. If this hazard refers to a national or regional center product (such as a Storm Prediction Center convective watch), this value will be the sequence number of that product.
                           nullable: true
+                          description: Event number. If this hazard refers to a national or regional center product (such as a Storm Prediction Center convective watch), this value will be the sequence number of that product.
                       description: A value object representing an expected hazard.
                 additionalProperties: false
-      description: |
-        Raw forecast data for a 2.5km grid square.
-        This is a list of all potential data layers that may appear. Some layers may not be present in all areas.
-        * temperature
-        * dewpoint
-        * maxTemperature
-        * minTemperature
-        * relativeHumidity
-        * apparentTemperature
-        * heatIndex
-        * windChill
-        * wetBulbGlobeTemperature
-        * skyCover
-        * windDirection
-        * windSpeed
-        * windGust
-        * weather
-        * hazards: Watch and advisory products in effect
-        * probabilityOfPrecipitation
-        * quantitativePrecipitation
-        * iceAccumulation
-        * snowfallAmount
-        * snowLevel
-        * ceilingHeight
-        * visibility
-        * transportWindSpeed
-        * transportWindDirection
-        * mixingHeight
-        * hainesIndex
-        * lightningActivityLevel
-        * twentyFootWindSpeed
-        * twentyFootWindDirection
-        * waveHeight
-        * wavePeriod
-        * waveDirection
-        * primarySwellHeight
-        * primarySwellDirection
-        * secondarySwellHeight
-        * secondarySwellDirection
-        * wavePeriod2
-        * windWaveHeight
-        * dispersionIndex
-        * pressure: Barometric pressure
-        * probabilityOfTropicalStormWinds
-        * probabilityOfHurricaneWinds
-        * potentialOf15mphWinds
-        * potentialOf25mphWinds
-        * potentialOf35mphWinds
-        * potentialOf45mphWinds
-        * potentialOf20mphWindGusts
-        * potentialOf30mphWindGusts
-        * potentialOf40mphWindGusts
-        * potentialOf50mphWindGusts
-        * potentialOf60mphWindGusts
-        * grasslandFireDangerIndex
-        * probabilityOfThunder
-        * davisStabilityIndex
-        * atmosphericDispersionIndex
-        * lowVisibilityOccurrenceRiskIndex
-        * stability
-        * redFlagThreatIndex
+      description: >
+        Raw forecast data for a 2.5km grid square. This is a list of all potential data layers that may appear. Some layers may not be present in all areas. * temperature * dewpoint * maxTemperature * minTemperature * relativeHumidity * apparentTemperature * heatIndex * windChill * wetBulbGlobeTemperature * skyCover * windDirection * windSpeed * windGust * weather * hazards: Watch and advisory products in effect * probabilityOfPrecipitation * quantitativePrecipitation * iceAccumulation * snowfallAmount * snowLevel * ceilingHeight * visibility * transportWindSpeed * transportWindDirection * mixingHeight * hainesIndex * lightningActivityLevel * twentyFootWindSpeed * twentyFootWindDirection * waveHeight * wavePeriod * waveDirection * primarySwellHeight * primarySwellDirection * secondarySwellHeight * secondarySwellDirection * wavePeriod2 * windWaveHeight * dispersionIndex * pressure: Barometric pressure * probabilityOfTropicalStormWinds * probabilityOfHurricaneWinds * potentialOf15mphWinds * potentialOf25mphWinds * potentialOf35mphWinds * potentialOf45mphWinds * potentialOf20mphWindGusts * potentialOf30mphWindGusts * potentialOf40mphWindGusts * potentialOf50mphWindGusts * potentialOf60mphWindGusts * grasslandFireDangerIndex * probabilityOfThunder * davisStabilityIndex * atmosphericDispersionIndex * lowVisibilityOccurrenceRiskIndex * stability * redFlagThreatIndex
+
+
       additionalProperties:
         $ref: "#/components/schemas/GridpointQuantitativeValueLayer"
     GridpointQuantitativeValueLayer:
@@ -2668,8 +2151,7 @@ components:
                 type: number
                 nullable: true
             additionalProperties: false
-      description: |
-        A gridpoint layer consisting of quantitative values (numeric values with associated units of measure).
+      description: A gridpoint layer consisting of quantitative values (numeric values with associated units of measure).
     GridpointGeoJson:
       allOf:
         - $ref: "#/components/schemas/GeoJsonFeature"
@@ -2719,8 +2201,7 @@ components:
           description: Sequential period number.
         name:
           type: string
-          description: |
-            A textual identifier for the period. This value will not be present for hourly forecasts.
+          description: A textual identifier for the period. This value will not be present for hourly forecasts.
           example: Tuesday Night
         startTime:
           type: string
@@ -2737,27 +2218,22 @@ components:
           oneOf:
             - $ref: "#/components/schemas/QuantitativeValue"
             - type: integer
-          description: |
-            High/low temperature for the period, depending on whether the period is day or night.
-            This property as an integer value is deprecated. Future versions will express this value as a quantitative value object. To make use of the future standard format now, set the "forecast_temperature_qv" feature flag on the request.
+          description: High/low temperature for the period, depending on whether the period is day or night. This property as an integer value is deprecated. Future versions will express this value as a quantitative value object. To make use of the future standard format now, set the "forecast_temperature_qv" feature flag on the request.
         temperatureUnit:
           enum:
             - F
             - C
           type: string
-          description: |
-            The unit of the temperature value (Fahrenheit or Celsius).
-            This property is deprecated. Future versions will indicate the unit within the quantitative value object for the temperature property. To make use of the future standard format now, set the "forecast_temperature_qv" feature flag on the request.
+          description: The unit of the temperature value (Fahrenheit or Celsius). This property is deprecated. Future versions will indicate the unit within the quantitative value object for the temperature property. To make use of the future standard format now, set the "forecast_temperature_qv" feature flag on the request.
           deprecated: true
         temperatureTrend:
           enum:
-            - null
             - rising
             - falling
+            - null
           type: string
-          description: |
-            If not null, indicates a non-diurnal temperature trend for the period (either rising temperature overnight, or falling temperature during the day)
           nullable: true
+          description: If not null, indicates a non-diurnal temperature trend for the period (either rising temperature overnight, or falling temperature during the day)
         probabilityOfPrecipitation:
           $ref: "#/components/schemas/QuantitativeValue"
         dewpoint:
@@ -2768,20 +2244,17 @@ components:
           oneOf:
             - $ref: "#/components/schemas/QuantitativeValue"
             - type: string
-          description: |
-            Wind speed for the period.
-            This property as an string value is deprecated. Future versions will express this value as a quantitative value object. To make use of the future standard format now, set the "forecast_wind_speed_qv" feature flag on the request.
+          description: Wind speed for the period. This property as an string value is deprecated. Future versions will express this value as a quantitative value object. To make use of the future standard format now, set the "forecast_wind_speed_qv" feature flag on the request.
         windGust:
           oneOf:
             - $ref: "#/components/schemas/QuantitativeValue"
+              nullable: true
             - type: string
-          description: |
-            Peak wind gust for the period.
-            This property as an string value is deprecated. Future versions will express this value as a quantitative value object. To make use of the future standard format now, set the "forecast_wind_speed_qv" feature flag on the request.
-          nullable: true
+              nullable: true
+          description: Peak wind gust for the period. This property as a string value is deprecated. Future versions will express this value as a quantitative value object. To make use of the future standard format now, set the "forecast_wind_speed_qv" feature flag on the request.
         windDirection:
           enum:
-            - "N"
+            - N
             - NNE
             - NE
             - ENE
@@ -2810,8 +2283,7 @@ components:
         detailedForecast:
           type: string
           description: A detailed textual forecast for the period.
-      description: |
-        An object containing forecast information for a specific time period (generally 12-hour or 1-hour).
+      description: An object containing forecast information for a specific time period (generally 12-hour or 1-hour).
       additionalProperties: false
     GridpointForecastUnits:
       enum:
@@ -2883,6 +2355,42 @@ components:
         * PR: Pacific Region
         * SR: Southern Region
         * WR: Western Region
+    MarineAreaCode:
+      enum:
+        - AM
+        - AN
+        - GM
+        - LC
+        - LE
+        - LH
+        - LM
+        - LO
+        - LS
+        - PH
+        - PK
+        - PM
+        - PS
+        - PZ
+        - SL
+      type: string
+      description: |
+        Marine area code as defined in NWS Directive 10-302:
+          * AM: Western North Atlantic Ocean and along U.S. East Coast south of Currituck Beach Light NC following the coastline into Gulf of Mexico to Ocean Reef FL including the Caribbean
+          * AN: Western North Atlantic Ocean and along U.S. East Coast from Canadian border south to Currituck Beach Light NC
+          * GM: Gulf of Mexico and along the U.S. Gulf Coast from the Mexican border to Ocean Reef FL
+          * LC: Lake St. Clair
+          * LE: Lake Erie
+          * LH: Lake Huron
+          * LM: Lake Michigan
+          * LO: Lake Ontario
+          * LS: Lake Superior
+          * PH: Central Pacific Ocean including Hawaiian waters
+          * PK: North Pacific Ocean near Alaska and along Alaska coastline including the Bering Sea and the Gulf of Alaska
+          * PM: Western Pacific Ocean including Mariana Island waters
+          * PS: South Central Pacific Ocean including American Samoa waters
+          * PZ: Eastern North Pacific Ocean and along U.S. West Coast from Canadian border to Mexican border
+          * SL: St. Lawrence River above St. Regis
+      example: AM
     MarineRegionCode:
       enum:
         - AL
@@ -2900,6 +2408,7 @@ components:
         * GM: Gulf of Mexico (GM)
         * PA: Eastern Pacific Ocean and U.S. West Coast (PZ)
         * PI: Central and Western Pacific (PH, PM, PS)
+      example: GL
     MetarPhenomenon:
       required:
         - intensity
@@ -2910,14 +2419,13 @@ components:
       properties:
         intensity:
           enum:
-            - null
             - light
             - heavy
+            - null
           type: string
           nullable: true
         modifier:
           enum:
-            - null
             - patches
             - blowing
             - low_drifting
@@ -2925,6 +2433,7 @@ components:
             - shallow
             - partial
             - showers
+            - null
           type: string
           nullable: true
         weather:
@@ -2996,289 +2505,166 @@ components:
       type: string
       description: Three-letter identifier for a Center Weather Service Unit (CWSU).
     NWSForecastOfficeId:
+      enum:
+        - AKQ
+        - ALY
+        - BGM
+        - BOX
+        - BTV
+        - BUF
+        - CAE
+        - CAR
+        - CHS
+        - CLE
+        - CTP
+        - GSP
+        - GYX
+        - ILM
+        - ILN
+        - LWX
+        - MHX
+        - OKX
+        - PBZ
+        - PHI
+        - RAH
+        - RLX
+        - RNK
+        - ABQ
+        - AMA
+        - BMX
+        - BRO
+        - CRP
+        - EPZ
+        - EWX
+        - FFC
+        - FWD
+        - HGX
+        - HUN
+        - JAN
+        - JAX
+        - KEY
+        - LCH
+        - LIX
+        - LUB
+        - LZK
+        - MAF
+        - MEG
+        - MFL
+        - MLB
+        - MOB
+        - MRX
+        - OHX
+        - OUN
+        - SHV
+        - SJT
+        - SJU
+        - TAE
+        - TBW
+        - TSA
+        - ABR
+        - APX
+        - ARX
+        - BIS
+        - BOU
+        - CYS
+        - DDC
+        - DLH
+        - DMX
+        - DTX
+        - DVN
+        - EAX
+        - FGF
+        - FSD
+        - GID
+        - GJT
+        - GLD
+        - GRB
+        - GRR
+        - ICT
+        - ILX
+        - IND
+        - IWX
+        - JKL
+        - LBF
+        - LMK
+        - LOT
+        - LSX
+        - MKX
+        - MPX
+        - MQT
+        - OAX
+        - PAH
+        - PUB
+        - RIW
+        - SGF
+        - TOP
+        - UNR
+        - BOI
+        - BYZ
+        - EKA
+        - FGZ
+        - GGW
+        - HNX
+        - LKN
+        - LOX
+        - MFR
+        - MSO
+        - MTR
+        - OTX
+        - PDT
+        - PIH
+        - PQR
+        - PSR
+        - REV
+        - SEW
+        - SGX
+        - SLC
+        - STO
+        - TFX
+        - TWC
+        - VEF
+        - AER
+        - AFC
+        - AFG
+        - AJK
+        - ALU
+        - GUM
+        - HPA
+        - HFO
+        - PPG
+        - STU
+        - NH1
+        - NH2
+        - ONA
+        - ONP
+      type: string
       description: Three-letter identifier for a NWS office.
-      type: string
+      example: LOT
+    NWSNationalHQId:
       enum:
-        - AKQ
-        - ALY
-        - BGM
-        - BOX
-        - BTV
-        - BUF
-        - CAE
-        - CAR
-        - CHS
-        - CLE
-        - CTP
-        - GSP
-        - GYX
-        - ILM
-        - ILN
-        - LWX
-        - MHX
-        - OKX
-        - PBZ
-        - PHI
-        - RAH
-        - RLX
-        - RNK
-        - ABQ
-        - AMA
-        - BMX
-        - BRO
-        - CRP
-        - EPZ
-        - EWX
-        - FFC
-        - FWD
-        - HGX
-        - HUN
-        - JAN
-        - JAX
-        - KEY
-        - LCH
-        - LIX
-        - LUB
-        - LZK
-        - MAF
-        - MEG
-        - MFL
-        - MLB
-        - MOB
-        - MRX
-        - OHX
-        - OUN
-        - SHV
-        - SJT
-        - SJU
-        - TAE
-        - TBW
-        - TSA
-        - ABR
-        - APX
-        - ARX
-        - BIS
-        - BOU
-        - CYS
-        - DDC
-        - DLH
-        - DMX
-        - DTX
-        - DVN
-        - EAX
-        - FGF
-        - FSD
-        - GID
-        - GJT
-        - GLD
-        - GRB
-        - GRR
-        - ICT
-        - ILX
-        - IND
-        - IWX
-        - JKL
-        - LBF
-        - LMK
-        - LOT
-        - LSX
-        - MKX
-        - MPX
-        - MQT
-        - OAX
-        - PAH
-        - PUB
-        - RIW
-        - SGF
-        - TOP
-        - UNR
-        - BOI
-        - BYZ
-        - EKA
-        - FGZ
-        - GGW
-        - HNX
-        - LKN
-        - LOX
-        - MFR
-        - MSO
-        - MTR
-        - OTX
-        - PDT
-        - PIH
-        - PQR
-        - PSR
-        - REV
-        - SEW
-        - SGX
-        - SLC
-        - STO
-        - TFX
-        - TWC
-        - VEF
-        - AER
-        - AFC
-        - AFG
-        - AJK
-        - ALU
-        - GUM
-        - HPA
-        - HFO
-        - PPG
-        - STU
-        - NH1
-        - NH2
-        - ONA
-        - ONP
+        - NWS
+      type: string
+      description: Three-letter identifier for NWS National HQ.
     NWSOfficeId:
-      description: Three-letter identifier for a NWS office, regional HQ, or national HQ.
-      type: string
+      oneOf:
+        - $ref: "#/components/schemas/NWSForecastOfficeId"
+        - $ref: "#/components/schemas/NWSRegionalHQId"
+        - $ref: "#/components/schemas/NWSNationalHQId"
+    NWSRegionalHQId:
       enum:
-        - AKQ
-        - ALY
-        - BGM
-        - BOX
-        - BTV
-        - BUF
-        - CAE
-        - CAR
-        - CHS
-        - CLE
-        - CTP
-        - GSP
-        - GYX
-        - ILM
-        - ILN
-        - LWX
-        - MHX
-        - OKX
-        - PBZ
-        - PHI
-        - RAH
-        - RLX
-        - RNK
-        - ABQ
-        - AMA
-        - BMX
-        - BRO
-        - CRP
-        - EPZ
-        - EWX
-        - FFC
-        - FWD
-        - HGX
-        - HUN
-        - JAN
-        - JAX
-        - KEY
-        - LCH
-        - LIX
-        - LUB
-        - LZK
-        - MAF
-        - MEG
-        - MFL
-        - MLB
-        - MOB
-        - MRX
-        - OHX
-        - OUN
-        - SHV
-        - SJT
-        - SJU
-        - TAE
-        - TBW
-        - TSA
-        - ABR
-        - APX
-        - ARX
-        - BIS
-        - BOU
-        - CYS
-        - DDC
-        - DLH
-        - DMX
-        - DTX
-        - DVN
-        - EAX
-        - FGF
-        - FSD
-        - GID
-        - GJT
-        - GLD
-        - GRB
-        - GRR
-        - ICT
-        - ILX
-        - IND
-        - IWX
-        - JKL
-        - LBF
-        - LMK
-        - LOT
-        - LSX
-        - MKX
-        - MPX
-        - MQT
-        - OAX
-        - PAH
-        - PUB
-        - RIW
-        - SGF
-        - TOP
-        - UNR
-        - BOI
-        - BYZ
-        - EKA
-        - FGZ
-        - GGW
-        - HNX
-        - LKN
-        - LOX
-        - MFR
-        - MSO
-        - MTR
-        - OTX
-        - PDT
-        - PIH
-        - PQR
-        - PSR
-        - REV
-        - SEW
-        - SGX
-        - SLC
-        - STO
-        - TFX
-        - TWC
-        - VEF
-        - AER
-        - AFC
-        - AFG
-        - AJK
-        - ALU
-        - GUM
-        - HPA
-        - HFO
-        - PPG
-        - STU
-        - NH1
-        - NH2
-        - ONA
-        - ONP
         - ARH
         - CRH
         - ERH
         - PRH
         - SRH
         - WRH
-        - NWS
+      type: string
+      description: Three-letter identifier for a NWS Regional HQ.
+      example: ARH
     NWSZoneID:
       pattern: ^(A[KLMNRSZ]|C[AOT]|D[CE]|F[LM]|G[AMU]|I[ADLN]|K[SY]|L[ACEHMOS]|M[ADEHINOPST]|N[CDEHJMVY]|O[HKR]|P[AHKMRSWZ]|S[CDL]|T[NX]|UT|V[AIT]|W[AIVY]|[HR]I)[CZ]\d{3}$
       type: string
-      description: |
-        UGC identifier for a NWS forecast zone or county.
-        The first two letters will correspond to either a state code or marine area code (see #/components/schemas/AreaCode for lists of valid letter combinations).
-        The third letter will be Z for public/fire zone or C for county.
+      description: "A UGC identifier for a NWS forecast zone or county. The first two letters will correspond to either a state code or marine area code (see #/components/schemas/StateTerritoryCode and #/components/schemas/MarineAreaCode for lists of valid letter combinations). The third letter will be Z for public/fire zone or C for county."
     NWSZoneType:
       enum:
         - land
@@ -3290,6 +2676,8 @@ components:
         - fire
         - county
       type: string
+      description: The NWS zone type
+      example: county
     Observation:
       type: object
       properties:
@@ -3318,8 +2706,8 @@ components:
           type: string
         icon:
           type: string
-          format: uri
           nullable: true
+          format: uri
           deprecated: true
         presentWeather:
           type: array
@@ -3359,6 +2747,7 @@ components:
           $ref: "#/components/schemas/QuantitativeValue"
         cloudLayers:
           type: array
+          nullable: true
           items:
             required:
               - base
@@ -3370,7 +2759,6 @@ components:
               amount:
                 $ref: "#/components/schemas/MetarSkyCoverage"
             additionalProperties: false
-          nullable: true
       additionalProperties: false
     ObservationGeoJson:
       allOf:
@@ -3705,8 +3093,7 @@ components:
       properties:
         type:
           type: string
-          description: |
-            A URI reference (RFC 3986) that identifies the problem type. This is only an identifier and is not necessarily a resolvable URL.
+          description: A URI reference (RFC 3986) that identifies the problem type. This is only an identifier and is not necessarily a resolvable URL.
           format: uri
           default: about:blank
           example: urn:noaa:nws:api:UnexpectedProblem
@@ -3718,8 +3105,7 @@ components:
           maximum: 999
           minimum: 100
           type: number
-          description: |
-            The HTTP status code (RFC 7231, Section 6) generated by the origin server for this occurrence of the problem.
+          description: The HTTP status code (RFC 7231, Section 6) generated by the origin server for this occurrence of the problem.
           example: 500
         detail:
           type: string
@@ -3727,14 +3113,12 @@ components:
           example: An unexpected problem has occurred.
         instance:
           type: string
-          description: |
-            A URI reference (RFC 3986) that identifies the specific occurrence of the problem. This is only an identifier and is not necessarily a resolvable URL.
+          description: A URI reference (RFC 3986) that identifies the specific occurrence of the problem. This is only an identifier and is not necessarily a resolvable URL.
           format: uri
           example: urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63
         correlationId:
           type: string
-          description: |
-            A unique identifier for the request, used for NWS debugging purposes. Please include this identifier with any correspondence to help us investigate your issue.
+          description: A unique identifier for the request, used for NWS debugging purposes. Please include this identifier with any correspondence to help us investigate your issue.
           example: 493c3a1d-f87e-407f-ae2c-24483f5aab63
       description: Detail about an error. This document conforms to RFC 7807 (Problem Details for HTTP APIs).
       additionalProperties: true
@@ -3743,8 +3127,8 @@ components:
       properties:
         value:
           type: number
-          description: A measured value
           nullable: true
+          description: A measured value
         maxValue:
           type: number
           description: The maximum value of a range of measured values
@@ -3765,10 +3149,8 @@ components:
             - B
             - T
           type: string
-          description: |
-            For values in observation records, the quality control flag from the MADIS system. The definitions of these flags can be found at https://madis.ncep.noaa.gov/madis_sfc_qc_notes.shtml
-      description: |
-        A structured value representing a measurement and its unit of measure. This object is a slighly modified version of the schema.org definition at https://schema.org/QuantitativeValue
+          description: For values in observation records, the quality control flag from the MADIS system. The definitions of these flags can be found at https://madis.ncep.noaa.gov/madis_sfc_qc_notes.shtml
+      description: A structured value representing a measurement and its unit of measure. This object is a slighly modified version of the schema.org definition at https://schema.org/QuantitativeValue
       additionalProperties: false
     RegionCode:
       oneOf:
@@ -3820,8 +3202,8 @@ components:
           nullable: true
         phenomenon:
           type: string
-          format: uri
           nullable: true
+          format: uri
         start:
           type: string
           format: date-time
@@ -3847,6 +3229,7 @@ components:
               $ref: "#/components/schemas/Sigmet"
     SigmetSequenceNumber:
       type: string
+      example: "29W"
     StateTerritoryCode:
       enum:
         - AL
@@ -3909,6 +3292,7 @@ components:
         - FM
         - MH
       type: string
+      example: CA
     TextProduct:
       type: object
       properties:
@@ -3977,15 +3361,14 @@ components:
       pattern: ^([01][0-9]|2[0-3])[0-5][0-9]$
       type: string
       description: A time (in HHMM format). This is always specified in UTC (Zulu) time.
+      example: "0419"
     UnitOfMeasure:
       pattern: ^((wmo|uc|wmoUnit|nwsUnit):)?.*$
       type: string
-      description: |
-        A string denoting a unit of measure, expressed in the format "{unit}" or "{namespace}:{unit}".
-        Units with the namespace "wmo" or "wmoUnit" are defined in the World Meteorological Organization Codes Registry at http://codes.wmo.int/common/unit and should be canonically resolvable to http://codes.wmo.int/common/unit/{unit}.
-        Units with the namespace "nwsUnit" are currently custom and do not align to any standard.
-        Units with no namespace or the namespace "uc" are compliant with the Unified Code for Units of Measure syntax defined at https://unitsofmeasure.org/. This also aligns with recent versions of the Geographic Markup Language (GML) standard, the IWXXM standard, and OGC Observations and Measurements v2.0 (ISO/DIS 19156).
-        Namespaced units are considered deprecated. We will be aligning API to use the same standards as GML/IWXXM in the future.
+      description: >
+        A string denoting a unit of measure, expressed in the format "{unit}" or "{namespace}:{unit}". Units with the namespace "wmo" or "wmoUnit" are defined in the World Meteorological Organization Codes Registry at http://codes.wmo.int/common/unit and should be canonically resolvable to http://codes.wmo.int/common/unit/{unit}. Units with the namespace "nwsUnit" are currently custom and do not align to any standard. Units with no namespace or the namespace "uc" are compliant with the Unified Code for Units of Measure syntax defined at https://unitsofmeasure.org/. This also aligns with recent versions of the Geographic Markup Language (GML) standard, the IWXXM standard, and OGC Observations and Measurements v2.0 (ISO/DIS 19156). Namespaced units are considered deprecated. We will be aligning API to use the same standards as GML/IWXXM in the future.
+
+
     Zone:
       type: object
       properties:
@@ -4015,10 +3398,10 @@ components:
         state:
           oneOf:
             - $ref: "#/components/schemas/StateTerritoryCode"
-            - enum:
-                - null
+            - type: string
+              enum:
                 - ""
-              type: string
+                - null
               nullable: true
         forecastOffice:
           type: string
@@ -4131,6 +3514,45 @@ components:
     ZoneForecastJsonLd:
       $ref: "#/components/schemas/ZoneForecast"
   responses:
+    AlertsActiveCount:
+      description: A data structure showing the counts of active alerts broken down by various categories
+      headers:
+        X-Correlation-Id:
+          $ref: "#/components/headers/CorrelationId"
+        X-Request-Id:
+          $ref: "#/components/headers/RequestId"
+        X-Server-Id:
+          $ref: "#/components/headers/ServerId"
+      content:
+        application/ld+json:
+          schema:
+            $ref: "#/components/schemas/AlertsActiveCount"
+    AlertsTypes:
+      description: A list of recognized event types
+      headers:
+        X-Correlation-Id:
+          $ref: "#/components/headers/CorrelationId"
+        X-Request-Id:
+          $ref: "#/components/headers/RequestId"
+        X-Server-Id:
+          $ref: "#/components/headers/ServerId"
+      content:
+        application/ld+json:
+          schema:
+            $ref: "#/components/schemas/AlertsTypes"
+    Glossary:
+      description: A set of glossary terms
+      headers:
+        X-Correlation-Id:
+          $ref: "#/components/headers/CorrelationId"
+        X-Request-Id:
+          $ref: "#/components/headers/RequestId"
+        X-Server-Id:
+          $ref: "#/components/headers/ServerId"
+      content:
+        application/ld+json:
+          schema:
+            $ref: "#/components/schemas/Glossary"
     AlertCollection:
       description: A collection of alerts.
       headers:
@@ -4153,8 +3575,8 @@ components:
       x-url-content-negotiation-extensions:
         json: application/geo+json
         atom: application/atom+xml
-    Error:
-      description: An error response.
+    ClientError:
+      description: A client error (4XX)
       headers:
         X-Correlation-Id:
           $ref: "#/components/headers/CorrelationId"
@@ -4236,13 +3658,19 @@ components:
         application/ld+json:
           schema:
             $ref: "#/components/schemas/ObservationStationCollectionJsonLd"
+    Redirect:
+      description: This endpoint may redirect to a more specific resource.
+      headers:
+        Location:
+          description: The URL to which the client is redirected.
+          schema:
+            type: string
+            format: uri
   parameters:
     AlertArea:
       name: area
       in: query
-      description: |
-        State/territory code or marine area code
-        This parameter is incompatible with the following parameters: point, region, region_type, zone
+      description: "State/territory code or marine area code This parameter is incompatible with the following parameters: point, region, region_type, zone"
       style: form
       explode: false
       schema:
@@ -4298,17 +3726,13 @@ components:
     AlertPoint:
       name: point
       in: query
-      description: |
-        Point (latitude,longitude)
-        This parameter is incompatible with the following parameters: area, region, region_type, zone
+      description: "Point (latitude,longitude) This parameter is incompatible with the following parameters: area, region, region_type, zone"
       schema:
         $ref: "#/components/schemas/PointString"
     AlertRegion:
       name: region
       in: query
-      description: |
-        Marine region code
-        This parameter is incompatible with the following parameters: area, point, region_type, zone
+      description: "Marine region code This parameter is incompatible with the following parameters: area, point, region_type, zone"
       style: form
       explode: false
       schema:
@@ -4318,9 +3742,7 @@ components:
     AlertRegionType:
       name: region_type
       in: query
-      description: |
-        Region type (land or marine)
-        This parameter is incompatible with the following parameters: area, point, region, zone
+      description: "Region type (land or marine) This parameter is incompatible with the following parameters: area, point, region, zone"
       schema:
         enum:
           - land
@@ -4365,9 +3787,7 @@ components:
     AlertZone:
       name: zone
       in: query
-      description: |
-        Zone ID (forecast or county)
-        This parameter is incompatible with the following parameters: area, point, region, region_type
+      description: "Zone ID (forecast or county) This parameter is incompatible with the following parameters: area, point, region, region_type"
       style: form
       explode: false
       schema:
@@ -4391,10 +3811,10 @@ components:
     GridpointForecastFeatureFlags:
       name: Feature-Flags
       in: header
-      description: |
-        Enable future and experimental features (see documentation for more info):
-        * forecast_temperature_qv: Represent temperature as QuantitativeValue
-        * forecast_wind_speed_qv: Represent wind speed as QuantitativeValue
+      description: >
+        Enable future and experimental features (see documentation for more info): * forecast_temperature_qv: Represent temperature as QuantitativeValue * forecast_wind_speed_qv: Represent wind speed as QuantitativeValue
+
+
       required: false
       style: simple
       explode: false
@@ -4418,20 +3838,14 @@ components:
       required: true
       schema:
         $ref: "#/components/schemas/NWSForecastOfficeId"
-    GridpointPoint:
-      name: point
+    Gridpoint:
+      name: gridpoint
       in: path
-      description: Two-element array encoding grid X and Y (comma-separated)
+      description: Forecast gridpoint pair (X,Y) - (see https://weather-gov.github.io/api/gridpoints for more info)
       required: true
-      style: simple
-      explode: false
       schema:
-        type: array
-        items:
-          minimum: 0
-          type: integer
-        minItems: 2
-        maxItems: 2
+        type: string
+        pattern: ^\d{1,2},\d{1,2}$
     Limit:
       name: limit
       in: query
@@ -4441,6 +3855,13 @@ components:
         minimum: 1
         type: integer
         default: 500
+    LimitFull:
+      name: limit
+      in: query
+      description: Limit
+      schema:
+        minimum: 1
+        type: integer
     NWSCenterWeatherServiceUnitId:
       name: cwsuId
       in: path
@@ -4469,6 +3890,7 @@ components:
       required: true
       schema:
         type: string
+      example: "KORD"
     PaginationCursor:
       name: cursor
       in: query
@@ -4482,6 +3904,49 @@ components:
       required: true
       schema:
         $ref: "#/components/schemas/PointString"
+    QueryIdArray:
+      name: id
+      in: query
+      description: Filter by observation station ID
+      style: form
+      explode: false
+      schema:
+        type: array
+        items:
+          type: string
+    QueryStateArray:
+      name: state
+      in: query
+      description: Filter by state/marine area code
+      style: form
+      explode: false
+      schema:
+        type: array
+        items:
+          $ref: "#/components/schemas/AreaCode"
+    QueryStationTypeArray:
+      name: stationType
+      in: query
+      description: Limit results to a specific station type or types
+      style: form
+      explode: false
+      schema:
+        type: array
+        items:
+          pattern: ^[A-Za-z0-9-]+$
+          type: string
+    QueryReportingHost:
+      name: reportingHost
+      in: query
+      description: Show records from specific reporting host
+      schema:
+        type: string
+    QueryHost:
+      name: host
+      in: query
+      description: Show latency info from specific LDM host
+      schema:
+        type: string
     QueryDate:
       name: date
       in: query
@@ -4493,15 +3958,13 @@ components:
       in: query
       description: Start time
       schema:
-        type: string
-        format: date-time
+        $ref: "#/components/schemas/Time"
     QueryEndTime:
       name: end
       in: query
       description: End time
       schema:
-        type: string
-        format: date-time
+        $ref: "#/components/schemas/Time"
     Time:
       name: time
       in: path
@@ -4511,27 +3974,21 @@ components:
         $ref: "#/components/schemas/Time"
   headers:
     CorrelationId:
-      description: |
-        A unique identifier for the request, used for NWS debugging purposes. Please include this identifier with any correspondence to help us investigate your issue.
+      description: A unique identifier for the request, used for NWS debugging purposes. Please include this identifier with any correspondence to help us investigate your issue.
       schema:
         type: string
     RequestId:
-      description: |
-        A unique identifier for the request, used for NWS debugging purposes. Please include this identifier with any correspondence to help us investigate your issue.
+      description: A unique identifier for the request, used for NWS debugging purposes. Please include this identifier with any correspondence to help us investigate your issue.
       schema:
         type: string
     ServerId:
-      description: |
-        The identifier of the server that generated the response, used for NWS debugging purposes. Please include this identifier with any correspondence to help us investigate your issue.
+      description: The identifier of the server that generated the response, used for NWS debugging purposes. Please include this identifier with any correspondence to help us investigate your issue.
       schema:
         type: string
   securitySchemes:
     userAgent:
       type: apiKey
-      description: |
-        We require that all consumers of the API include a User-Agent header in requests. This is due to a high number of scripts exhibiting abusive behavior (intentional or unintentional). We recommend setting the value to something that identifies your application and includes a contact email. This will help us contact you if we notice unusual behavior and also aid in troubleshooting issues.
-        The API remains open and free to use and there are no limits imposed based on the User-Agent string.
-        This mechanism will be replaced with a more typical API key system at a later date.
+      description: We require that all consumers of the API include a User-Agent header in requests. This is due to a high number of scripts exhibiting abusive behavior (intentional or unintentional). We recommend setting the value to something that identifies your application and includes a contact email. This will help us contact you if we notice unusual behavior and also aid in troubleshooting issues. The API remains open and free to use and there are no limits imposed based on the User-Agent string. This mechanism will be replaced with a more typical API key system at a later date.
       name: User-Agent
       in: header
 security:
