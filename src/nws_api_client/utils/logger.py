@@ -21,7 +21,7 @@ def get_body_content(req: httpx.Request) -> str:
 
 
 def get_default_logger() -> Logger:
-    if os.getenv("NWSCLIENT_DEBUG"):
+    if os.getenv("NWS_API_CLIENT_DEBUG"):
         logging.basicConfig(level=logging.DEBUG)
         return logging.getLogger("nws_api_client")
     return NoOpLogger()

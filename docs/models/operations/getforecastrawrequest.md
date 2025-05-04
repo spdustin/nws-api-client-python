@@ -1,0 +1,9 @@
+# GetForecastRawRequest
+
+
+## Fields
+
+| Field                                                                                   | Type                                                                                    | Required                                                                                | Description                                                                             | Example                                                                                 |
+| --------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| `wfo`                                                                                   | [components.NWSForecastOfficeID](../../models/components/nwsforecastofficeid.md)        | :heavy_check_mark:                                                                      | Forecast office ID                                                                      | LOT                                                                                     |
+| `gridpoint`                                                                             | *str*                                                                                   | :heavy_check_mark:                                                                      | Forecast gridpoint pair(see https://weather-gov.github.io/api/gridpoints for more info) |                                                                                         |

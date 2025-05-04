@@ -1,0 +1,9 @@
+# GetProductLocationsResponse
+
+
+## Fields
+
+| Field                                                                                                | Type                                                                                                 | Required                                                                                             | Description                                                                                          |
+| ---------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| `headers`                                                                                            | Dict[str, List[*str*]]                                                                               | :heavy_check_mark:                                                                                   | N/A                                                                                                  |
+| `result`                                                                                             | [components.TextProductLocationCollection](../../models/components/textproductlocationcollection.md) | :heavy_check_mark:                                                                                   | N/A                                                                                                  |

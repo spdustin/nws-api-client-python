@@ -1,19 +1,19 @@
 <!-- Start SDK Example Usage [usage] -->
-### Get Locations for a Text Product Type
+### Text Products
 
-Get a list of locations that issue a particular forecast text product (like "AFD" for "Area Forecast Discussion")
+Get your local NWS office's Area Forecast Discussion
 
 ```python
 # Synchronous Example
-from nws_api_client import NwsClient
+from nws_api_client import NwsAPIClient
 import os
 
 
-with NwsClient(
-    user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
-) as nws_client:
+with NwsAPIClient(
+    user_agent=os.getenv("NWS_API_CLIENT_USER_AGENT", ""),
+) as nac_client:
 
-    res = nws_client.products.get_locations_by_type(type_id="AFD")
+    res = nac_client.products.get_available(type_id="AFD", location_id="LOT")
 
     # Handle response
     print(res)
@@ -25,16 +25,16 @@ The same SDK client can also be used to make asychronous requests by importing a
 ```python
 # Asynchronous Example
 import asyncio
-from nws_api_client import NwsClient
+from nws_api_client import NwsAPIClient
 import os
 
 async def main():
 
-    async with NwsClient(
-        user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
-    ) as nws_client:
+    async with NwsAPIClient(
+        user_agent=os.getenv("NWS_API_CLIENT_USER_AGENT", ""),
+    ) as nac_client:
 
-        res = await nws_client.products.get_locations_by_type_async(type_id="AFD")
+        res = await nac_client.products.get_available_async(type_id="AFD", location_id="LOT")
 
         # Handle response
         print(res)

@@ -1,0 +1,11 @@
+# Reference
+
+
+## Fields
+
+| Field                                                                 | Type                                                                  | Required                                                              | Description                                                           | Example                                                               |
+| --------------------------------------------------------------------- | --------------------------------------------------------------------- | --------------------------------------------------------------------- | --------------------------------------------------------------------- | --------------------------------------------------------------------- |
+| `at_id`                                                               | *Optional[str]*                                                       | :heavy_minus_sign:                                                    | An API link to the prior alert.                                       |                                                                       |
+| `identifier`                                                          | *Optional[str]*                                                       | :heavy_minus_sign:                                                    | The identifier of the alert message.                                  | urn:oid:2.49.0.1.840.0.404b3149af6da23b497bb9705fadc6ead564a967.005.1 |
+| `sender`                                                              | *Optional[str]*                                                       | :heavy_minus_sign:                                                    | The sender of the prior alert.                                        |                                                                       |
+| `sent`                                                                | [date](https://docs.python.org/3/library/datetime.html#date-objects)  | :heavy_minus_sign:                                                    | The time the prior alert was sent.                                    |                                                                       |

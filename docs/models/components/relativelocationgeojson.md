@@ -1,0 +1,14 @@
+# RelativeLocationGeoJSON
+
+A GeoJSON feature. Please refer to IETF RFC 7946 for information on the GeoJSON format.
+
+
+## Fields
+
+| Field                                                                                            | Type                                                                                             | Required                                                                                         | Description                                                                                      |
+| ------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------ |
+| `at_context`                                                                                     | [Optional[components.JSONLdContextUnion]](../../models/components/jsonldcontextunion.md)         | :heavy_minus_sign:                                                                               | N/A                                                                                              |
+| `geometry`                                                                                       | [Nullable[components.GeoJSONGeometry]](../../models/components/geojsongeometry.md)               | :heavy_check_mark:                                                                               | A GeoJSON geometry object. Please refer to IETF RFC 7946 for information on the GeoJSON format.  |
+| `id`                                                                                             | *Optional[str]*                                                                                  | :heavy_minus_sign:                                                                               | N/A                                                                                              |
+| `properties`                                                                                     | [components.RelativeLocation](../../models/components/relativelocation.md)                       | :heavy_check_mark:                                                                               | N/A                                                                                              |
+| `type`                                                                                           | [components.RelativeLocationGeoJSONType](../../models/components/relativelocationgeojsontype.md) | :heavy_check_mark:                                                                               | N/A                                                                                              |

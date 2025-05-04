@@ -1,7 +1,7 @@
 [project]
 name = "nws-api-client"
-version = "0.12.0"
-description = "Typed Python client for the National Weather Service API"
+version = "0.13.1"
+description = "OpenAPI Client SDK for National Weather Service API (NWS / weather.gov)"
 authors = [{ name = "Dustin Miller" },]
 readme = "README-PYPI.md"
 requires-python = ">=3.9"

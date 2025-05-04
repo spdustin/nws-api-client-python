@@ -1,0 +1,1460 @@
+overlay: 1.0.0
+info:
+  title: CodeSamples overlay for python target
+  version: 0.0.0
+actions:
+  - target: $["paths"]["/alerts/active"]["get"]
+    update:
+      x-codeSamples:
+        - lang: python
+          label: Python (SDK)
+          source: |-
+            from nws_api_client import NwsAPIClient
+            from nws_api_client.models import components
+            import os
+
+
+            with NwsAPIClient(
+                user_agent=os.getenv("NWS_API_CLIENT_USER_AGENT", ""),
+            ) as nac_client:
+
+                res = nac_client.alerts.get_active(region=[
+                    components.MarineRegionCode.GL,
+                ])
+
+                assert res is not None
+
+                # Handle response
+                print(res)
+        - lang: python
+          label: Python (SDK)
+          source: |-
+            from nws_api_client import NwsAPIClient
+            from nws_api_client.models import components
+            import os
+
+
+            with NwsAPIClient(
+                user_agent=os.getenv("NWS_API_CLIENT_USER_AGENT", ""),
+            ) as nac_client:
+
+                res = nac_client.geographic.get_active(region=[
+                    components.MarineRegionCode.GL,
+                ])
+
+                assert res is not None
+
+                # Handle response
+                print(res)
+  - target: $["paths"]["/alerts/active/area/{area}"]["get"]
+    update:
+      x-codeSamples:
+        - lang: python
+          label: Python (SDK)
+          source: |-
+            from nws_api_client import NwsAPIClient
+            from nws_api_client.models import components
+            import os
+
+
+            with NwsAPIClient(
+                user_agent=os.getenv("NWS_API_CLIENT_USER_AGENT", ""),
+            ) as nac_client:
+
+                res = nac_client.alerts.list_active_for_area(area=components.AreaCode.VT)
+
+                # Handle response
+                print(res)
+        - lang: python
+          label: Python (SDK)
+          source: |-
+            from nws_api_client import NwsAPIClient
+            from nws_api_client.models import components
+            import os
+
+
+            with NwsAPIClient(
+                user_agent=os.getenv("NWS_API_CLIENT_USER_AGENT", ""),
+            ) as nac_client:
+
+                res = nac_client.geographic.list_active_for_area(area=components.AreaCode.VT)
+
+                # Handle response
+                print(res)
+  - target: $["paths"]["/alerts/active/count"]["get"]
+    update:
+      x-codeSamples:
+        - lang: python
+          label: Python (SDK)
+          source: |-
+            from nws_api_client import NwsAPIClient
+            import os
+
+
+            with NwsAPIClient(
+                user_agent=os.getenv("NWS_API_CLIENT_USER_AGENT", ""),
+            ) as nac_client:
+
+                res = nac_client.alerts.get_active_count()
+
+                # Handle response
+                print(res)
+  - target: $["paths"]["/alerts/active/region/{region}"]["get"]
+    update:
+      x-codeSamples:
+        - lang: python
+          label: Python (SDK)
+          source: |-
+            from nws_api_client import NwsAPIClient
+            from nws_api_client.models import components
+            import os
+
+
+            with NwsAPIClient(
+                user_agent=os.getenv("NWS_API_CLIENT_USER_AGENT", ""),
+            ) as nac_client:
+
+                res = nac_client.alerts.get_active_by_region(region=components.MarineRegionCode.GL)
+
+                # Handle response
+                print(res)
+        - lang: python
+          label: Python (SDK)
+          source: |-
+            from nws_api_client import NwsAPIClient
+            from nws_api_client.models import components
+            import os
+
+
+            with NwsAPIClient(
+                user_agent=os.getenv("NWS_API_CLIENT_USER_AGENT", ""),
+            ) as nac_client:
+
+                res = nac_client.geographic.get_active_by_region(region=components.MarineRegionCode.GL)
+
+                # Handle response
+                print(res)
+  - target: $["paths"]["/alerts/active/zone/{zoneId}"]["get"]
+    update:
+      x-codeSamples:
+        - lang: python
+          label: Python (SDK)
+          source: |-
+            from nws_api_client import NwsAPIClient
+            import os
+
+
+            with NwsAPIClient(
+                user_agent=os.getenv("NWS_API_CLIENT_USER_AGENT", ""),
+            ) as nac_client:
+
+                res = nac_client.alerts.get_active_for_zone(zone_id="<id>")
+
+                # Handle response
+                print(res)
+        - lang: python
+          label: Python (SDK)
+          source: |-
+            from nws_api_client import NwsAPIClient
+            import os
+
+
+            with NwsAPIClient(
+                user_agent=os.getenv("NWS_API_CLIENT_USER_AGENT", ""),
+            ) as nac_client:
+
+                res = nac_client.geographic.get_active_for_zone(zone_id="<id>")
+
+                # Handle response
+                print(res)
+  - target: $["paths"]["/alerts/types"]["get"]
+    update:
+      x-codeSamples:
+        - lang: python
+          label: Python (SDK)
+          source: |-
+            from nws_api_client import NwsAPIClient
+            import os
+
+
+            with NwsAPIClient(
+                user_agent=os.getenv("NWS_API_CLIENT_USER_AGENT", ""),
+            ) as nac_client:
+
+                res = nac_client.alerts.list_types()
+
+                # Handle response
+                print(res)
+  - target: $["paths"]["/alerts/{id}"]["get"]
+    update:
+      x-codeSamples:
+        - lang: python
+          label: Python (SDK)
+          source: |-
+            from nws_api_client import NwsAPIClient
+            import os
+
+
+            with NwsAPIClient(
+                user_agent=os.getenv("NWS_API_CLIENT_USER_AGENT", ""),
+            ) as nac_client:
+
+                res = nac_client.alerts.get(id="urn:oid:2.49.0.1.840.0.404b3149af6da23b497bb9705fadc6ead564a967.005.1")
+
+                # Handle response
+                print(res)
+  - target: $["paths"]["/aviation/cwsus/{cwsuId}"]["get"]
+    update:
+      x-codeSamples:
+        - lang: python
+          label: Python (SDK)
+          source: |-
+            from nws_api_client import NwsAPIClient
+            from nws_api_client.models import components
+            import os
+
+
+            with NwsAPIClient(
+                user_agent=os.getenv("NWS_API_CLIENT_USER_AGENT", ""),
+            ) as nac_client:
+
+                res = nac_client.aviation.get_cwsu(cwsu_id=components.NWSCenterWeatherServiceUnitID.ZSE)
+
+                # Handle response
+                print(res)
+        - lang: python
+          label: Python (SDK)
+          source: |-
+            from nws_api_client import NwsAPIClient
+            from nws_api_client.models import components
+            import os
+
+
+            with NwsAPIClient(
+                user_agent=os.getenv("NWS_API_CLIENT_USER_AGENT", ""),
+            ) as nac_client:
+
+                res = nac_client.geographic.get_cwsu(cwsu_id=components.NWSCenterWeatherServiceUnitID.ZSE)
+
+                # Handle response
+                print(res)
+  - target: $["paths"]["/aviation/cwsus/{cwsuId}/cwas"]["get"]
+    update:
+      x-codeSamples:
+        - lang: python
+          label: Python (SDK)
+          source: |-
+            from nws_api_client import NwsAPIClient
+            from nws_api_client.models import components
+            import os
+
+
+            with NwsAPIClient(
+                user_agent=os.getenv("NWS_API_CLIENT_USER_AGENT", ""),
+            ) as nac_client:
+
+                res = nac_client.alerts.get_center_weather_advisories(cwsu_id=components.NWSCenterWeatherServiceUnitID.ZDC)
+
+                # Handle response
+                print(res)
+        - lang: python
+          label: Python (SDK)
+          source: |-
+            from nws_api_client import NwsAPIClient
+            from nws_api_client.models import components
+            import os
+
+
+            with NwsAPIClient(
+                user_agent=os.getenv("NWS_API_CLIENT_USER_AGENT", ""),
+            ) as nac_client:
+
+                res = nac_client.aviation.get_center_weather_advisories(cwsu_id=components.NWSCenterWeatherServiceUnitID.ZDC)
+
+                # Handle response
+                print(res)
+  - target: $["paths"]["/aviation/cwsus/{cwsuId}/cwas/{date}/{sequence}"]["get"]
+    update:
+      x-codeSamples:
+        - lang: python
+          label: Python (SDK)
+          source: |-
+            from datetime import date
+            from nws_api_client import NwsAPIClient
+            from nws_api_client.models import components
+            import os
+
+
+            with NwsAPIClient(
+                user_agent=os.getenv("NWS_API_CLIENT_USER_AGENT", ""),
+            ) as nac_client:
+
+                res = nac_client.alerts.get_aviation_cwa(cwsu_id=components.NWSCenterWeatherServiceUnitID.ZSE, date_=date.fromisoformat("2025-02-23"), sequence=510643)
+
+                # Handle response
+                print(res)
+        - lang: python
+          label: Python (SDK)
+          source: |-
+            from datetime import date
+            from nws_api_client import NwsAPIClient
+            from nws_api_client.models import components
+            import os
+
+
+            with NwsAPIClient(
+                user_agent=os.getenv("NWS_API_CLIENT_USER_AGENT", ""),
+            ) as nac_client:
+
+                res = nac_client.aviation.get_aviation_cwa(cwsu_id=components.NWSCenterWeatherServiceUnitID.ZSE, date_=date.fromisoformat("2025-02-23"), sequence=510643)
+
+                # Handle response
+                print(res)
+  - target: $["paths"]["/aviation/sigmets"]["get"]
+    update:
+      x-codeSamples:
+        - lang: python
+          label: Python (SDK)
+          source: |-
+            from datetime import date
+            from nws_api_client import NwsAPIClient
+            import os
+
+
+            with NwsAPIClient(
+                user_agent=os.getenv("NWS_API_CLIENT_USER_AGENT", ""),
+            ) as nac_client:
+
+                res = nac_client.alerts.list_sigmets(start="0419", end="0419", date_=date.fromisoformat("2025-02-23"), atsu="KKCI", sequence="29W")
+
+                # Handle response
+                print(res)
+        - lang: python
+          label: Python (SDK)
+          source: |-
+            from datetime import date
+            from nws_api_client import NwsAPIClient
+            import os
+
+
+            with NwsAPIClient(
+                user_agent=os.getenv("NWS_API_CLIENT_USER_AGENT", ""),
+            ) as nac_client:
+
+                res = nac_client.aviation.list_sigmets(start="0419", end="0419", date_=date.fromisoformat("2025-02-23"), atsu="KKCI", sequence="29W")
+
+                # Handle response
+                print(res)
+  - target: $["paths"]["/aviation/sigmets/{atsu}"]["get"]
+    update:
+      x-codeSamples:
+        - lang: python
+          label: Python (SDK)
+          source: |-
+            from nws_api_client import NwsAPIClient
+            import os
+
+
+            with NwsAPIClient(
+                user_agent=os.getenv("NWS_API_CLIENT_USER_AGENT", ""),
+            ) as nac_client:
+
+                res = nac_client.alerts.get_sigmets_by_atsu(atsu="KKCI")
+
+                # Handle response
+                print(res)
+        - lang: python
+          label: Python (SDK)
+          source: |-
+            from nws_api_client import NwsAPIClient
+            import os
+
+
+            with NwsAPIClient(
+                user_agent=os.getenv("NWS_API_CLIENT_USER_AGENT", ""),
+            ) as nac_client:
+
+                res = nac_client.aviation.get_sigmets_by_atsu(atsu="KKCI")
+
+                # Handle response
+                print(res)
+  - target: $["paths"]["/aviation/sigmets/{atsu}/{date}"]["get"]
+    update:
+      x-codeSamples:
+        - lang: python
+          label: Python (SDK)
+          source: |-
+            from datetime import date
+            from nws_api_client import NwsAPIClient
+            import os
+
+
+            with NwsAPIClient(
+                user_agent=os.getenv("NWS_API_CLIENT_USER_AGENT", ""),
+            ) as nac_client:
+
+                res = nac_client.alerts.get_aviation_sigmets_by_atsu_for_date(atsu="KKCI", date_=date.fromisoformat("2025-02-23"))
+
+                # Handle response
+                print(res)
+        - lang: python
+          label: Python (SDK)
+          source: |-
+            from datetime import date
+            from nws_api_client import NwsAPIClient
+            import os
+
+
+            with NwsAPIClient(
+                user_agent=os.getenv("NWS_API_CLIENT_USER_AGENT", ""),
+            ) as nac_client:
+
+                res = nac_client.aviation.get_aviation_sigmets_by_atsu_for_date(atsu="KKCI", date_=date.fromisoformat("2025-02-23"))
+
+                # Handle response
+                print(res)
+  - target: $["paths"]["/aviation/sigmets/{atsu}/{date}/{time}"]["get"]
+    update:
+      x-codeSamples:
+        - lang: python
+          label: Python (SDK)
+          source: |-
+            from datetime import date
+            from nws_api_client import NwsAPIClient
+            import os
+
+
+            with NwsAPIClient(
+                user_agent=os.getenv("NWS_API_CLIENT_USER_AGENT", ""),
+            ) as nac_client:
+
+                res = nac_client.alerts.get_aviation_sigmet(atsu="KKCI", date_=date.fromisoformat("2025-02-23"), time="0419")
+
+                # Handle response
+                print(res)
+        - lang: python
+          label: Python (SDK)
+          source: |-
+            from datetime import date
+            from nws_api_client import NwsAPIClient
+            import os
+
+
+            with NwsAPIClient(
+                user_agent=os.getenv("NWS_API_CLIENT_USER_AGENT", ""),
+            ) as nac_client:
+
+                res = nac_client.aviation.get_aviation_sigmet(atsu="KKCI", date_=date.fromisoformat("2025-02-23"), time="0419")
+
+                # Handle response
+                print(res)
+  - target: $["paths"]["/glossary"]["get"]
+    update:
+      x-codeSamples:
+        - lang: python
+          label: Python (SDK)
+          source: |-
+            from nws_api_client import NwsAPIClient
+            import os
+
+
+            with NwsAPIClient(
+                user_agent=os.getenv("NWS_API_CLIENT_USER_AGENT", ""),
+            ) as nac_client:
+
+                res = nac_client.products.list_glossary_terms()
+
+                # Handle response
+                print(res)
+  - target: $["paths"]["/gridpoints/{wfo}/{gridpoint}"]["get"]
+    update:
+      x-codeSamples:
+        - lang: python
+          label: Python (SDK)
+          source: |-
+            from nws_api_client import NwsAPIClient
+            from nws_api_client.models import components
+            import os
+
+
+            with NwsAPIClient(
+                user_agent=os.getenv("NWS_API_CLIENT_USER_AGENT", ""),
+            ) as nac_client:
+
+                res = nac_client.forecasts.get_raw(wfo=components.NWSForecastOfficeID.LOT, gridpoint="<value>")
+
+                # Handle response
+                print(res)
+        - lang: python
+          label: Python (SDK)
+          source: |-
+            from nws_api_client import NwsAPIClient
+            from nws_api_client.models import components
+            import os
+
+
+            with NwsAPIClient(
+                user_agent=os.getenv("NWS_API_CLIENT_USER_AGENT", ""),
+            ) as nac_client:
+
+                res = nac_client.geographic.get_raw(wfo=components.NWSForecastOfficeID.LOT, gridpoint="<value>")
+
+                # Handle response
+                print(res)
+  - target: $["paths"]["/gridpoints/{wfo}/{gridpoint}/forecast"]["get"]
+    update:
+      x-codeSamples:
+        - lang: python
+          label: Python (SDK)
+          source: |-
+            from nws_api_client import NwsAPIClient
+            from nws_api_client.models import components
+            import os
+
+
+            with NwsAPIClient(
+                user_agent=os.getenv("NWS_API_CLIENT_USER_AGENT", ""),
+            ) as nac_client:
+
+                res = nac_client.forecasts.get(wfo=components.NWSForecastOfficeID.LOT, gridpoint="<value>")
+
+                # Handle response
+                print(res)
+        - lang: python
+          label: Python (SDK)
+          source: |-
+            from nws_api_client import NwsAPIClient
+            from nws_api_client.models import components
+            import os
+
+
+            with NwsAPIClient(
+                user_agent=os.getenv("NWS_API_CLIENT_USER_AGENT", ""),
+            ) as nac_client:
+
+                res = nac_client.geographic.get(wfo=components.NWSForecastOfficeID.LOT, gridpoint="<value>")
+
+                # Handle response
+                print(res)
+  - target: $["paths"]["/gridpoints/{wfo}/{gridpoint}/forecast/hourly"]["get"]
+    update:
+      x-codeSamples:
+        - lang: python
+          label: Python (SDK)
+          source: |-
+            from nws_api_client import NwsAPIClient
+            from nws_api_client.models import components
+            import os
+
+
+            with NwsAPIClient(
+                user_agent=os.getenv("NWS_API_CLIENT_USER_AGENT", ""),
+            ) as nac_client:
+
+                res = nac_client.forecasts.get_hourly(wfo=components.NWSForecastOfficeID.LOT, gridpoint="<value>")
+
+                # Handle response
+                print(res)
+        - lang: python
+          label: Python (SDK)
+          source: |-
+            from nws_api_client import NwsAPIClient
+            from nws_api_client.models import components
+            import os
+
+
+            with NwsAPIClient(
+                user_agent=os.getenv("NWS_API_CLIENT_USER_AGENT", ""),
+            ) as nac_client:
+
+                res = nac_client.geographic.get_hourly(wfo=components.NWSForecastOfficeID.LOT, gridpoint="<value>")
+
+                # Handle response
+                print(res)
+  - target: $["paths"]["/gridpoints/{wfo}/{gridpoint}/stations"]["get"]
+    update:
+      x-codeSamples:
+        - lang: python
+          label: Python (SDK)
+          source: |-
+            from nws_api_client import NwsAPIClient
+            from nws_api_client.models import components
+            import os
+
+
+            with NwsAPIClient(
+                user_agent=os.getenv("NWS_API_CLIENT_USER_AGENT", ""),
+            ) as nac_client:
+
+                res = nac_client.geographic.list_gridpoint_stations(wfo=components.NWSForecastOfficeID.LOT, gridpoint="<value>")
+
+                # Handle response
+                print(res)
+  - target: $["paths"]["/offices/{officeId}"]["get"]
+    update:
+      x-codeSamples:
+        - lang: python
+          label: Python (SDK)
+          source: |-
+            from nws_api_client import NwsAPIClient
+            from nws_api_client.models import components
+            import os
+
+
+            with NwsAPIClient(
+                user_agent=os.getenv("NWS_API_CLIENT_USER_AGENT", ""),
+            ) as nac_client:
+
+                res = nac_client.geographic.get_office(office_id=components.NWSOfficeID.GGW)
+
+                # Handle response
+                print(res)
+        - lang: python
+          label: Python (SDK)
+          source: |-
+            from nws_api_client import NwsAPIClient
+            from nws_api_client.models import components
+            import os
+
+
+            with NwsAPIClient(
+                user_agent=os.getenv("NWS_API_CLIENT_USER_AGENT", ""),
+            ) as nac_client:
+
+                res = nac_client.metadata.get_office(office_id=components.NWSOfficeID.GGW)
+
+                # Handle response
+                print(res)
+  - target: $["paths"]["/offices/{officeId}/headlines"]["get"]
+    update:
+      x-codeSamples:
+        - lang: python
+          label: Python (SDK)
+          source: |-
+            from nws_api_client import NwsAPIClient
+            from nws_api_client.models import components
+            import os
+
+
+            with NwsAPIClient(
+                user_agent=os.getenv("NWS_API_CLIENT_USER_AGENT", ""),
+            ) as nac_client:
+
+                res = nac_client.products.list_office_headlines(office_id=components.NWSOfficeID.BOU)
+
+                # Handle response
+                print(res)
+  - target: $["paths"]["/offices/{officeId}/headlines/{headlineId}"]["get"]
+    update:
+      x-codeSamples:
+        - lang: python
+          label: Python (SDK)
+          source: |-
+            from nws_api_client import NwsAPIClient
+            from nws_api_client.models import components
+            import os
+
+
+            with NwsAPIClient(
+                user_agent=os.getenv("NWS_API_CLIENT_USER_AGENT", ""),
+            ) as nac_client:
+
+                res = nac_client.products.get_office_headline(headline_id="<id>", office_id=components.NWSOfficeID.PHI)
+
+                # Handle response
+                print(res)
+  - target: $["paths"]["/points/{point}"]["get"]
+    update:
+      x-codeSamples:
+        - lang: python
+          label: Python (SDK)
+          source: |-
+            from nws_api_client import NwsAPIClient
+            import os
+
+
+            with NwsAPIClient(
+                user_agent=os.getenv("NWS_API_CLIENT_USER_AGENT", ""),
+            ) as nac_client:
+
+                res = nac_client.geographic.get_point_info(point="<value>")
+
+                # Handle response
+                print(res)
+        - lang: python
+          label: Python (SDK)
+          source: |-
+            from nws_api_client import NwsAPIClient
+            import os
+
+
+            with NwsAPIClient(
+                user_agent=os.getenv("NWS_API_CLIENT_USER_AGENT", ""),
+            ) as nac_client:
+
+                res = nac_client.metadata.get_point_info(point="<value>")
+
+                # Handle response
+                print(res)
+  - target: $["paths"]["/products"]["get"]
+    update:
+      x-codeSamples:
+        - lang: python
+          label: Python (SDK)
+          source: |-
+            from nws_api_client import NwsAPIClient
+            import os
+
+
+            with NwsAPIClient(
+                user_agent=os.getenv("NWS_API_CLIENT_USER_AGENT", ""),
+            ) as nac_client:
+
+                res = nac_client.products.list_products(start="0419", end="0419")
+
+                # Handle response
+                print(res)
+  - target: $["paths"]["/products/locations"]["get"]
+    update:
+      x-codeSamples:
+        - lang: python
+          label: Python (SDK)
+          source: |-
+            from nws_api_client import NwsAPIClient
+            import os
+
+
+            with NwsAPIClient(
+                user_agent=os.getenv("NWS_API_CLIENT_USER_AGENT", ""),
+            ) as nac_client:
+
+                res = nac_client.products.list_issuing_locations()
+
+                # Handle response
+                print(res)
+  - target: $["paths"]["/products/locations/{locationId}/types"]["get"]
+    update:
+      x-codeSamples:
+        - lang: python
+          label: Python (SDK)
+          source: |-
+            from nws_api_client import NwsAPIClient
+            import os
+
+
+            with NwsAPIClient(
+                user_agent=os.getenv("NWS_API_CLIENT_USER_AGENT", ""),
+            ) as nac_client:
+
+                res = nac_client.products.list_types_by_location(location_id="<id>")
+
+                # Handle response
+                print(res)
+  - target: $["paths"]["/products/types"]["get"]
+    update:
+      x-codeSamples:
+        - lang: python
+          label: Python (SDK)
+          source: |-
+            from nws_api_client import NwsAPIClient
+            import os
+
+
+            with NwsAPIClient(
+                user_agent=os.getenv("NWS_API_CLIENT_USER_AGENT", ""),
+            ) as nac_client:
+
+                res = nac_client.products.list_types()
+
+                # Handle response
+                print(res)
+  - target: $["paths"]["/products/types/{typeId}"]["get"]
+    update:
+      x-codeSamples:
+        - lang: python
+          label: Python (SDK)
+          source: |-
+            from nws_api_client import NwsAPIClient
+            import os
+
+
+            with NwsAPIClient(
+                user_agent=os.getenv("NWS_API_CLIENT_USER_AGENT", ""),
+            ) as nac_client:
+
+                res = nac_client.products.list_by_type(type_id="<id>")
+
+                # Handle response
+                print(res)
+  - target: $["paths"]["/products/types/{typeId}/locations"]["get"]
+    update:
+      x-codeSamples:
+        - lang: python
+          label: Python (SDK)
+          source: |-
+            from nws_api_client import NwsAPIClient
+            import os
+
+
+            with NwsAPIClient(
+                user_agent=os.getenv("NWS_API_CLIENT_USER_AGENT", ""),
+            ) as nac_client:
+
+                res = nac_client.products.list_locations_by_type(type_id="<id>")
+
+                # Handle response
+                print(res)
+  - target: $["paths"]["/products/types/{typeId}/locations/{locationId}"]["get"]
+    update:
+      x-codeSamples:
+        - lang: python
+          label: Python (SDK)
+          source: |-
+            from nws_api_client import NwsAPIClient
+            import os
+
+
+            with NwsAPIClient(
+                user_agent=os.getenv("NWS_API_CLIENT_USER_AGENT", ""),
+            ) as nac_client:
+
+                res = nac_client.products.get_available(type_id="AFD", location_id="LOT")
+
+                # Handle response
+                print(res)
+  - target: $["paths"]["/products/{productId}"]["get"]
+    update:
+      x-codeSamples:
+        - lang: python
+          label: Python (SDK)
+          source: |-
+            from nws_api_client import NwsAPIClient
+            import os
+
+
+            with NwsAPIClient(
+                user_agent=os.getenv("NWS_API_CLIENT_USER_AGENT", ""),
+            ) as nac_client:
+
+                res = nac_client.products.get(product_id="<id>")
+
+                # Handle response
+                print(res)
+  - target: $["paths"]["/radar/profilers/{stationId}"]["get"]
+    update:
+      x-codeSamples:
+        - lang: python
+          label: Python (SDK)
+          source: |-
+            from nws_api_client import NwsAPIClient
+            import os
+
+
+            with NwsAPIClient(
+                user_agent=os.getenv("NWS_API_CLIENT_USER_AGENT", ""),
+            ) as nac_client:
+
+                res = nac_client.metadata.get_profiler(station_id="<id>", time="2007-03-01T13:00:00Z/2008-05-11T15:30:00Z", interval="P2DT12H")
+
+                # Handle response
+                print(res)
+        - lang: python
+          label: Python (SDK)
+          source: |-
+            from nws_api_client import NwsAPIClient
+            import os
+
+
+            with NwsAPIClient(
+                user_agent=os.getenv("NWS_API_CLIENT_USER_AGENT", ""),
+            ) as nac_client:
+
+                res = nac_client.radar.get_profiler(station_id="<id>", time="2007-03-01T13:00:00Z/2008-05-11T15:30:00Z", interval="P2DT12H")
+
+                # Handle response
+                print(res)
+  - target: $["paths"]["/radar/queues/{host}"]["get"]
+    update:
+      x-codeSamples:
+        - lang: python
+          label: Python (SDK)
+          source: |-
+            from nws_api_client import NwsAPIClient
+            import os
+
+
+            with NwsAPIClient(
+                user_agent=os.getenv("NWS_API_CLIENT_USER_AGENT", ""),
+            ) as nac_client:
+
+                res = nac_client.metadata.get_queue(host="faraway-hierarchy.biz", arrived="2007-03-01T13:00:00Z/2008-05-11T15:30:00Z", created="2007-03-01T13:00:00Z/2008-05-11T15:30:00Z", published="2007-03-01T13:00:00Z/2008-05-11T15:30:00Z")
+
+                # Handle response
+                print(res)
+        - lang: python
+          label: Python (SDK)
+          source: |-
+            from nws_api_client import NwsAPIClient
+            import os
+
+
+            with NwsAPIClient(
+                user_agent=os.getenv("NWS_API_CLIENT_USER_AGENT", ""),
+            ) as nac_client:
+
+                res = nac_client.radar.get_queue(host="faraway-hierarchy.biz", arrived="2007-03-01T13:00:00Z/2008-05-11T15:30:00Z", created="2007-03-01T13:00:00Z/2008-05-11T15:30:00Z", published="2007-03-01T13:00:00Z/2008-05-11T15:30:00Z")
+
+                # Handle response
+                print(res)
+  - target: $["paths"]["/radar/servers"]["get"]
+    update:
+      x-codeSamples:
+        - lang: python
+          label: Python (SDK)
+          source: |-
+            from nws_api_client import NwsAPIClient
+            import os
+
+
+            with NwsAPIClient(
+                user_agent=os.getenv("NWS_API_CLIENT_USER_AGENT", ""),
+            ) as nac_client:
+
+                res = nac_client.metadata.list_servers()
+
+                # Handle response
+                print(res)
+        - lang: python
+          label: Python (SDK)
+          source: |-
+            from nws_api_client import NwsAPIClient
+            import os
+
+
+            with NwsAPIClient(
+                user_agent=os.getenv("NWS_API_CLIENT_USER_AGENT", ""),
+            ) as nac_client:
+
+                res = nac_client.radar.list_servers()
+
+                # Handle response
+                print(res)
+  - target: $["paths"]["/radar/servers/{id}"]["get"]
+    update:
+      x-codeSamples:
+        - lang: python
+          label: Python (SDK)
+          source: |-
+            from nws_api_client import NwsAPIClient
+            import os
+
+
+            with NwsAPIClient(
+                user_agent=os.getenv("NWS_API_CLIENT_USER_AGENT", ""),
+            ) as nac_client:
+
+                res = nac_client.metadata.get_server(id="<id>")
+
+                # Handle response
+                print(res)
+        - lang: python
+          label: Python (SDK)
+          source: |-
+            from nws_api_client import NwsAPIClient
+            import os
+
+
+            with NwsAPIClient(
+                user_agent=os.getenv("NWS_API_CLIENT_USER_AGENT", ""),
+            ) as nac_client:
+
+                res = nac_client.radar.get_server(id="<id>")
+
+                # Handle response
+                print(res)
+  - target: $["paths"]["/radar/stations"]["get"]
+    update:
+      x-codeSamples:
+        - lang: python
+          label: Python (SDK)
+          source: |-
+            from nws_api_client import NwsAPIClient
+            import os
+
+
+            with NwsAPIClient(
+                user_agent=os.getenv("NWS_API_CLIENT_USER_AGENT", ""),
+            ) as nac_client:
+
+                res = nac_client.metadata.list_stations()
+
+                # Handle response
+                print(res)
+        - lang: python
+          label: Python (SDK)
+          source: |-
+            from nws_api_client import NwsAPIClient
+            import os
+
+
+            with NwsAPIClient(
+                user_agent=os.getenv("NWS_API_CLIENT_USER_AGENT", ""),
+            ) as nac_client:
+
+                res = nac_client.radar.list_stations()
+
+                # Handle response
+                print(res)
+  - target: $["paths"]["/radar/stations/{stationId}"]["get"]
+    update:
+      x-codeSamples:
+        - lang: python
+          label: Python (SDK)
+          source: |-
+            from nws_api_client import NwsAPIClient
+            import os
+
+
+            with NwsAPIClient(
+                user_agent=os.getenv("NWS_API_CLIENT_USER_AGENT", ""),
+            ) as nac_client:
+
+                res = nac_client.metadata.get_radar_station(station_id="<id>")
+
+                # Handle response
+                print(res)
+        - lang: python
+          label: Python (SDK)
+          source: |-
+            from nws_api_client import NwsAPIClient
+            import os
+
+
+            with NwsAPIClient(
+                user_agent=os.getenv("NWS_API_CLIENT_USER_AGENT", ""),
+            ) as nac_client:
+
+                res = nac_client.radar.get_radar_station(station_id="<id>")
+
+                # Handle response
+                print(res)
+  - target: $["paths"]["/radar/stations/{stationId}/alarms"]["get"]
+    update:
+      x-codeSamples:
+        - lang: python
+          label: Python (SDK)
+          source: |-
+            from nws_api_client import NwsAPIClient
+            import os
+
+
+            with NwsAPIClient(
+                user_agent=os.getenv("NWS_API_CLIENT_USER_AGENT", ""),
+            ) as nac_client:
+
+                res = nac_client.metadata.get_station_alarms(station_id="<id>")
+
+                # Handle response
+                print(res)
+        - lang: python
+          label: Python (SDK)
+          source: |-
+            from nws_api_client import NwsAPIClient
+            import os
+
+
+            with NwsAPIClient(
+                user_agent=os.getenv("NWS_API_CLIENT_USER_AGENT", ""),
+            ) as nac_client:
+
+                res = nac_client.radar.get_station_alarms(station_id="<id>")
+
+                # Handle response
+                print(res)
+  - target: $["paths"]["/stations"]["get"]
+    update:
+      x-codeSamples:
+        - lang: python
+          label: Python (SDK)
+          source: |-
+            from nws_api_client import NwsAPIClient
+            import os
+
+
+            with NwsAPIClient(
+                user_agent=os.getenv("NWS_API_CLIENT_USER_AGENT", ""),
+            ) as nac_client:
+
+                res = nac_client.geographic.list_observation_stations()
+
+                # Handle response
+                print(res)
+        - lang: python
+          label: Python (SDK)
+          source: |-
+            from nws_api_client import NwsAPIClient
+            import os
+
+
+            with NwsAPIClient(
+                user_agent=os.getenv("NWS_API_CLIENT_USER_AGENT", ""),
+            ) as nac_client:
+
+                res = nac_client.metadata.list_observation_stations()
+
+                # Handle response
+                print(res)
+  - target: $["paths"]["/stations/{stationId}"]["get"]
+    update:
+      x-codeSamples:
+        - lang: python
+          label: Python (SDK)
+          source: |-
+            from nws_api_client import NwsAPIClient
+            import os
+
+
+            with NwsAPIClient(
+                user_agent=os.getenv("NWS_API_CLIENT_USER_AGENT", ""),
+            ) as nac_client:
+
+                res = nac_client.stations.get_station(station_id="KORD")
+
+                # Handle response
+                print(res)
+  - target: $["paths"]["/stations/{stationId}/observations"]["get"]
+    update:
+      x-codeSamples:
+        - lang: python
+          label: Python (SDK)
+          source: |-
+            from nws_api_client import NwsAPIClient
+            import os
+
+
+            with NwsAPIClient(
+                user_agent=os.getenv("NWS_API_CLIENT_USER_AGENT", ""),
+            ) as nac_client:
+
+                res = nac_client.stations.get_observations(station_id="KORD", start="0419", end="0419")
+
+                # Handle response
+                print(res)
+  - target: $["paths"]["/stations/{stationId}/observations/latest"]["get"]
+    update:
+      x-codeSamples:
+        - lang: python
+          label: Python (SDK)
+          source: |-
+            from nws_api_client import NwsAPIClient
+            import os
+
+
+            with NwsAPIClient(
+                user_agent=os.getenv("NWS_API_CLIENT_USER_AGENT", ""),
+            ) as nac_client:
+
+                res = nac_client.conditions.get_latest_observation(station_id="KORD")
+
+                # Handle response
+                print(res)
+        - lang: python
+          label: Python (SDK)
+          source: |-
+            from nws_api_client import NwsAPIClient
+            import os
+
+
+            with NwsAPIClient(
+                user_agent=os.getenv("NWS_API_CLIENT_USER_AGENT", ""),
+            ) as nac_client:
+
+                res = nac_client.geographic.get_latest_observation(station_id="KORD")
+
+                # Handle response
+                print(res)
+  - target: $["paths"]["/stations/{stationId}/observations/{timestamp}"]["get"]
+    update:
+      x-codeSamples:
+        - lang: python
+          label: Python (SDK)
+          source: |-
+            from nws_api_client import NwsAPIClient
+            from nws_api_client.utils import parse_datetime
+            import os
+
+
+            with NwsAPIClient(
+                user_agent=os.getenv("NWS_API_CLIENT_USER_AGENT", ""),
+            ) as nac_client:
+
+                res = nac_client.conditions.get_observation(station_id="KORD", timestamp=parse_datetime("2024-07-10T15:49:23.313Z"))
+
+                # Handle response
+                print(res)
+        - lang: python
+          label: Python (SDK)
+          source: |-
+            from nws_api_client import NwsAPIClient
+            from nws_api_client.utils import parse_datetime
+            import os
+
+
+            with NwsAPIClient(
+                user_agent=os.getenv("NWS_API_CLIENT_USER_AGENT", ""),
+            ) as nac_client:
+
+                res = nac_client.geographic.get_observation(station_id="KORD", timestamp=parse_datetime("2024-07-10T15:49:23.313Z"))
+
+                # Handle response
+                print(res)
+  - target: $["paths"]["/stations/{stationId}/tafs"]["get"]
+    update:
+      x-codeSamples:
+        - lang: python
+          label: Python (SDK)
+          source: |-
+            from nws_api_client import NwsAPIClient
+            import os
+
+
+            with NwsAPIClient(
+                user_agent=os.getenv("NWS_API_CLIENT_USER_AGENT", ""),
+            ) as nac_client:
+
+                res = nac_client.aviation.get_tafs(station_id="KORD")
+
+                # Handle response
+                print(res)
+        - lang: python
+          label: Python (SDK)
+          source: |-
+            from nws_api_client import NwsAPIClient
+            import os
+
+
+            with NwsAPIClient(
+                user_agent=os.getenv("NWS_API_CLIENT_USER_AGENT", ""),
+            ) as nac_client:
+
+                res = nac_client.forecasts.get_tafs(station_id="KORD")
+
+                # Handle response
+                print(res)
+  - target: $["paths"]["/stations/{stationId}/tafs/{date}/{time}"]["get"]
+    update:
+      x-codeSamples:
+        - lang: python
+          label: Python (SDK)
+          source: |-
+            from datetime import date
+            from nws_api_client import NwsAPIClient
+            import os
+
+
+            with NwsAPIClient(
+                user_agent=os.getenv("NWS_API_CLIENT_USER_AGENT", ""),
+            ) as nac_client:
+
+                res = nac_client.aviation.get_taf(station_id="KORD", date_=date.fromisoformat("2025-02-23"), time="0419")
+
+                # Handle response
+                print(res)
+        - lang: python
+          label: Python (SDK)
+          source: |-
+            from datetime import date
+            from nws_api_client import NwsAPIClient
+            import os
+
+
+            with NwsAPIClient(
+                user_agent=os.getenv("NWS_API_CLIENT_USER_AGENT", ""),
+            ) as nac_client:
+
+                res = nac_client.forecasts.get_taf(station_id="KORD", date_=date.fromisoformat("2025-02-23"), time="0419")
+
+                # Handle response
+                print(res)
+  - target: $["paths"]["/zones"]["get"]
+    update:
+      x-codeSamples:
+        - lang: python
+          label: Python (SDK)
+          source: |-
+            from nws_api_client import NwsAPIClient
+            from nws_api_client.models import components
+            import os
+
+
+            with NwsAPIClient(
+                user_agent=os.getenv("NWS_API_CLIENT_USER_AGENT", ""),
+            ) as nac_client:
+
+                res = nac_client.geographic.list_zones(region=[
+                    components.MarineRegionCode.GL,
+                ], type_=[
+                    components.NWSZoneType.COUNTY,
+                ])
+
+                # Handle response
+                print(res)
+  - target: $["paths"]["/zones/forecast/{zoneId}/observations"]["get"]
+    update:
+      x-codeSamples:
+        - lang: python
+          label: Python (SDK)
+          source: |-
+            from nws_api_client import NwsAPIClient
+            import os
+
+
+            with NwsAPIClient(
+                user_agent=os.getenv("NWS_API_CLIENT_USER_AGENT", ""),
+            ) as nac_client:
+
+                res = nac_client.conditions.list_zone_observations(zone_id="<id>", start="0419", end="0419")
+
+                # Handle response
+                print(res)
+        - lang: python
+          label: Python (SDK)
+          source: |-
+            from nws_api_client import NwsAPIClient
+            import os
+
+
+            with NwsAPIClient(
+                user_agent=os.getenv("NWS_API_CLIENT_USER_AGENT", ""),
+            ) as nac_client:
+
+                res = nac_client.geographic.list_zone_observations(zone_id="<id>", start="0419", end="0419")
+
+                # Handle response
+                print(res)
+  - target: $["paths"]["/zones/forecast/{zoneId}/stations"]["get"]
+    update:
+      x-codeSamples:
+        - lang: python
+          label: Python (SDK)
+          source: |-
+            from nws_api_client import NwsAPIClient
+            import os
+
+
+            with NwsAPIClient(
+                user_agent=os.getenv("NWS_API_CLIENT_USER_AGENT", ""),
+            ) as nac_client:
+
+                res = nac_client.geographic.get_zone_stations(zone_id="<id>")
+
+                # Handle response
+                print(res)
+        - lang: python
+          label: Python (SDK)
+          source: |-
+            from nws_api_client import NwsAPIClient
+            import os
+
+
+            with NwsAPIClient(
+                user_agent=os.getenv("NWS_API_CLIENT_USER_AGENT", ""),
+            ) as nac_client:
+
+                res = nac_client.metadata.get_zone_stations(zone_id="<id>")
+
+                # Handle response
+                print(res)
+  - target: $["paths"]["/zones/{type}"]["get"]
+    update:
+      x-codeSamples:
+        - lang: python
+          label: Python (SDK)
+          source: |-
+            from nws_api_client import NwsAPIClient
+            from nws_api_client.models import components
+            import os
+
+
+            with NwsAPIClient(
+                user_agent=os.getenv("NWS_API_CLIENT_USER_AGENT", ""),
+            ) as nac_client:
+
+                res = nac_client.geographic.get_zones_by_type(type_path_parameter=components.NWSZoneType.COUNTY, region=[
+                    components.MarineRegionCode.GL,
+                    components.MarineRegionCode.GL,
+                    components.MarineRegionCode.GL,
+                ], type_query_parameter=[
+                    components.NWSZoneType.COUNTY,
+                ])
+
+                # Handle response
+                print(res)
+  - target: $["paths"]["/zones/{type}/{zoneId}"]["get"]
+    update:
+      x-codeSamples:
+        - lang: python
+          label: Python (SDK)
+          source: |-
+            from nws_api_client import NwsAPIClient
+            from nws_api_client.models import components
+            import os
+
+
+            with NwsAPIClient(
+                user_agent=os.getenv("NWS_API_CLIENT_USER_AGENT", ""),
+            ) as nac_client:
+
+                res = nac_client.geographic.get_zone(type_=components.NWSZoneType.COUNTY, zone_id="<id>")
+
+                # Handle response
+                print(res)
+        - lang: python
+          label: Python (SDK)
+          source: |-
+            from nws_api_client import NwsAPIClient
+            from nws_api_client.models import components
+            import os
+
+
+            with NwsAPIClient(
+                user_agent=os.getenv("NWS_API_CLIENT_USER_AGENT", ""),
+            ) as nac_client:
+
+                res = nac_client.metadata.get_zone(type_=components.NWSZoneType.COUNTY, zone_id="<id>")
+
+                # Handle response
+                print(res)
+  - target: $["paths"]["/zones/{type}/{zoneId}/forecast"]["get"]
+    update:
+      x-codeSamples:
+        - lang: python
+          label: Python (SDK)
+          source: |-
+            from nws_api_client import NwsAPIClient
+            import os
+
+
+            with NwsAPIClient(
+                user_agent=os.getenv("NWS_API_CLIENT_USER_AGENT", ""),
+            ) as nac_client:
+
+                res = nac_client.forecasts.get_zone_forecast(type_="<value>", zone_id="<id>")
+
+                # Handle response
+                print(res)
+        - lang: python
+          label: Python (SDK)
+          source: |-
+            from nws_api_client import NwsAPIClient
+            import os
+
+
+            with NwsAPIClient(
+                user_agent=os.getenv("NWS_API_CLIENT_USER_AGENT", ""),
+            ) as nac_client:
+
+                res = nac_client.geographic.get_zone_forecast(type_="<value>", zone_id="<id>")
+
+                # Handle response
+                print(res)

@@ -1,0 +1,10 @@
+# GeoJSONPoint
+
+
+## Fields
+
+| Field                                                                                        | Type                                                                                         | Required                                                                                     | Description                                                                                  |
+| -------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| `bbox`                                                                                       | List[*float*]                                                                                | :heavy_minus_sign:                                                                           | A GeoJSON bounding box. Please refer to IETF RFC 7946 for information on the GeoJSON format. |
+| `coordinates`                                                                                | List[*float*]                                                                                | :heavy_check_mark:                                                                           | A GeoJSON coordinate. Please refer to IETF RFC 7946 for information on the GeoJSON format.   |
+| `type`                                                                                       | [components.TypePoint](../../models/components/typepoint.md)                                 | :heavy_check_mark:                                                                           | N/A                                                                                          |

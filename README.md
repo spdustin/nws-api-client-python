@@ -11,7 +11,7 @@ Type-safe and developer-friendly Python client for the National Weather Service 
 <!-- Start Summary [summary] -->
 ## Summary
 
-weather.gov API: OpenAPI Client SDK for National Weather Service API (NWS / weather.gov)
+MODIFIED National Weather Service weather.gov API: OpenAPI Client SDK for National Weather Service API (NWS / weather.gov)
 
 For more information about the API: [Full API documentation](https://www.weather.gov/documentation/services-web-api)
 <!-- End Summary [summary] -->
@@ -23,6 +23,7 @@ For more information about the API: [Full API documentation](https://www.weather
   * [SDK Installation](#sdk-installation)
   * [SDK Example Usage](#sdk-example-usage)
   * [Available Resources and Operations](#available-resources-and-operations)
+  * [Global Parameters](#global-parameters)
   * [Error Handling](#error-handling)
   * [Custom HTTP Client](#custom-http-client)
   * [Resource Management](#resource-management)
@@ -61,21 +62,21 @@ poetry add nws-api-client
 <!-- Start SDK Example Usage [usage] -->
 ## SDK Example Usage
 
-### Get Locations for a Text Product Type
+### Text Products
 
-Get a list of locations that issue a particular forecast text product (like "AFD" for "Area Forecast Discussion")
+Get your local NWS office's Area Forecast Discussion
 
 ```python
 # Synchronous Example
-from nws_api_client import NwsClient
+from nws_api_client import NwsAPIClient
 import os
 
 
-with NwsClient(
-    user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
-) as nws_client:
+with NwsAPIClient(
+    user_agent=os.getenv("NWS_API_CLIENT_USER_AGENT", ""),
+) as nac_client:
 
-    res = nws_client.products.get_locations_by_type(type_id="AFD")
+    res = nac_client.products.get_available(type_id="AFD", location_id="LOT")
 
     # Handle response
     print(res)
@@ -87,16 +88,16 @@ The same SDK client can also be used to make asychronous requests by importing a
 ```python
 # Asynchronous Example
 import asyncio
-from nws_api_client import NwsClient
+from nws_api_client import NwsAPIClient
 import os
 
 async def main():
 
-    async with NwsClient(
-        user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
-    ) as nws_client:
+    async with NwsAPIClient(
+        user_agent=os.getenv("NWS_API_CLIENT_USER_AGENT", ""),
+    ) as nac_client:
 
-        res = await nws_client.products.get_locations_by_type_async(type_id="AFD")
+        res = await nac_client.products.get_available_async(type_id="AFD", location_id="LOT")
 
         # Handle response
         print(res)
@@ -117,87 +118,113 @@ asyncio.run(main())
 ### [alerts](docs/sdks/alerts/README.md)
 
 * [get](docs/sdks/alerts/README.md#get) - Returns a specific alert
-* [list_active](docs/sdks/alerts/README.md#list_active) - Returns all currently active alerts
-* [list_active_by_area](docs/sdks/alerts/README.md#list_active_by_area) - Returns active alerts for the given area (state or marine area)
-* [list_active_by_region](docs/sdks/alerts/README.md#list_active_by_region) - Returns active alerts for the given marine region
-* [list_active_by_zone](docs/sdks/alerts/README.md#list_active_by_zone) - Returns active alerts for the given NWS public zone or county
-* [list_active_count](docs/sdks/alerts/README.md#list_active_count) - Returns info on the number of active alerts
+* [get_active](docs/sdks/alerts/README.md#get_active) - Returns filtered (or all) currently active alerts
+* [get_active_by_region](docs/sdks/alerts/README.md#get_active_by_region) - Returns active alerts for the given marine region
+* [get_active_count](docs/sdks/alerts/README.md#get_active_count) - Returns info on the number of active alerts
+* [get_active_for_zone](docs/sdks/alerts/README.md#get_active_for_zone) - Returns active alerts for the given NWS public zone/county identifier
+* [get_aviation_cwa](docs/sdks/alerts/README.md#get_aviation_cwa) - Returns a list of CWAs from a CWSU for a specific date and sequence
+* [get_aviation_sigmet](docs/sdks/alerts/README.md#get_aviation_sigmet) - Returns a specific SIGMET/AIRMET
+* [get_aviation_sigmets_by_atsu_for_date](docs/sdks/alerts/README.md#get_aviation_sigmets_by_atsu_for_date) - Returns a list of SIGMET/AIRMETs for the specified ATSU for the specified date
+* [get_center_weather_advisories](docs/sdks/alerts/README.md#get_center_weather_advisories) - Returns a list of Center Weather Advisories from a CWSU
+* [get_sigmets_by_atsu](docs/sdks/alerts/README.md#get_sigmets_by_atsu) - Returns a list of SIGMET/AIRMETs for the specified ATSU
+* [list_active_for_area](docs/sdks/alerts/README.md#list_active_for_area) - Returns active alerts for the given state or marine area
+* [list_sigmets](docs/sdks/alerts/README.md#list_sigmets) - Returns a list of SIGMET/AIRMETs
 * [list_types](docs/sdks/alerts/README.md#list_types) - Returns a list of alert types
 
 ### [aviation](docs/sdks/aviation/README.md)
 
+* [get_aviation_cwa](docs/sdks/aviation/README.md#get_aviation_cwa) - Returns a list of CWAs from a CWSU for a specific date and sequence
+* [get_aviation_sigmet](docs/sdks/aviation/README.md#get_aviation_sigmet) - Returns a specific SIGMET/AIRMET
+* [get_aviation_sigmets_by_atsu_for_date](docs/sdks/aviation/README.md#get_aviation_sigmets_by_atsu_for_date) - Returns a list of SIGMET/AIRMETs for the specified ATSU for the specified date
+* [get_center_weather_advisories](docs/sdks/aviation/README.md#get_center_weather_advisories) - Returns a list of Center Weather Advisories from a CWSU
 * [get_cwsu](docs/sdks/aviation/README.md#get_cwsu) - Returns metadata about a Center Weather Service Unit
-* [get_sigmet](docs/sdks/aviation/README.md#get_sigmet) - Returns a specific SIGMET/AIRMET
-* [get_sigmets](docs/sdks/aviation/README.md#get_sigmets) - Returns a list of SIGMET/AIRMETs
-* [list_cwas](docs/sdks/aviation/README.md#list_cwas) - Returns a list of Center Weather Advisories from a CWSU
-* [list_cwas_by_date_and_sequence](docs/sdks/aviation/README.md#list_cwas_by_date_and_sequence) - Returns a list of Center Weather Advisories from a CWSU
-* [list_sigmets](docs/sdks/aviation/README.md#list_sigmets) - Returns a list of SIGMET/AIRMETs for the specified ATSU
-* [list_sigmets_by_atsu_and_date](docs/sdks/aviation/README.md#list_sigmets_by_atsu_and_date) - Returns a list of SIGMET/AIRMETs for the specified ATSU for the specified date
+* [get_sigmets_by_atsu](docs/sdks/aviation/README.md#get_sigmets_by_atsu) - Returns a list of SIGMET/AIRMETs for the specified ATSU
+* [get_taf](docs/sdks/aviation/README.md#get_taf) - Returns a single Terminal Aerodrome Forecast
+* [get_tafs](docs/sdks/aviation/README.md#get_tafs) - Returns Terminal Aerodrome Forecasts for the specified airport station.
+* [list_sigmets](docs/sdks/aviation/README.md#list_sigmets) - Returns a list of SIGMET/AIRMETs
 
-### [glossary](docs/sdks/glossarysdk/README.md)
+### [conditions](docs/sdks/conditions/README.md)
 
-* [list_terms](docs/sdks/glossarysdk/README.md#list_terms) - Returns glossary terms
+* [get_latest_observation](docs/sdks/conditions/README.md#get_latest_observation) - Returns the latest observation for a station
+* [get_observation](docs/sdks/conditions/README.md#get_observation) - Returns a single observation
+* [list_zone_observations](docs/sdks/conditions/README.md#list_zone_observations) - Returns a list of observations for a given zone
 
-### [gridpoints](docs/sdks/gridpoints/README.md)
+### [forecasts](docs/sdks/forecasts/README.md)
 
-* [get_forecast](docs/sdks/gridpoints/README.md#get_forecast) - Returns a textual forecast for a 2.5km grid area
-* [get_hourly_forecast](docs/sdks/gridpoints/README.md#get_hourly_forecast) - Returns a textual hourly forecast for a 2.5km grid area
-* [get_raw_forecast](docs/sdks/gridpoints/README.md#get_raw_forecast) - Returns raw numerical forecast data for a 2.5km grid area
-* [list_observation_stations](docs/sdks/gridpoints/README.md#list_observation_stations) - Returns a list of observation stations usable for a given 2.5km grid area
+* [get](docs/sdks/forecasts/README.md#get) - Returns a textual forecast for a 2.5km grid area
+* [get_hourly](docs/sdks/forecasts/README.md#get_hourly) - Returns a textual hourly forecast for a 2.5km grid area
+* [get_raw](docs/sdks/forecasts/README.md#get_raw) - Returns raw numerical forecast data for a 2.5km grid area
+* [get_taf](docs/sdks/forecasts/README.md#get_taf) - Returns a single Terminal Aerodrome Forecast
+* [get_tafs](docs/sdks/forecasts/README.md#get_tafs) - Returns Terminal Aerodrome Forecasts for the specified airport station.
+* [get_zone_forecast](docs/sdks/forecasts/README.md#get_zone_forecast) - Returns the current zone forecast for a given zone
 
+### [geographic](docs/sdks/geographic/README.md)
 
-### [observations](docs/sdks/observations/README.md)
+* [get](docs/sdks/geographic/README.md#get) - Returns a textual forecast for a 2.5km grid area
+* [get_active](docs/sdks/geographic/README.md#get_active) - Returns filtered (or all) currently active alerts
+* [get_active_by_region](docs/sdks/geographic/README.md#get_active_by_region) - Returns active alerts for the given marine region
+* [get_active_for_zone](docs/sdks/geographic/README.md#get_active_for_zone) - Returns active alerts for the given NWS public zone/county identifier
+* [get_cwsu](docs/sdks/geographic/README.md#get_cwsu) - Returns metadata about a Center Weather Service Unit
+* [get_hourly](docs/sdks/geographic/README.md#get_hourly) - Returns a textual hourly forecast for a 2.5km grid area
+* [get_latest_observation](docs/sdks/geographic/README.md#get_latest_observation) - Returns the latest observation for a station
+* [get_observation](docs/sdks/geographic/README.md#get_observation) - Returns a single observation
+* [get_office](docs/sdks/geographic/README.md#get_office) - Returns metadata about a NWS forecast office
+* [get_point_info](docs/sdks/geographic/README.md#get_point_info) - Returns metadata (inc. forecast gridpoint) about a given lat,long pair
+* [get_raw](docs/sdks/geographic/README.md#get_raw) - Returns raw numerical forecast data for a 2.5km grid area
+* [get_zone](docs/sdks/geographic/README.md#get_zone) - Returns metadata about a given zone
+* [get_zone_forecast](docs/sdks/geographic/README.md#get_zone_forecast) - Returns the current zone forecast for a given zone
+* [get_zone_stations](docs/sdks/geographic/README.md#get_zone_stations) - Returns a list of observation stations for a given zone
+* [get_zones_by_type](docs/sdks/geographic/README.md#get_zones_by_type) - Returns a list of zones of a given type
+* [list_active_for_area](docs/sdks/geographic/README.md#list_active_for_area) - Returns active alerts for the given state or marine area
+* [list_gridpoint_stations](docs/sdks/geographic/README.md#list_gridpoint_stations) - Returns a list of observation stations usable for a given 2.5km grid area
+* [list_observation_stations](docs/sdks/geographic/README.md#list_observation_stations) - Returns a list of observation stations.
+* [list_zone_observations](docs/sdks/geographic/README.md#list_zone_observations) - Returns a list of observations for a given zone
+* [list_zones](docs/sdks/geographic/README.md#list_zones) - Returns a list of zones
 
-* [list_by_station](docs/sdks/observations/README.md#list_by_station) - Returns a list of observations for a given station
+### [metadata](docs/sdks/metadata/README.md)
 
-### [observationstations](docs/sdks/observationstations/README.md)
+* [get_office](docs/sdks/metadata/README.md#get_office) - Returns metadata about a NWS forecast office
+* [get_point_info](docs/sdks/metadata/README.md#get_point_info) - Returns metadata (inc. forecast gridpoint) about a given lat,long pair
+* [get_profiler](docs/sdks/metadata/README.md#get_profiler) - Returns metadata about a given radar wind profiler
+* [get_queue](docs/sdks/metadata/README.md#get_queue) - Returns metadata about a given radar queue
+* [get_radar_station](docs/sdks/metadata/README.md#get_radar_station) - Returns metadata about a given radar station
+* [get_server](docs/sdks/metadata/README.md#get_server) - Returns metadata about a given radar server
+* [get_station_alarms](docs/sdks/metadata/README.md#get_station_alarms) - Returns metadata about a given radar station alarms
+* [get_zone](docs/sdks/metadata/README.md#get_zone) - Returns metadata about a given zone
+* [get_zone_stations](docs/sdks/metadata/README.md#get_zone_stations) - Returns a list of observation stations for a given zone
+* [list_observation_stations](docs/sdks/metadata/README.md#list_observation_stations) - Returns a list of observation stations.
+* [list_servers](docs/sdks/metadata/README.md#list_servers) - Returns a list of radar servers
+* [list_stations](docs/sdks/metadata/README.md#list_stations) - Returns a list of radar stations
 
-* [get_by_station](docs/sdks/observationstations/README.md#get_by_station) - Returns a single observation.
-* [get_latest_observation](docs/sdks/observationstations/README.md#get_latest_observation) - Returns the latest observation for a station
-* [get_metadata](docs/sdks/observationstations/README.md#get_metadata) - Returns metadata about a given observation station
-* [get_taf](docs/sdks/observationstations/README.md#get_taf) - Returns a single Terminal Aerodrome Forecast.
-* [list](docs/sdks/observationstations/README.md#list) - Returns a list of observation stations.
-* [list_tafs](docs/sdks/observationstations/README.md#list_tafs) - Returns Terminal Aerodrome Forecasts for the specified airport station.
-
-### [offices](docs/sdks/offices/README.md)
-
-* [get_headline](docs/sdks/offices/README.md#get_headline) - Returns a specific news headline for a given NWS office
-* [get_metadata](docs/sdks/offices/README.md#get_metadata) - Returns metadata about a NWS forecast office
-* [list_headlines](docs/sdks/offices/README.md#list_headlines) - Returns a list of news headlines for a given NWS office
-
-### [points](docs/sdks/points/README.md)
-
-* [get_metadata](docs/sdks/points/README.md#get_metadata) - Returns metadata about a given latitude/longitude point
 
 ### [products](docs/sdks/products/README.md)
 
-* [get_by_id](docs/sdks/products/README.md#get_by_id) - Returns a specific text product
-* [get_locations_by_type](docs/sdks/products/README.md#get_locations_by_type) - Returns a list of valid text product issuance locations for a given product type
-* [list](docs/sdks/products/README.md#list) - Returns a list of text products
+* [get](docs/sdks/products/README.md#get) - Returns a specific text product
+* [get_available](docs/sdks/products/README.md#get_available) - Returns a list of text products of a given type for a given issuance location
+* [get_office_headline](docs/sdks/products/README.md#get_office_headline) - Returns a specific news headline for a given NWS office
 * [list_by_type](docs/sdks/products/README.md#list_by_type) - Returns a list of text products of a given type
-* [list_by_type_and_location](docs/sdks/products/README.md#list_by_type_and_location) - Returns a list of text products of a given type for a given issuance location
-* [list_locations](docs/sdks/products/README.md#list_locations) - Returns a list of valid text product issuance locations
+* [list_glossary_terms](docs/sdks/products/README.md#list_glossary_terms) - List glossary terms
+* [list_issuing_locations](docs/sdks/products/README.md#list_issuing_locations) - Returns a list of valid text product issuance locations
+* [list_locations_by_type](docs/sdks/products/README.md#list_locations_by_type) - Returns a list of valid text product issuance locations for a given product type
+* [list_office_headlines](docs/sdks/products/README.md#list_office_headlines) - Returns a list of news headlines for a given NWS office
+* [list_products](docs/sdks/products/README.md#list_products) - Returns a list of text products
 * [list_types](docs/sdks/products/README.md#list_types) - Returns a list of valid text product types and codes
 * [list_types_by_location](docs/sdks/products/README.md#list_types_by_location) - Returns a list of valid text product types for a given issuance location
 
 ### [radar](docs/sdks/radar/README.md)
 
-* [get_queue_metadata](docs/sdks/radar/README.md#get_queue_metadata) - Returns metadata about a given radar queue
-* [get_server_metadata](docs/sdks/radar/README.md#get_server_metadata) - Returns metadata about a given radar server
-* [get_station_alarms_metadata](docs/sdks/radar/README.md#get_station_alarms_metadata) - Returns metadata about a given radar station alarms
-* [get_station_metadata](docs/sdks/radar/README.md#get_station_metadata) - Returns metadata about a given radar station
-* [get_wind_profiler_metadata](docs/sdks/radar/README.md#get_wind_profiler_metadata) - Returns metadata about a given radar wind profiler
+* [get_profiler](docs/sdks/radar/README.md#get_profiler) - Returns metadata about a given radar wind profiler
+* [get_queue](docs/sdks/radar/README.md#get_queue) - Returns metadata about a given radar queue
+* [get_radar_station](docs/sdks/radar/README.md#get_radar_station) - Returns metadata about a given radar station
+* [get_server](docs/sdks/radar/README.md#get_server) - Returns metadata about a given radar server
+* [get_station_alarms](docs/sdks/radar/README.md#get_station_alarms) - Returns metadata about a given radar station alarms
 * [list_servers](docs/sdks/radar/README.md#list_servers) - Returns a list of radar servers
 * [list_stations](docs/sdks/radar/README.md#list_stations) - Returns a list of radar stations
 
-### [zones](docs/sdks/zones/README.md)
+### [stations](docs/sdks/stations/README.md)
 
-* [get_forecast](docs/sdks/zones/README.md#get_forecast) - Returns the current zone forecast for a given zone
-* [get_metadata](docs/sdks/zones/README.md#get_metadata) - Returns metadata about a given zone
-* [list](docs/sdks/zones/README.md#list) - Returns a list of zones
-* [list_by_type](docs/sdks/zones/README.md#list_by_type) - Returns a list of zones of a given type
-* [list_observations](docs/sdks/zones/README.md#list_observations) - Returns a list of observations for a given zone
-* [list_stations_by_zone](docs/sdks/zones/README.md#list_stations_by_zone) - Returns a list of observation stations for a given zone
+* [get_observations](docs/sdks/stations/README.md#get_observations) - Returns a list of observations for a given station
+* [get_station](docs/sdks/stations/README.md#get_station) - Returns metadata about a given observation station
 
 </details>
 <!-- End Available Resources and Operations [operations] -->
@@ -205,12 +232,49 @@ asyncio.run(main())
 
 <!-- No Retries [retries] -->
 
+<!-- Start Global Parameters [global-parameters] -->
+## Global Parameters
+
+A parameter is configured globally. This parameter may be set on the SDK client instance itself during initialization. When configured as an option during SDK initialization, This global value will be used as the default on the operations that use it. When such operations are called, there is a place in each to override the global value, if needed.
+
+For example, you can set `officeId` to `components.NWSOfficeID.MSO` at SDK initialization and then you do not have to pass the same value on calls to operations like `get_office`. But if you want to do so you may, which will locally override the global setting. See the example code below for a demonstration.
+
+
+### Available Globals
+
+The following global parameter is available.
+Global parameters can also be set via environment variable.
+
+| Name      | Type                   | Description   | Environment              |
+| --------- | ---------------------- | ------------- | ------------------------ |
+| office_id | components.NWSOfficeID | NWS office ID | NWS_API_CLIENT_OFFICE_ID |
+
+### Example
+
+```python
+from nws_api_client import NwsAPIClient
+from nws_api_client.models import components
+import os
+
+
+with NwsAPIClient(
+    user_agent=os.getenv("NWS_API_CLIENT_USER_AGENT", ""),
+) as nac_client:
+
+    res = nac_client.geographic.get_office(office_id=components.NWSOfficeID.GGW)
+
+    # Handle response
+    print(res)
+
+```
+<!-- End Global Parameters [global-parameters] -->
+
 <!-- Start Error Handling [errors] -->
 ## Error Handling
 
 Handling errors in this SDK should largely match your expectations. All operations return a response object or raise an exception.
 
-By default, an API error will raise a errors.APIError exception, which has the following properties:
+By default, an API error will raise a errors.NWSAPIError exception, which has the following properties:
 
 | Property        | Type             | Description           |
 |-----------------|------------------|-----------------------|
@@ -221,69 +285,34 @@ By default, an API error will raise a errors.APIError exception, which has the f
 
 When custom error responses are specified for an operation, the SDK may also raise their associated exceptions. You can refer to respective *Errors* tables in SDK docs for more details on possible exception types for each operation. For example, the `get_async` method may raise the following exceptions:
 
-| Error Type                 | Status Code                  | Content Type     |
-| -------------------------- | ---------------------------- | ---------------- |
-| errors.NotFoundError       | 404                          | application/json |
-| errors.UnauthorizedError   | 401, 403, 407                | application/json |
-| errors.TimeoutErrorT       | 408                          | application/json |
-| errors.RateLimitedError    | 429                          | application/json |
-| errors.BadRequestError     | 400, 413, 414, 415, 422, 431 | application/json |
-| errors.TimeoutErrorT       | 504                          | application/json |
-| errors.NotFoundError       | 501, 505                     | application/json |
-| errors.InternalServerError | 500, 502, 503, 506, 507, 508 | application/json |
-| errors.BadRequestError     | 510                          | application/json |
-| errors.UnauthorizedError   | 511                          | application/json |
-| errors.APIError            | 4XX, 5XX                     | \*/\*            |
+| Error Type                | Status Code | Content Type             |
+| ------------------------- | ----------- | ------------------------ |
+| errors.ProblemDetailError | 400         | application/problem+json |
+| errors.NWSAPIError        | 4XX, 5XX    | \*/\*                    |
 
 ### Example
 
 ```python
-from nws_api_client import NwsClient, errors
+from nws_api_client import NwsAPIClient
+from nws_api_client.models import errors
 import os
 
 
-with NwsClient(
-    user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
-) as nws_client:
+with NwsAPIClient(
+    user_agent=os.getenv("NWS_API_CLIENT_USER_AGENT", ""),
+) as nac_client:
     res = None
     try:
 
-        res = nws_client.alerts.get(id="<id>")
+        res = nac_client.alerts.get(id="urn:oid:2.49.0.1.840.0.404b3149af6da23b497bb9705fadc6ead564a967.005.1")
 
         # Handle response
         print(res)
 
-    except errors.NotFoundError as e:
-        # handle e.data: errors.NotFoundErrorData
+    except errors.ProblemDetailError as e:
+        # handle e.data: errors.ProblemDetailErrorData
         raise(e)
-    except errors.UnauthorizedError as e:
-        # handle e.data: errors.UnauthorizedErrorData
-        raise(e)
-    except errors.TimeoutErrorT as e:
-        # handle e.data: errors.TimeoutErrorTData
-        raise(e)
-    except errors.RateLimitedError as e:
-        # handle e.data: errors.RateLimitedErrorData
-        raise(e)
-    except errors.BadRequestError as e:
-        # handle e.data: errors.BadRequestErrorData
-        raise(e)
-    except errors.TimeoutErrorT as e:
-        # handle e.data: errors.TimeoutErrorTData
-        raise(e)
-    except errors.NotFoundError as e:
-        # handle e.data: errors.NotFoundErrorData
-        raise(e)
-    except errors.InternalServerError as e:
-        # handle e.data: errors.InternalServerErrorData
-        raise(e)
-    except errors.BadRequestError as e:
-        # handle e.data: errors.BadRequestErrorData
-        raise(e)
-    except errors.UnauthorizedError as e:
-        # handle e.data: errors.UnauthorizedErrorData
-        raise(e)
-    except errors.APIError as e:
+    except errors.NWSAPIError as e:
         # handle exception
         raise(e)
 ```
@@ -300,16 +329,16 @@ This allows you to wrap the client with your own custom logic, such as adding cu
 
 For example, you could specify a header for every request that this sdk makes as follows:
 ```python
-from nws_api_client import NwsClient
+from nws_api_client import NwsAPIClient
 import httpx
 
 http_client = httpx.Client(headers={"x-custom-header": "someValue"})
-s = NwsClient(client=http_client)
+s = NwsAPIClient(client=http_client)
 ```
 
 or you could wrap the client with your own custom logic:
 ```python
-from nws_api_client import NwsClient
+from nws_api_client import NwsAPIClient
 from nws_api_client.httpclient import AsyncHttpClient
 import httpx
 
@@ -368,34 +397,34 @@ class CustomClient(AsyncHttpClient):
             extensions=extensions,
         )
 
-s = NwsClient(async_client=CustomClient(httpx.AsyncClient()))
+s = NwsAPIClient(async_client=CustomClient(httpx.AsyncClient()))
 ```
 <!-- End Custom HTTP Client [http-client] -->
 
 <!-- Start Resource Management [resource-management] -->
 ## Resource Management
 
-The `NwsClient` class implements the context manager protocol and registers a finalizer function to close the underlying sync and async HTTPX clients it uses under the hood. This will close HTTP connections, release memory and free up other resources held by the SDK. In short-lived Python programs and notebooks that make a few SDK method calls, resource management may not be a concern. However, in longer-lived programs, it is beneficial to create a single SDK instance via a [context manager][context-manager] and reuse it across the application.
+The `NwsAPIClient` class implements the context manager protocol and registers a finalizer function to close the underlying sync and async HTTPX clients it uses under the hood. This will close HTTP connections, release memory and free up other resources held by the SDK. In short-lived Python programs and notebooks that make a few SDK method calls, resource management may not be a concern. However, in longer-lived programs, it is beneficial to create a single SDK instance via a [context manager][context-manager] and reuse it across the application.
 
 [context-manager]: https://docs.python.org/3/reference/datamodel.html#context-managers
 
 ```python
-from nws_api_client import NwsClient
+from nws_api_client import NwsAPIClient
 import os
 def main():
 
-    with NwsClient(
-        user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
-    ) as nws_client:
+    with NwsAPIClient(
+        user_agent=os.getenv("NWS_API_CLIENT_USER_AGENT", ""),
+    ) as nac_client:
         # Rest of application here...
 
 
 # Or when using async:
 async def amain():
 
-    async with NwsClient(
-        user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
-    ) as nws_client:
+    async with NwsAPIClient(
+        user_agent=os.getenv("NWS_API_CLIENT_USER_AGENT", ""),
+    ) as nac_client:
         # Rest of application here...
 ```
 <!-- End Resource Management [resource-management] -->
@@ -407,14 +436,14 @@ You can setup your SDK to emit debug logs for SDK requests and responses.
 
 You can pass your own logger class directly into your SDK.
 ```python
-from nws_api_client import NwsClient
+from nws_api_client import NwsAPIClient
 import logging
 
 logging.basicConfig(level=logging.DEBUG)
-s = NwsClient(debug_logger=logging.getLogger("nws_api_client"))
+s = NwsAPIClient(debug_logger=logging.getLogger("nws_api_client"))
 ```
 
-You can also enable a default debug logger by setting an environment variable `NWSCLIENT_DEBUG` to true.
+You can also enable a default debug logger by setting an environment variable `NWS_API_CLIENT_DEBUG` to true.
 <!-- End Debugging [debug] -->
 
 <!-- Placeholder for Future Speakeasy SDK Sections -->

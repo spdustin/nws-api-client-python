@@ -1,20 +1,20 @@
-speakeasyVersion: 1.542.0
+speakeasyVersion: 1.542.1
 sources:
     weather.gov API:
         sourceNamespace: weather-gov-api
-        sourceRevisionDigest: sha256:933119b29a707e713ca62bf97f369173e0cefae1617946d294f28894d5ea8084
-        sourceBlobDigest: sha256:68ed5fd3f39b5bcdfd347cac3ff62ffaed62a89d167cf2b2022b16726b451486
+        sourceRevisionDigest: sha256:858769793cf3a8eb5091b6382b4c4e6573c989cf426aea1cda97522332dcd5df
+        sourceBlobDigest: sha256:4a54048221cb86ac99290cc76a3de8e8185269f5dded7b5159a4eedad9cdaad8
         tags:
             - latest
-            - 2.0.0
+            - 3.1.0
 targets:
     nws-api-client:
         source: weather.gov API
         sourceNamespace: weather-gov-api
-        sourceRevisionDigest: sha256:933119b29a707e713ca62bf97f369173e0cefae1617946d294f28894d5ea8084
-        sourceBlobDigest: sha256:68ed5fd3f39b5bcdfd347cac3ff62ffaed62a89d167cf2b2022b16726b451486
+        sourceRevisionDigest: sha256:858769793cf3a8eb5091b6382b4c4e6573c989cf426aea1cda97522332dcd5df
+        sourceBlobDigest: sha256:4a54048221cb86ac99290cc76a3de8e8185269f5dded7b5159a4eedad9cdaad8
         codeSamplesNamespace: weather-gov-api-python-code-samples
-        codeSamplesRevisionDigest: sha256:801e06e9e6ca88be1e56c76e6c321ddb03d1c65a02c1a4cded47fee96785cc8a
+        codeSamplesRevisionDigest: sha256:ce3ef620241e9067cf7cbab38836f1679e6cdc954ea643de6beb5e9a9bcc3f4d
 workflow:
     workflowVersion: 1.0.0
     speakeasyVersion: latest
@@ -23,11 +23,11 @@ workflow:
             inputs:
                 - location: ./openapi.yaml
             overlays:
-                - location: ./openapi_overlay.yaml
-                - location: ./openapi_error_overlay.yaml
+                - location: ./openapi_overlay_operationids.yaml
             transformations:
                 - removeUnused: true
                 - cleanup: true
+            output: ./merged_openapi.yaml
             registry:
                 location: registry.speakeasyapi.dev/spdustin/weather/weather-gov-api
     targets:
@@ -38,6 +38,7 @@ workflow:
                 pypi:
                     token: $pypi_token
             codeSamples:
+                output: ./code_samples.yaml
                 registry:
                     location: registry.speakeasyapi.dev/spdustin/weather/weather-gov-api-python-code-samples
                 labelOverride:

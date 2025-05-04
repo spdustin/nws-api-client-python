@@ -2,12 +2,13 @@
 
 from .sdkconfiguration import SDKConfiguration
 import httpx
-from nws_api_client import errors, models, utils
+from nws_api_client import utils
 from nws_api_client._hooks import (
     AfterErrorContext,
     AfterSuccessContext,
     BeforeRequestContext,
 )
+from nws_api_client.models import components, errors
 from nws_api_client.utils import RetryConfig, SerializedRequestBody, get_body_content
 from typing import Callable, List, Mapping, Optional, Tuple
 from urllib.parse import parse_qs, urlparse
@@ -165,7 +166,7 @@ class BaseSDK:
         if security is not None:
             if callable(security):
                 security = security()
-        security = utils.get_security_from_env(security, models.Security)
+        security = utils.get_security_from_env(security, components.Security)
         if security is not None:
             security_headers, security_query_params = utils.get_security(security)
             headers = {**headers, **security_headers}
@@ -246,7 +247,7 @@ class BaseSDK:
 
             if http_res is None:
                 logger.debug("Raising no response SDK error")
-                raise errors.APIError("No response received")
+                raise errors.NWSAPIError("No response received")
 
             logger.debug(
                 "Response:\nStatus Code: %s\nURL: %s\nHeaders: %s\nBody: %s",
@@ -267,7 +268,7 @@ class BaseSDK:
                     http_res = result
                 else:
                     logger.debug("Raising unexpected SDK error")
-                    raise errors.APIError("Unexpected error occurred")
+                    raise errors.NWSAPIError("Unexpected error occurred")
 
             return http_res
 
@@ -322,7 +323,7 @@ class BaseSDK:
 
             if http_res is None:
                 logger.debug("Raising no response SDK error")
-                raise errors.APIError("No response received")
+                raise errors.NWSAPIError("No response received")
 
             logger.debug(
                 "Response:\nStatus Code: %s\nURL: %s\nHeaders: %s\nBody: %s",
@@ -343,7 +344,7 @@ class BaseSDK:
                     http_res = result
                 else:
                     logger.debug("Raising unexpected SDK error")
-                    raise errors.APIError("Unexpected error occurred")
+                    raise errors.NWSAPIError("Unexpected error occurred")
 
             return http_res
 

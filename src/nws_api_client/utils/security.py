@@ -64,8 +64,8 @@ def get_security_from_env(security: Any, security_class: Any) -> Optional[BaseMo
 
     security_dict: Any = {}
 
-    if os.getenv("NWSCLIENT_USER_AGENT"):
-        security_dict["user_agent"] = os.getenv("NWSCLIENT_USER_AGENT")
+    if os.getenv("NWS_API_CLIENT_USER_AGENT"):
+        security_dict["user_agent"] = os.getenv("NWS_API_CLIENT_USER_AGENT")
 
     return security_class(**security_dict) if security_dict else None
 

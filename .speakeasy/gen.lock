@@ -1,12 +1,12 @@
 lockVersion: 2.0.0
 id: 52b1f0b7-2169-4145-80a9-5b7af99f87aa
 management:
-  docChecksum: c321d12b2760d4aff6b4e865f2c6c3b6
-  docVersion: 2.0.0
-  speakeasyVersion: 1.542.0
-  generationVersion: 2.596.2
-  releaseVersion: 0.11.0
-  configChecksum: e1e2a82894b53526bffb565e99dd09b6
+  docChecksum: e98ac14ed548a77d77b6c3f692c5735b
+  docVersion: 3.1.0
+  speakeasyVersion: 1.542.1
+  generationVersion: 2.597.9
+  releaseVersion: 0.13.1
+  configChecksum: 325acce30faf421efc21fccbd694eb0d
   repoURL: https://github.com/spdustin/nws-api-client-python.git
   installationURL: https://github.com/spdustin/nws-api-client-python.git
   published: true
@@ -28,6 +28,7 @@ features:
     globalSecurityCallbacks: 1.0.0
     globalSecurityFlattening: 1.0.0
     globalServerURLs: 3.1.0
+    globals: 3.0.0
     groups: 3.0.0
     methodArguments: 1.0.2
     nameOverrides: 3.0.1
@@ -44,335 +45,297 @@ generatedFiles:
   - .python-version
   - .vscode/settings.json
   - USAGE.md
-  - docs/errors/badrequesterror.md
-  - docs/errors/internalservererror.md
-  - docs/errors/notfounderror.md
-  - docs/errors/ratelimitederror.md
-  - docs/errors/timeouterrort.md
-  - docs/errors/unauthorizederror.md
-  - docs/models/address.md
-  - docs/models/alert.md
-  - docs/models/alertatomentry.md
-  - docs/models/alertatomentryauthor.md
-  - docs/models/alertatomfeed.md
-  - docs/models/alertatomfeedauthor.md
-  - docs/models/alertcap.md
-  - docs/models/alertcertainty.md
-  - docs/models/alertcollectiongeojson.md
-  - docs/models/alertcollectiongeojsonfeature.md
-  - docs/models/alertcollectiongeojsontype.md
-  - docs/models/alertcollectionjsonld.md
-  - docs/models/alertgeojson.md
-  - docs/models/alertgeojsontype.md
-  - docs/models/alertjsonld.md
-  - docs/models/alertmessagetype.md
-  - docs/models/alertmessagetypeparameter.md
-  - docs/models/alertregiontype.md
-  - docs/models/alertseverity.md
-  - docs/models/alertstatus.md
-  - docs/models/alertstatusparameter.md
-  - docs/models/alerturgency.md
-  - docs/models/alertxmlparameter.md
-  - docs/models/area.md
-  - docs/models/areacode.md
-  - docs/models/atgraph.md
-  - docs/models/attribute.md
-  - docs/models/attypegovernmentorganization.md
-  - docs/models/attypepostaladdress.md
-  - docs/models/category.md
-  - docs/models/centerweatheradvisory.md
-  - docs/models/centerweatheradvisorycollectiongeojson.md
-  - docs/models/centerweatheradvisorycollectiongeojsonfeature.md
-  - docs/models/centerweatheradvisorycollectiongeojsontype.md
-  - docs/models/centerweatheradvisorygeojson.md
-  - docs/models/centerweatheradvisorygeojsontype.md
-  - docs/models/centerweatherserviceunitjsonld.md
-  - docs/models/cloudlayer.md
-  - docs/models/coverage.md
-  - docs/models/geocode.md
-  - docs/models/geojsongeometry.md
-  - docs/models/geojsonlinestring.md
-  - docs/models/geojsonmultilinestring.md
-  - docs/models/geojsonmultipoint.md
-  - docs/models/geojsonmultipolygon.md
-  - docs/models/geojsonpoint.md
-  - docs/models/geojsonpolygon.md
-  - docs/models/getalertrequest.md
-  - docs/models/getalertresponse.md
-  - docs/models/getalertresponseresult.md
-  - docs/models/getcwsurequest.md
-  - docs/models/getcwsuresponse.md
-  - docs/models/getcwsuresponseresult.md
-  - docs/models/getgridpointforecastrequest.md
-  - docs/models/getgridpointforecastresponse.md
-  - docs/models/getgridpointforecastresponseresult.md
-  - docs/models/getgridpointhourlyforecastrequest.md
-  - docs/models/getgridpointhourlyforecastresponse.md
-  - docs/models/getgridpointhourlyforecastresponseresult.md
-  - docs/models/getgridpointrawforecastrequest.md
-  - docs/models/getgridpointrawforecastresponse.md
-  - docs/models/getgridpointrawforecastresponseresult.md
-  - docs/models/getlatestobservationbystationrequest.md
-  - docs/models/getlatestobservationbystationresponse.md
-  - docs/models/getlatestobservationbystationresponseresult.md
-  - docs/models/getobservationbystationrequest.md
-  - docs/models/getobservationbystationresponse.md
-  - docs/models/getobservationbystationresponseresult.md
-  - docs/models/getobservationstationmetadatarequest.md
-  - docs/models/getobservationstationmetadataresponse.md
-  - docs/models/getobservationstationmetadataresponseresult.md
-  - docs/models/getofficeheadlinerequest.md
-  - docs/models/getofficeheadlineresponse.md
-  - docs/models/getofficeheadlineresponseresult.md
-  - docs/models/getofficemetadatarequest.md
-  - docs/models/getofficemetadataresponse.md
-  - docs/models/getpointmetadatarequest.md
-  - docs/models/getpointmetadataresponse.md
-  - docs/models/getpointmetadataresponseresult.md
-  - docs/models/getproductbyidrequest.md
-  - docs/models/getproductbyidresponse.md
-  - docs/models/getproductbyidresponseresult.md
-  - docs/models/getradarqueuemetadatarequest.md
-  - docs/models/getradarqueuemetadataresponse.md
-  - docs/models/getradarqueuemetadataresponseresult.md
-  - docs/models/getradarservermetadatarequest.md
-  - docs/models/getradarservermetadataresponse.md
-  - docs/models/getradarservermetadataresponseresult.md
-  - docs/models/getradarstationalarmsmetadatarequest.md
-  - docs/models/getradarstationalarmsmetadataresponse.md
-  - docs/models/getradarstationalarmsmetadataresponseresult.md
-  - docs/models/getradarstationmetadatarequest.md
-  - docs/models/getradarstationmetadataresponse.md
-  - docs/models/getradarstationmetadataresponseresult.md
-  - docs/models/getradarwindprofilermetadatarequest.md
-  - docs/models/getradarwindprofilermetadataresponse.md
-  - docs/models/getradarwindprofilermetadataresponseresult.md
-  - docs/models/getsigmetrequest.md
-  - docs/models/getsigmetresponse.md
-  - docs/models/getsigmetresponseresult.md
-  - docs/models/gettafrequest.md
-  - docs/models/gettafresponse.md
-  - docs/models/gettafresponseresult.md
-  - docs/models/getzoneforecastrequest.md
-  - docs/models/getzoneforecastresponse.md
-  - docs/models/getzoneforecastresponseresult.md
-  - docs/models/getzonemetadatarequest.md
-  - docs/models/getzonemetadataresponse.md
-  - docs/models/getzonemetadataresponseresult.md
-  - docs/models/gridpoint.md
-  - docs/models/gridpointattype.md
-  - docs/models/gridpointforecast.md
-  - docs/models/gridpointforecastfeatureflags.md
-  - docs/models/gridpointforecastgeojson.md
-  - docs/models/gridpointforecastgeojsontype.md
-  - docs/models/gridpointforecastjsonld.md
-  - docs/models/gridpointforecastperiod.md
-  - docs/models/gridpointforecastperiodqualitycontrol.md
-  - docs/models/gridpointforecastperiodquantitativevalue.md
-  - docs/models/gridpointforecastunits.md
-  - docs/models/gridpointgeojson.md
-  - docs/models/gridpointgeojsontype.md
-  - docs/models/gridpointintensity.md
-  - docs/models/gridpointquantitativevaluelayer.md
-  - docs/models/gridpointquantitativevaluelayervalue.md
-  - docs/models/gridpointweather.md
-  - docs/models/hazards.md
-  - docs/models/hazardsvalue1.md
-  - docs/models/hazardsvalue2.md
-  - docs/models/jsonldcontext.md
-  - docs/models/jsonldcontextunion.md
-  - docs/models/landregioncode.md
-  - docs/models/listactivealertcountsresponse.md
-  - docs/models/listactivealertcountsresponsebody.md
-  - docs/models/listactivealertcountsresponseresult.md
-  - docs/models/listactivealertsbyarearequest.md
-  - docs/models/listactivealertsbyarearesponse.md
-  - docs/models/listactivealertsbyarearesponseresult.md
-  - docs/models/listactivealertsbyregionrequest.md
-  - docs/models/listactivealertsbyregionresponse.md
-  - docs/models/listactivealertsbyregionresponseresult.md
-  - docs/models/listactivealertsbyzonerequest.md
-  - docs/models/listactivealertsbyzoneresponse.md
-  - docs/models/listactivealertsbyzoneresponseresult.md
-  - docs/models/listactivealertsrequest.md
-  - docs/models/listactivealertsresponse.md
-  - docs/models/listactivealertsresponseresult.md
-  - docs/models/listalerttypesresponse.md
-  - docs/models/listalerttypesresponsebody.md
-  - docs/models/listalerttypesresponseresult.md
-  - docs/models/listcwasbydateandsequencerequest.md
-  - docs/models/listcwasbydateandsequenceresponse.md
-  - docs/models/listcwasbydateandsequenceresponseresult.md
-  - docs/models/listcwasrequest.md
-  - docs/models/listcwasresponse.md
-  - docs/models/listcwasresponseresult.md
-  - docs/models/listlocationsbyproducttyperequest.md
-  - docs/models/listlocationsbyproducttyperesponse.md
-  - docs/models/listlocationsbyproducttyperesponseresult.md
-  - docs/models/listobservationsbystationrequest.md
-  - docs/models/listobservationsbystationresponse.md
-  - docs/models/listobservationsbystationresponseresult.md
-  - docs/models/listobservationsbyzonerequest.md
-  - docs/models/listobservationsbyzoneresponse.md
-  - docs/models/listobservationsbyzoneresponseresult.md
-  - docs/models/listobservationstationsbygridpointrequest.md
-  - docs/models/listobservationstationsbygridpointresponse.md
-  - docs/models/listobservationstationsbygridpointresponseresult.md
-  - docs/models/listobservationstationsbyzonerequest.md
-  - docs/models/listobservationstationsbyzoneresponse.md
-  - docs/models/listobservationstationsbyzoneresponseresult.md
-  - docs/models/listobservationstationsrequest.md
-  - docs/models/listobservationstationsresponse.md
-  - docs/models/listobservationstationsresponseresult.md
-  - docs/models/listofficeheadlinesrequest.md
-  - docs/models/listofficeheadlinesresponse.md
-  - docs/models/listofficeheadlinesresponseresult.md
-  - docs/models/listproductlocationsresponse.md
-  - docs/models/listproductlocationsresponseresult.md
-  - docs/models/listproductsbytypeandlocationrequest.md
-  - docs/models/listproductsbytypeandlocationresponse.md
-  - docs/models/listproductsbytypeandlocationresponseresult.md
-  - docs/models/listproductsbytyperequest.md
-  - docs/models/listproductsbytyperesponse.md
-  - docs/models/listproductsbytyperesponseresult.md
-  - docs/models/listproductsrequest.md
-  - docs/models/listproductsresponse.md
-  - docs/models/listproductsresponseresult.md
-  - docs/models/listproducttypesbylocationrequest.md
-  - docs/models/listproducttypesbylocationresponse.md
-  - docs/models/listproducttypesbylocationresponseresult.md
-  - docs/models/listproducttypesresponse.md
-  - docs/models/listproducttypesresponseresult.md
-  - docs/models/listradarserversrequest.md
-  - docs/models/listradarserversresponse.md
-  - docs/models/listradarserversresponseresult.md
-  - docs/models/listradarstationsrequest.md
-  - docs/models/listradarstationsresponse.md
-  - docs/models/listradarstationsresponseresult.md
-  - docs/models/listsigmetsbyatsuanddaterequest.md
-  - docs/models/listsigmetsbyatsuanddateresponse.md
-  - docs/models/listsigmetsbyatsuanddateresponseresult.md
-  - docs/models/listsigmetsbyatsurequest.md
-  - docs/models/listsigmetsbyatsuresponse.md
-  - docs/models/listsigmetsbyatsuresponseresult.md
-  - docs/models/listsigmetsrequest.md
-  - docs/models/listsigmetsresponse.md
-  - docs/models/listsigmetsresponseresult.md
-  - docs/models/listtafsrequest.md
-  - docs/models/listtafsresponse.md
-  - docs/models/listtafsresponseresult.md
-  - docs/models/listtermsglossary.md
-  - docs/models/listtermsresponse.md
-  - docs/models/listtermsresponsebody.md
-  - docs/models/listtermsresponseresult.md
-  - docs/models/listzonesbytyperequest.md
-  - docs/models/listzonesbytyperesponse.md
-  - docs/models/listzonesbytyperesponseresult.md
-  - docs/models/listzonesrequest.md
-  - docs/models/listzonesresponse.md
-  - docs/models/listzonesresponseresult.md
-  - docs/models/marineregioncode.md
-  - docs/models/metarphenomenon.md
-  - docs/models/metarphenomenonintensity.md
-  - docs/models/metarphenomenonweather.md
-  - docs/models/metarskycoverage.md
-  - docs/models/modifier.md
-  - docs/models/nwscenterweatherserviceunitid.md
-  - docs/models/nwsforecastofficeid.md
-  - docs/models/nwsofficeid.md
-  - docs/models/nwszonetype.md
-  - docs/models/observation.md
-  - docs/models/observationattype.md
-  - docs/models/observationcollectiongeojson.md
-  - docs/models/observationcollectiongeojsonfeature.md
-  - docs/models/observationcollectiongeojsontype.md
-  - docs/models/observationcollectionjsonld.md
-  - docs/models/observationgeojson.md
-  - docs/models/observationgeojsontype.md
-  - docs/models/observationstation.md
-  - docs/models/observationstationattype.md
-  - docs/models/observationstationcollectiongeojson.md
-  - docs/models/observationstationcollectiongeojsonfeature.md
-  - docs/models/observationstationcollectiongeojsontype.md
-  - docs/models/observationstationcollectionjsonld.md
-  - docs/models/observationstationgeojson.md
-  - docs/models/observationstationgeojsontype.md
-  - docs/models/observationstationjsonld.md
-  - docs/models/observationstationjsonldattype.md
-  - docs/models/officeheadline.md
-  - docs/models/officeheadlinecollection.md
-  - docs/models/paginationinfo.md
-  - docs/models/period.md
-  - docs/models/point.md
-  - docs/models/pointattype.md
-  - docs/models/pointgeojson.md
-  - docs/models/pointgeojsontype.md
-  - docs/models/pointjsonld.md
-  - docs/models/pointjsonldattype.md
-  - docs/models/pointjsonldrelativelocation.md
-  - docs/models/pointrelativelocation.md
-  - docs/models/problemdetail.md
-  - docs/models/qualitycontrol.md
-  - docs/models/quantitativevalue.md
-  - docs/models/reference.md
-  - docs/models/regioncode.md
-  - docs/models/relativelocation.md
-  - docs/models/relativelocationgeojson.md
-  - docs/models/relativelocationgeojsontype.md
-  - docs/models/relativelocationjsonld.md
-  - docs/models/response.md
-  - docs/models/security.md
-  - docs/models/sigmet.md
-  - docs/models/sigmetcollectiongeojson.md
-  - docs/models/sigmetcollectiongeojsontype.md
-  - docs/models/sigmetgeojson.md
-  - docs/models/sigmetgeojsontype.md
-  - docs/models/state.md
-  - docs/models/stateenum.md
-  - docs/models/stateterritorycode.md
-  - docs/models/temperature.md
-  - docs/models/temperaturetrend.md
-  - docs/models/temperatureunit.md
-  - docs/models/textproduct.md
-  - docs/models/textproductcollection.md
-  - docs/models/textproductlocationcollection.md
-  - docs/models/textproducttypecollection.md
-  - docs/models/typelinestring.md
-  - docs/models/typemultilinestring.md
-  - docs/models/typemultipoint.md
-  - docs/models/typemultipolygon.md
-  - docs/models/typepoint.md
-  - docs/models/typepolygon.md
+  - docs/models/components/address.md
+  - docs/models/components/alert.md
+  - docs/models/components/alertcertainty.md
+  - docs/models/components/alertcollectiongeojson.md
+  - docs/models/components/alertcollectiongeojsonfeature.md
+  - docs/models/components/alertcollectiongeojsontype.md
+  - docs/models/components/alertcollectionjsonld.md
+  - docs/models/components/alertgeojson.md
+  - docs/models/components/alertgeojsontype.md
+  - docs/models/components/alertjsonld.md
+  - docs/models/components/alertmessagetype.md
+  - docs/models/components/alertmessagetypeparameter.md
+  - docs/models/components/alertregiontype.md
+  - docs/models/components/alertsactivecount.md
+  - docs/models/components/alertseverity.md
+  - docs/models/components/alertstatus.md
+  - docs/models/components/alertstatusparameter.md
+  - docs/models/components/alertstypes.md
+  - docs/models/components/alerturgency.md
+  - docs/models/components/areacode.md
+  - docs/models/components/atgraph.md
+  - docs/models/components/attribute.md
+  - docs/models/components/attypegovernmentorganization.md
+  - docs/models/components/attypepostaladdress.md
+  - docs/models/components/category.md
+  - docs/models/components/centerweatheradvisory.md
+  - docs/models/components/centerweatheradvisorycollectiongeojson.md
+  - docs/models/components/centerweatheradvisorycollectiongeojsonfeature.md
+  - docs/models/components/centerweatheradvisorycollectiongeojsontype.md
+  - docs/models/components/centerweatheradvisorygeojson.md
+  - docs/models/components/centerweatheradvisorygeojsontype.md
+  - docs/models/components/centerweatherserviceunitjsonld.md
+  - docs/models/components/cloudlayer.md
+  - docs/models/components/coverage.md
+  - docs/models/components/geocode.md
+  - docs/models/components/geojsongeometry.md
+  - docs/models/components/geojsonlinestring.md
+  - docs/models/components/geojsonmultilinestring.md
+  - docs/models/components/geojsonmultipoint.md
+  - docs/models/components/geojsonmultipolygon.md
+  - docs/models/components/geojsonpoint.md
+  - docs/models/components/geojsonpolygon.md
+  - docs/models/components/glossary.md
+  - docs/models/components/glossaryterm.md
+  - docs/models/components/gridpoint.md
+  - docs/models/components/gridpointattype.md
+  - docs/models/components/gridpointforecast.md
+  - docs/models/components/gridpointforecastfeatureflags.md
+  - docs/models/components/gridpointforecastgeojson.md
+  - docs/models/components/gridpointforecastgeojsontype.md
+  - docs/models/components/gridpointforecastjsonld.md
+  - docs/models/components/gridpointforecastperiod.md
+  - docs/models/components/gridpointforecastunits.md
+  - docs/models/components/gridpointgeojson.md
+  - docs/models/components/gridpointgeojsontype.md
+  - docs/models/components/gridpointintensity.md
+  - docs/models/components/gridpointquantitativevaluelayer.md
+  - docs/models/components/gridpointquantitativevaluelayervalue.md
+  - docs/models/components/gridpointweather.md
+  - docs/models/components/hazards.md
+  - docs/models/components/hazardsvalue1.md
+  - docs/models/components/hazardsvalue2.md
+  - docs/models/components/jsonldcontext.md
+  - docs/models/components/jsonldcontextunion.md
+  - docs/models/components/landregioncode.md
+  - docs/models/components/marineregioncode.md
+  - docs/models/components/metarphenomenon.md
+  - docs/models/components/metarphenomenonintensity.md
+  - docs/models/components/metarphenomenonweather.md
+  - docs/models/components/metarskycoverage.md
+  - docs/models/components/modifier.md
+  - docs/models/components/nwscenterweatherserviceunitid.md
+  - docs/models/components/nwsforecastofficeid.md
+  - docs/models/components/nwsofficeid.md
+  - docs/models/components/nwszonetype.md
+  - docs/models/components/observation.md
+  - docs/models/components/observationattype.md
+  - docs/models/components/observationcollectiongeojson.md
+  - docs/models/components/observationcollectiongeojsonfeature.md
+  - docs/models/components/observationcollectiongeojsontype.md
+  - docs/models/components/observationcollectionjsonld.md
+  - docs/models/components/observationgeojson.md
+  - docs/models/components/observationgeojsontype.md
+  - docs/models/components/observationstation.md
+  - docs/models/components/observationstationattype.md
+  - docs/models/components/observationstationcollectiongeojson.md
+  - docs/models/components/observationstationcollectiongeojsonfeature.md
+  - docs/models/components/observationstationcollectiongeojsontype.md
+  - docs/models/components/observationstationcollectionjsonld.md
+  - docs/models/components/observationstationgeojson.md
+  - docs/models/components/observationstationgeojsontype.md
+  - docs/models/components/observationstationjsonld.md
+  - docs/models/components/observationstationjsonldattype.md
+  - docs/models/components/officeheadline.md
+  - docs/models/components/officeheadlinecollection.md
+  - docs/models/components/paginationinfo.md
+  - docs/models/components/period.md
+  - docs/models/components/point.md
+  - docs/models/components/pointattype.md
+  - docs/models/components/pointgeojson.md
+  - docs/models/components/pointgeojsontype.md
+  - docs/models/components/pointjsonld.md
+  - docs/models/components/pointjsonldattype.md
+  - docs/models/components/pointjsonldrelativelocation.md
+  - docs/models/components/pointrelativelocation.md
+  - docs/models/components/qualitycontrol.md
+  - docs/models/components/quantitativevalue.md
+  - docs/models/components/reference.md
+  - docs/models/components/regioncode.md
+  - docs/models/components/relativelocation.md
+  - docs/models/components/relativelocationgeojson.md
+  - docs/models/components/relativelocationgeojsontype.md
+  - docs/models/components/relativelocationjsonld.md
+  - docs/models/components/response.md
+  - docs/models/components/security.md
+  - docs/models/components/sigmet.md
+  - docs/models/components/sigmetcollectiongeojson.md
+  - docs/models/components/sigmetcollectiongeojsontype.md
+  - docs/models/components/sigmetgeojson.md
+  - docs/models/components/sigmetgeojsontype.md
+  - docs/models/components/state.md
+  - docs/models/components/stateenum.md
+  - docs/models/components/stateterritorycode.md
+  - docs/models/components/temperature.md
+  - docs/models/components/temperaturetrend.md
+  - docs/models/components/temperatureunit.md
+  - docs/models/components/textproduct.md
+  - docs/models/components/textproductcollection.md
+  - docs/models/components/textproductlocationcollection.md
+  - docs/models/components/textproducttypecollection.md
+  - docs/models/components/typelinestring.md
+  - docs/models/components/typemultilinestring.md
+  - docs/models/components/typemultipoint.md
+  - docs/models/components/typemultipolygon.md
+  - docs/models/components/typepoint.md
+  - docs/models/components/typepolygon.md
+  - docs/models/components/valueweather.md
+  - docs/models/components/weathervalue1.md
+  - docs/models/components/weathervalue2.md
+  - docs/models/components/winddirection.md
+  - docs/models/components/windgust.md
+  - docs/models/components/windspeed.md
+  - docs/models/components/zone.md
+  - docs/models/components/zoneattype.md
+  - docs/models/components/zonecollectiongeojson.md
+  - docs/models/components/zonecollectiongeojsonfeature.md
+  - docs/models/components/zonecollectiongeojsontype.md
+  - docs/models/components/zonecollectionjsonld.md
+  - docs/models/components/zoneforecast.md
+  - docs/models/components/zoneforecastgeojson.md
+  - docs/models/components/zoneforecastgeojsontype.md
+  - docs/models/components/zonegeojson.md
+  - docs/models/components/zonegeojsontype.md
+  - docs/models/errors/problemdetailerror.md
+  - docs/models/internal/globals.md
+  - docs/models/operations/getactivealertsbyarearequest.md
+  - docs/models/operations/getactivealertsbyarearesponse.md
+  - docs/models/operations/getactivealertsbyarearesponseresult.md
+  - docs/models/operations/getactivealertsbymarineregionrequest.md
+  - docs/models/operations/getactivealertsbymarineregionresponse.md
+  - docs/models/operations/getactivealertsbymarineregionresponseresult.md
+  - docs/models/operations/getactivealertsbyzonerequest.md
+  - docs/models/operations/getactivealertsbyzoneresponse.md
+  - docs/models/operations/getactivealertsbyzoneresponseresult.md
+  - docs/models/operations/getactivealertscountresponse.md
+  - docs/models/operations/getactivealertsrequest.md
+  - docs/models/operations/getactivealertsresponse.md
+  - docs/models/operations/getactivealertsresponseresult.md
+  - docs/models/operations/getalertrequest.md
+  - docs/models/operations/getalertresponse.md
+  - docs/models/operations/getalertresponseresult.md
+  - docs/models/operations/getalerttypesresponse.md
+  - docs/models/operations/getcwasbycwsufordateandsequencerequest.md
+  - docs/models/operations/getcwasbycwsufordateandsequenceresponse.md
+  - docs/models/operations/getcwasbycwsufordateandsequenceresponseresult.md
+  - docs/models/operations/getcwasbycwsurequest.md
+  - docs/models/operations/getcwasbycwsuresponse.md
+  - docs/models/operations/getcwsurequest.md
+  - docs/models/operations/getcwsuresponse.md
+  - docs/models/operations/getforecastrawrequest.md
+  - docs/models/operations/getforecastrawresponse.md
+  - docs/models/operations/getforecastrawresponseresult.md
+  - docs/models/operations/getforecastrequest.md
+  - docs/models/operations/getforecastresponse.md
+  - docs/models/operations/getforecastresponseresult.md
+  - docs/models/operations/getglossarytermsresponse.md
+  - docs/models/operations/getgridpointobservationstationsrequest.md
+  - docs/models/operations/getgridpointobservationstationsresponse.md
+  - docs/models/operations/getgridpointobservationstationsresponseresult.md
+  - docs/models/operations/gethourlyforecastrequest.md
+  - docs/models/operations/gethourlyforecastresponse.md
+  - docs/models/operations/gethourlyforecastresponseresult.md
+  - docs/models/operations/getlatestobservationrequest.md
+  - docs/models/operations/getlatestobservationresponse.md
+  - docs/models/operations/getlatestobservationresponseresult.md
+  - docs/models/operations/getlatlonginforequest.md
+  - docs/models/operations/getlatlonginforesponse.md
+  - docs/models/operations/getlatlonginforesponseresult.md
+  - docs/models/operations/getlocationsbyproducttyperequest.md
+  - docs/models/operations/getlocationsbyproducttyperesponse.md
+  - docs/models/operations/getobservationrequest.md
+  - docs/models/operations/getobservationresponse.md
+  - docs/models/operations/getobservationresponseresult.md
+  - docs/models/operations/getobservationsrequest.md
+  - docs/models/operations/getobservationsresponse.md
+  - docs/models/operations/getobservationsresponseresult.md
+  - docs/models/operations/getobservationstationinforequest.md
+  - docs/models/operations/getobservationstationinforesponse.md
+  - docs/models/operations/getobservationstationinforesponseresult.md
+  - docs/models/operations/getobservationstationsrequest.md
+  - docs/models/operations/getobservationstationsresponse.md
+  - docs/models/operations/getobservationstationsresponseresult.md
+  - docs/models/operations/getofficeheadlineglobals.md
+  - docs/models/operations/getofficeheadlinerequest.md
+  - docs/models/operations/getofficeheadlineresponse.md
+  - docs/models/operations/getofficeheadlinesglobals.md
+  - docs/models/operations/getofficeheadlinesrequest.md
+  - docs/models/operations/getofficeheadlinesresponse.md
+  - docs/models/operations/getofficeinfoglobals.md
+  - docs/models/operations/getofficeinforequest.md
+  - docs/models/operations/getofficeinforesponse.md
+  - docs/models/operations/getproductlocationsresponse.md
+  - docs/models/operations/getproductrequest.md
+  - docs/models/operations/getproductresponse.md
+  - docs/models/operations/getproductsbytypeandlocationrequest.md
+  - docs/models/operations/getproductsbytypeandlocationresponse.md
+  - docs/models/operations/getproductsbytyperequest.md
+  - docs/models/operations/getproductsbytyperesponse.md
+  - docs/models/operations/getproductsrequest.md
+  - docs/models/operations/getproductsresponse.md
+  - docs/models/operations/getproducttypesbylocationrequest.md
+  - docs/models/operations/getproducttypesbylocationresponse.md
+  - docs/models/operations/getproducttypesresponse.md
+  - docs/models/operations/getradarprofilerinforequest.md
+  - docs/models/operations/getradarprofilerinforesponse.md
+  - docs/models/operations/getradarserverrequest.md
+  - docs/models/operations/getradarserverresponse.md
+  - docs/models/operations/getradarserversrequest.md
+  - docs/models/operations/getradarserversresponse.md
+  - docs/models/operations/getradarstationalarmsrequest.md
+  - docs/models/operations/getradarstationalarmsresponse.md
+  - docs/models/operations/getradarstationinforequest.md
+  - docs/models/operations/getradarstationinforesponse.md
+  - docs/models/operations/getradarstationinforesponseresult.md
+  - docs/models/operations/getradarstationqueuerequest.md
+  - docs/models/operations/getradarstationqueueresponse.md
+  - docs/models/operations/getradarstationsrequest.md
+  - docs/models/operations/getradarstationsresponse.md
+  - docs/models/operations/getradarstationsresponseresult.md
+  - docs/models/operations/getsigmetrequest.md
+  - docs/models/operations/getsigmetresponse.md
+  - docs/models/operations/getsigmetresponseresult.md
+  - docs/models/operations/getsigmetsbyatsufordaterequest.md
+  - docs/models/operations/getsigmetsbyatsufordateresponse.md
+  - docs/models/operations/getsigmetsbyatsurequest.md
+  - docs/models/operations/getsigmetsbyatsuresponse.md
+  - docs/models/operations/getsigmetsrequest.md
+  - docs/models/operations/getsigmetsresponse.md
+  - docs/models/operations/gettafrequest.md
+  - docs/models/operations/gettafresponse.md
+  - docs/models/operations/gettafsrequest.md
+  - docs/models/operations/gettafsresponse.md
+  - docs/models/operations/getzoneforecastrequest.md
+  - docs/models/operations/getzoneforecastresponse.md
+  - docs/models/operations/getzoneforecastresponseresult.md
+  - docs/models/operations/getzoneinforequest.md
+  - docs/models/operations/getzoneinforesponse.md
+  - docs/models/operations/getzoneinforesponseresult.md
+  - docs/models/operations/getzoneobservationsrequest.md
+  - docs/models/operations/getzoneobservationsresponse.md
+  - docs/models/operations/getzoneobservationsresponseresult.md
+  - docs/models/operations/getzonesbytyperequest.md
+  - docs/models/operations/getzonesbytyperesponse.md
+  - docs/models/operations/getzonesbytyperesponseresult.md
+  - docs/models/operations/getzonesrequest.md
+  - docs/models/operations/getzonesresponse.md
+  - docs/models/operations/getzonesresponseresult.md
+  - docs/models/operations/getzonestationsrequest.md
+  - docs/models/operations/getzonestationsresponse.md
+  - docs/models/operations/getzonestationsresponseresult.md
   - docs/models/utils/retryconfig.md
-  - docs/models/valueweather.md
-  - docs/models/weathervalue1.md
-  - docs/models/weathervalue2.md
-  - docs/models/winddirection.md
-  - docs/models/windgust.md
-  - docs/models/windspeed.md
-  - docs/models/zone.md
-  - docs/models/zoneattype.md
-  - docs/models/zonecollectiongeojson.md
-  - docs/models/zonecollectiongeojsonfeature.md
-  - docs/models/zonecollectiongeojsontype.md
-  - docs/models/zonecollectionjsonld.md
-  - docs/models/zoneforecast.md
-  - docs/models/zoneforecastgeojson.md
-  - docs/models/zoneforecastgeojsontype.md
-  - docs/models/zonegeojson.md
-  - docs/models/zonegeojsontype.md
   - docs/sdks/alerts/README.md
   - docs/sdks/aviation/README.md
-  - docs/sdks/glossarysdk/README.md
-  - docs/sdks/gridpoints/README.md
-  - docs/sdks/nwsclient/README.md
-  - docs/sdks/observations/README.md
-  - docs/sdks/observationstations/README.md
-  - docs/sdks/offices/README.md
-  - docs/sdks/points/README.md
+  - docs/sdks/conditions/README.md
+  - docs/sdks/forecasts/README.md
+  - docs/sdks/geographic/README.md
+  - docs/sdks/metadata/README.md
+  - docs/sdks/nwsapiclient/README.md
   - docs/sdks/products/README.md
   - docs/sdks/radar/README.md
-  - docs/sdks/zones/README.md
+  - docs/sdks/stations/README.md
   - poetry.toml
   - py.typed
   - pylintrc
@@ -387,155 +350,152 @@ generatedFiles:
   - src/nws_api_client/alerts.py
   - src/nws_api_client/aviation.py
   - src/nws_api_client/basesdk.py
-  - src/nws_api_client/errors/__init__.py
-  - src/nws_api_client/errors/apierror.py
-  - src/nws_api_client/errors/badrequest_error.py
-  - src/nws_api_client/errors/internalservererror.py
-  - src/nws_api_client/errors/notfound_error.py
-  - src/nws_api_client/errors/ratelimited_error.py
-  - src/nws_api_client/errors/timeout_error.py
-  - src/nws_api_client/errors/unauthorized_error.py
-  - src/nws_api_client/glossary_sdk.py
-  - src/nws_api_client/gridpoints.py
+  - src/nws_api_client/conditions.py
+  - src/nws_api_client/forecasts.py
+  - src/nws_api_client/geographic.py
   - src/nws_api_client/httpclient.py
+  - src/nws_api_client/metadata.py
   - src/nws_api_client/models/__init__.py
-  - src/nws_api_client/models/alert.py
-  - src/nws_api_client/models/alertatomentry.py
-  - src/nws_api_client/models/alertatomfeed.py
-  - src/nws_api_client/models/alertcap.py
-  - src/nws_api_client/models/alertcertainty.py
-  - src/nws_api_client/models/alertcollectiongeojson.py
-  - src/nws_api_client/models/alertcollectionjsonld.py
-  - src/nws_api_client/models/alertgeojson.py
-  - src/nws_api_client/models/alertjsonld.py
-  - src/nws_api_client/models/alertmessagetype.py
-  - src/nws_api_client/models/alertmessagetype_parameter.py
-  - src/nws_api_client/models/alertregiontype.py
-  - src/nws_api_client/models/alertseverity.py
-  - src/nws_api_client/models/alertstatus.py
-  - src/nws_api_client/models/alertstatus_parameter.py
-  - src/nws_api_client/models/alerturgency.py
-  - src/nws_api_client/models/alertxmlparameter.py
-  - src/nws_api_client/models/areacode.py
-  - src/nws_api_client/models/centerweatheradvisory.py
-  - src/nws_api_client/models/centerweatheradvisorycollectiongeojson.py
-  - src/nws_api_client/models/centerweatheradvisorygeojson.py
-  - src/nws_api_client/models/centerweatherserviceunitjsonld.py
-  - src/nws_api_client/models/geojsongeometry.py
-  - src/nws_api_client/models/get_alertop.py
-  - src/nws_api_client/models/get_cwsuop.py
-  - src/nws_api_client/models/get_gridpoint_forecastop.py
-  - src/nws_api_client/models/get_gridpoint_hourly_forecastop.py
-  - src/nws_api_client/models/get_gridpoint_raw_forecastop.py
-  - src/nws_api_client/models/get_latest_observation_by_stationop.py
-  - src/nws_api_client/models/get_observation_by_stationop.py
-  - src/nws_api_client/models/get_observation_station_metadataop.py
-  - src/nws_api_client/models/get_office_headlineop.py
-  - src/nws_api_client/models/get_office_metadataop.py
-  - src/nws_api_client/models/get_point_metadataop.py
-  - src/nws_api_client/models/get_product_by_idop.py
-  - src/nws_api_client/models/get_radar_queue_metadataop.py
-  - src/nws_api_client/models/get_radar_server_metadataop.py
-  - src/nws_api_client/models/get_radar_station_alarms_metadataop.py
-  - src/nws_api_client/models/get_radar_station_metadataop.py
-  - src/nws_api_client/models/get_radar_wind_profiler_metadataop.py
-  - src/nws_api_client/models/get_sigmetop.py
-  - src/nws_api_client/models/get_tafop.py
-  - src/nws_api_client/models/get_zone_forecastop.py
-  - src/nws_api_client/models/get_zone_metadataop.py
-  - src/nws_api_client/models/gridpoint.py
-  - src/nws_api_client/models/gridpointforecast.py
-  - src/nws_api_client/models/gridpointforecastfeatureflags.py
-  - src/nws_api_client/models/gridpointforecastgeojson.py
-  - src/nws_api_client/models/gridpointforecastjsonld.py
-  - src/nws_api_client/models/gridpointforecastperiod.py
-  - src/nws_api_client/models/gridpointforecastunits.py
-  - src/nws_api_client/models/gridpointgeojson.py
-  - src/nws_api_client/models/gridpointquantitativevaluelayer.py
-  - src/nws_api_client/models/jsonldcontext_union.py
-  - src/nws_api_client/models/landregioncode.py
-  - src/nws_api_client/models/list_active_alert_countsop.py
-  - src/nws_api_client/models/list_active_alerts_by_areaop.py
-  - src/nws_api_client/models/list_active_alerts_by_regionop.py
-  - src/nws_api_client/models/list_active_alerts_by_zoneop.py
-  - src/nws_api_client/models/list_active_alertsop.py
-  - src/nws_api_client/models/list_alert_typesop.py
-  - src/nws_api_client/models/list_cwas_by_date_and_sequenceop.py
-  - src/nws_api_client/models/list_cwasop.py
-  - src/nws_api_client/models/list_locations_by_product_typeop.py
-  - src/nws_api_client/models/list_observation_stations_by_gridpointop.py
-  - src/nws_api_client/models/list_observation_stations_by_zoneop.py
-  - src/nws_api_client/models/list_observation_stationsop.py
-  - src/nws_api_client/models/list_observations_by_stationop.py
-  - src/nws_api_client/models/list_observations_by_zoneop.py
-  - src/nws_api_client/models/list_office_headlinesop.py
-  - src/nws_api_client/models/list_product_locationsop.py
-  - src/nws_api_client/models/list_product_types_by_locationop.py
-  - src/nws_api_client/models/list_product_typesop.py
-  - src/nws_api_client/models/list_products_by_type_and_locationop.py
-  - src/nws_api_client/models/list_products_by_typeop.py
-  - src/nws_api_client/models/list_productsop.py
-  - src/nws_api_client/models/list_radar_serversop.py
-  - src/nws_api_client/models/list_radar_stationsop.py
-  - src/nws_api_client/models/list_sigmets_by_atsu_and_dateop.py
-  - src/nws_api_client/models/list_sigmets_by_atsuop.py
-  - src/nws_api_client/models/list_sigmetsop.py
-  - src/nws_api_client/models/list_tafsop.py
-  - src/nws_api_client/models/list_termsop.py
-  - src/nws_api_client/models/list_zones_by_typeop.py
-  - src/nws_api_client/models/list_zonesop.py
-  - src/nws_api_client/models/marineregioncode.py
-  - src/nws_api_client/models/metarphenomenon.py
-  - src/nws_api_client/models/metarskycoverage.py
-  - src/nws_api_client/models/nwscenterweatherserviceunitid.py
-  - src/nws_api_client/models/nwsforecastofficeid.py
-  - src/nws_api_client/models/nwsofficeid.py
-  - src/nws_api_client/models/nwszonetype.py
-  - src/nws_api_client/models/observation.py
-  - src/nws_api_client/models/observationcollectiongeojson.py
-  - src/nws_api_client/models/observationcollectionjsonld.py
-  - src/nws_api_client/models/observationgeojson.py
-  - src/nws_api_client/models/observationstation.py
-  - src/nws_api_client/models/observationstationcollectiongeojson.py
-  - src/nws_api_client/models/observationstationcollectionjsonld.py
-  - src/nws_api_client/models/observationstationgeojson.py
-  - src/nws_api_client/models/observationstationjsonld.py
-  - src/nws_api_client/models/officeheadline.py
-  - src/nws_api_client/models/officeheadlinecollection.py
-  - src/nws_api_client/models/paginationinfo.py
-  - src/nws_api_client/models/point.py
-  - src/nws_api_client/models/pointgeojson.py
-  - src/nws_api_client/models/pointjsonld.py
-  - src/nws_api_client/models/problemdetail.py
-  - src/nws_api_client/models/quantitativevalue.py
-  - src/nws_api_client/models/regioncode.py
-  - src/nws_api_client/models/relativelocation.py
-  - src/nws_api_client/models/relativelocationgeojson.py
-  - src/nws_api_client/models/relativelocationjsonld.py
-  - src/nws_api_client/models/security.py
-  - src/nws_api_client/models/sigmet.py
-  - src/nws_api_client/models/sigmetcollectiongeojson.py
-  - src/nws_api_client/models/sigmetgeojson.py
-  - src/nws_api_client/models/stateterritorycode.py
-  - src/nws_api_client/models/textproduct.py
-  - src/nws_api_client/models/textproductcollection.py
-  - src/nws_api_client/models/textproductlocationcollection.py
-  - src/nws_api_client/models/textproducttypecollection.py
-  - src/nws_api_client/models/zone.py
-  - src/nws_api_client/models/zonecollectiongeojson.py
-  - src/nws_api_client/models/zonecollectionjsonld.py
-  - src/nws_api_client/models/zoneforecast.py
-  - src/nws_api_client/models/zoneforecastgeojson.py
-  - src/nws_api_client/models/zonegeojson.py
-  - src/nws_api_client/observations.py
-  - src/nws_api_client/observationstations.py
-  - src/nws_api_client/offices.py
-  - src/nws_api_client/points.py
+  - src/nws_api_client/models/components/__init__.py
+  - src/nws_api_client/models/components/alert.py
+  - src/nws_api_client/models/components/alertcertainty.py
+  - src/nws_api_client/models/components/alertcollectiongeojson.py
+  - src/nws_api_client/models/components/alertcollectionjsonld.py
+  - src/nws_api_client/models/components/alertgeojson.py
+  - src/nws_api_client/models/components/alertjsonld.py
+  - src/nws_api_client/models/components/alertmessagetype.py
+  - src/nws_api_client/models/components/alertmessagetype_parameter.py
+  - src/nws_api_client/models/components/alertregiontype.py
+  - src/nws_api_client/models/components/alertsactivecount.py
+  - src/nws_api_client/models/components/alertseverity.py
+  - src/nws_api_client/models/components/alertstatus.py
+  - src/nws_api_client/models/components/alertstatus_parameter.py
+  - src/nws_api_client/models/components/alertstypes.py
+  - src/nws_api_client/models/components/alerturgency.py
+  - src/nws_api_client/models/components/areacode.py
+  - src/nws_api_client/models/components/centerweatheradvisory.py
+  - src/nws_api_client/models/components/centerweatheradvisorycollectiongeojson.py
+  - src/nws_api_client/models/components/centerweatheradvisorygeojson.py
+  - src/nws_api_client/models/components/centerweatherserviceunitjsonld.py
+  - src/nws_api_client/models/components/geojsongeometry.py
+  - src/nws_api_client/models/components/glossary.py
+  - src/nws_api_client/models/components/glossaryterm.py
+  - src/nws_api_client/models/components/gridpoint.py
+  - src/nws_api_client/models/components/gridpointforecast.py
+  - src/nws_api_client/models/components/gridpointforecastfeatureflags.py
+  - src/nws_api_client/models/components/gridpointforecastgeojson.py
+  - src/nws_api_client/models/components/gridpointforecastjsonld.py
+  - src/nws_api_client/models/components/gridpointforecastperiod.py
+  - src/nws_api_client/models/components/gridpointforecastunits.py
+  - src/nws_api_client/models/components/gridpointgeojson.py
+  - src/nws_api_client/models/components/gridpointquantitativevaluelayer.py
+  - src/nws_api_client/models/components/jsonldcontext_union.py
+  - src/nws_api_client/models/components/landregioncode.py
+  - src/nws_api_client/models/components/marineregioncode.py
+  - src/nws_api_client/models/components/metarphenomenon.py
+  - src/nws_api_client/models/components/metarskycoverage.py
+  - src/nws_api_client/models/components/nwscenterweatherserviceunitid.py
+  - src/nws_api_client/models/components/nwsforecastofficeid.py
+  - src/nws_api_client/models/components/nwsofficeid.py
+  - src/nws_api_client/models/components/nwszonetype.py
+  - src/nws_api_client/models/components/observation.py
+  - src/nws_api_client/models/components/observationcollectiongeojson.py
+  - src/nws_api_client/models/components/observationcollectionjsonld.py
+  - src/nws_api_client/models/components/observationgeojson.py
+  - src/nws_api_client/models/components/observationstation.py
+  - src/nws_api_client/models/components/observationstationcollectiongeojson.py
+  - src/nws_api_client/models/components/observationstationcollectionjsonld.py
+  - src/nws_api_client/models/components/observationstationgeojson.py
+  - src/nws_api_client/models/components/observationstationjsonld.py
+  - src/nws_api_client/models/components/officeheadline.py
+  - src/nws_api_client/models/components/officeheadlinecollection.py
+  - src/nws_api_client/models/components/paginationinfo.py
+  - src/nws_api_client/models/components/point.py
+  - src/nws_api_client/models/components/pointgeojson.py
+  - src/nws_api_client/models/components/pointjsonld.py
+  - src/nws_api_client/models/components/quantitativevalue.py
+  - src/nws_api_client/models/components/regioncode.py
+  - src/nws_api_client/models/components/relativelocation.py
+  - src/nws_api_client/models/components/relativelocationgeojson.py
+  - src/nws_api_client/models/components/relativelocationjsonld.py
+  - src/nws_api_client/models/components/security.py
+  - src/nws_api_client/models/components/sigmet.py
+  - src/nws_api_client/models/components/sigmetcollectiongeojson.py
+  - src/nws_api_client/models/components/sigmetgeojson.py
+  - src/nws_api_client/models/components/stateterritorycode.py
+  - src/nws_api_client/models/components/textproduct.py
+  - src/nws_api_client/models/components/textproductcollection.py
+  - src/nws_api_client/models/components/textproductlocationcollection.py
+  - src/nws_api_client/models/components/textproducttypecollection.py
+  - src/nws_api_client/models/components/zone.py
+  - src/nws_api_client/models/components/zonecollectiongeojson.py
+  - src/nws_api_client/models/components/zonecollectionjsonld.py
+  - src/nws_api_client/models/components/zoneforecast.py
+  - src/nws_api_client/models/components/zoneforecastgeojson.py
+  - src/nws_api_client/models/components/zonegeojson.py
+  - src/nws_api_client/models/errors/__init__.py
+  - src/nws_api_client/models/errors/nwsapierror.py
+  - src/nws_api_client/models/errors/problemdetail_error.py
+  - src/nws_api_client/models/internal/__init__.py
+  - src/nws_api_client/models/internal/globals.py
+  - src/nws_api_client/models/operations/__init__.py
+  - src/nws_api_client/models/operations/get_active_alerts.py
+  - src/nws_api_client/models/operations/get_active_alerts_by_area.py
+  - src/nws_api_client/models/operations/get_active_alerts_by_marine_region.py
+  - src/nws_api_client/models/operations/get_active_alerts_by_zone.py
+  - src/nws_api_client/models/operations/get_active_alerts_count.py
+  - src/nws_api_client/models/operations/get_alert.py
+  - src/nws_api_client/models/operations/get_alert_types.py
+  - src/nws_api_client/models/operations/get_cwas_by_cwsu.py
+  - src/nws_api_client/models/operations/get_cwas_by_cwsu_for_date_and_sequence.py
+  - src/nws_api_client/models/operations/get_cwsu.py
+  - src/nws_api_client/models/operations/get_forecast.py
+  - src/nws_api_client/models/operations/get_forecast_raw.py
+  - src/nws_api_client/models/operations/get_glossary_terms.py
+  - src/nws_api_client/models/operations/get_gridpoint_observation_stations.py
+  - src/nws_api_client/models/operations/get_hourly_forecast.py
+  - src/nws_api_client/models/operations/get_lat_long_info.py
+  - src/nws_api_client/models/operations/get_latest_observation.py
+  - src/nws_api_client/models/operations/get_locations_by_product_type.py
+  - src/nws_api_client/models/operations/get_observation.py
+  - src/nws_api_client/models/operations/get_observation_station_info.py
+  - src/nws_api_client/models/operations/get_observation_stations.py
+  - src/nws_api_client/models/operations/get_observations.py
+  - src/nws_api_client/models/operations/get_office_headline.py
+  - src/nws_api_client/models/operations/get_office_headlines.py
+  - src/nws_api_client/models/operations/get_office_info.py
+  - src/nws_api_client/models/operations/get_product.py
+  - src/nws_api_client/models/operations/get_product_locations.py
+  - src/nws_api_client/models/operations/get_product_types.py
+  - src/nws_api_client/models/operations/get_product_types_by_location.py
+  - src/nws_api_client/models/operations/get_products.py
+  - src/nws_api_client/models/operations/get_products_by_type.py
+  - src/nws_api_client/models/operations/get_products_by_type_and_location.py
+  - src/nws_api_client/models/operations/get_radar_profiler_info.py
+  - src/nws_api_client/models/operations/get_radar_server.py
+  - src/nws_api_client/models/operations/get_radar_servers.py
+  - src/nws_api_client/models/operations/get_radar_station_alarms.py
+  - src/nws_api_client/models/operations/get_radar_station_info.py
+  - src/nws_api_client/models/operations/get_radar_station_queue.py
+  - src/nws_api_client/models/operations/get_radar_stations.py
+  - src/nws_api_client/models/operations/get_sigmet.py
+  - src/nws_api_client/models/operations/get_sigmets.py
+  - src/nws_api_client/models/operations/get_sigmets_by_atsu.py
+  - src/nws_api_client/models/operations/get_sigmets_by_atsu_for_date.py
+  - src/nws_api_client/models/operations/get_taf.py
+  - src/nws_api_client/models/operations/get_tafs.py
+  - src/nws_api_client/models/operations/get_zone_forecast.py
+  - src/nws_api_client/models/operations/get_zone_info.py
+  - src/nws_api_client/models/operations/get_zone_observations.py
+  - src/nws_api_client/models/operations/get_zone_stations.py
+  - src/nws_api_client/models/operations/get_zones.py
+  - src/nws_api_client/models/operations/get_zones_by_type.py
   - src/nws_api_client/products.py
   - src/nws_api_client/py.typed
   - src/nws_api_client/radar.py
   - src/nws_api_client/sdk.py
   - src/nws_api_client/sdkconfiguration.py
+  - src/nws_api_client/stations.py
   - src/nws_api_client/types/__init__.py
   - src/nws_api_client/types/basemodel.py
   - src/nws_api_client/utils/__init__.py
@@ -554,7 +514,6 @@ generatedFiles:
   - src/nws_api_client/utils/serializers.py
   - src/nws_api_client/utils/url.py
   - src/nws_api_client/utils/values.py
-  - src/nws_api_client/zones.py
 examples:
   alerts_query:
     speakeasy-default-alerts-query:
@@ -1369,7 +1328,7 @@ examples:
     speakeasy-default-get-alert:
       parameters:
         path:
-          id: "<id>"
+          id: "urn:oid:2.49.0.1.840.0.404b3149af6da23b497bb9705fadc6ead564a967.005.1"
       responses:
         "200":
           application/geo+json: {"geometry": {"coordinates": [[[[2604.21, 6163.1], [8909, 6654.25], [3070.53]], [[], []], [[1026.44, 6915.03, 8579.44]]], []], "type": "MultiPolygon"}, "properties": {}, "type": "Feature"}
@@ -1387,6 +1346,7 @@ examples:
           application/json: {"key": "<value>", "key1": "<value>"}
         "400":
           application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "urn:noaa:nws:api:UnexpectedProblem", "key": "<value>", "key1": "<value>", "key2": "<value>"}
         "504":
           application/json: {"key": "<value>", "key1": "<value>"}
         "501":
@@ -1395,6 +1355,7 @@ examples:
           application/json: {"key": "<value>"}
         "510":
           application/json: {"key": "<value>"}
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "urn:noaa:nws:api:UnexpectedProblem", "key": "<value>", "key1": "<value>"}
         "511":
           application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
   get_cwsu:
@@ -1417,6 +1378,7 @@ examples:
           application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
         "400":
           application/json: {"key": "<value>"}
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "urn:noaa:nws:api:UnexpectedProblem", "key": "<value>", "key1": "<value>", "key2": "<value>"}
         "504":
           application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
         "501":
@@ -1425,6 +1387,7 @@ examples:
           application/json: {"key": "<value>"}
         "510":
           application/json: {"key": "<value>", "key1": "<value>"}
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "urn:noaa:nws:api:UnexpectedProblem", "key": "<value>", "key1": "<value>", "key2": "<value>"}
         "511":
           application/json: {"key": "<value>", "key1": "<value>"}
   list_cwas:
@@ -1582,9 +1545,9 @@ examples:
     speakeasy-default-get-sigmet:
       parameters:
         path:
-          atsu: "<value>"
-          date: "2024-12-28"
-          time: "<value>"
+          atsu: "KKCI"
+          date: "2025-02-23"
+          time: "0419"
       responses:
         "200":
           application/geo+json: {"geometry": {"coordinates": [[[[5222.38, 6368.66], [4666.43]], [[1942.91, 9951.96], [9268.65, 9642.07]]], [[], [[5544.23, 6953.72, 4445.39], [], [9723.67, 8530.23]], []], [[]]], "type": "MultiPolygon"}, "properties": {}, "type": "Feature"}
@@ -1601,6 +1564,7 @@ examples:
           application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
         "400":
           application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "urn:noaa:nws:api:UnexpectedProblem", "key": "<value>", "key1": "<value>", "key2": "<value>"}
         "504":
           application/json: {"key": "<value>", "key1": "<value>"}
         "501":
@@ -1609,6 +1573,7 @@ examples:
           application/json: {"key": "<value>"}
         "510":
           application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "urn:noaa:nws:api:UnexpectedProblem", "key": "<value>", "key1": "<value>", "key2": "<value>"}
         "511":
           application/json: {"key": "<value>"}
   list_terms:
@@ -1938,6 +1903,35 @@ examples:
           application/json: {"key": "<value>", "key1": "<value>"}
         "511":
           application/json: {"key": "<value>", "key1": "<value>"}
+    "":
+      parameters:
+        path:
+          stationId: "KORD"
+          date: "2025-02-23"
+          time: "0419"
+      responses:
+        "200":
+          application/vnd.wmo.iwxxm+xml: "0xfBA3D9D3aD"
+        "404":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "401":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "408":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "429":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "400":
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "about:blank", "key": "<value>"}
+        "504":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "501":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "500":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "510":
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "about:blank", "key": "<value>"}
+        "511":
+          application/json: {"key": "<value>"}
   list_observation_stations:
     speakeasy-default-list-observation-stations:
       parameters:
@@ -2051,6 +2045,7 @@ examples:
           application/json: {"key": "<value>"}
         "400":
           application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "urn:noaa:nws:api:UnexpectedProblem", "key": "<value>"}
         "504":
           application/json: {"key": "<value>", "key1": "<value>"}
         "501":
@@ -2059,6 +2054,7 @@ examples:
           application/json: {"key": "<value>", "key1": "<value>"}
         "510":
           application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "urn:noaa:nws:api:UnexpectedProblem", "key": "<value>", "key1": "<value>", "key2": "<value>"}
         "511":
           application/json: {"key": "<value>", "key1": "<value>"}
   list_office_headlines:
@@ -2683,6 +2679,7 @@ examples:
           application/json: {"key": "<value>"}
         "400":
           application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "urn:noaa:nws:api:UnexpectedProblem", "key": "<value>", "key1": "<value>", "key2": "<value>"}
         "504":
           application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
         "501":
@@ -2691,6 +2688,7 @@ examples:
           application/json: {"key": "<value>"}
         "510":
           application/json: {"key": "<value>"}
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "urn:noaa:nws:api:UnexpectedProblem", "key": "<value>", "key1": "<value>"}
         "511":
           application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
   list_observations_by_zone:
@@ -2756,6 +2754,1321 @@ examples:
           application/json: {"key": "<value>", "key1": "<value>"}
         "510":
           application/json: {"key": "<value>", "key1": "<value>"}
+        "511":
+          application/json: {"key": "<value>"}
+  get_active_alerts:
+    speakeasy-default-get-active-alerts:
+      parameters:
+        query:
+          region: ["GL"]
+          limit: 500
+      responses:
+        "200":
+          application/geo+json: {"features": [{"properties": {"id": "urn:oid:2.49.0.1.840.0.404b3149af6da23b497bb9705fadc6ead564a967.005.1", "references": [{"identifier": "urn:oid:2.49.0.1.840.0.404b3149af6da23b497bb9705fadc6ead564a967.005.1"}, {"identifier": "urn:oid:2.49.0.1.840.0.404b3149af6da23b497bb9705fadc6ead564a967.005.1"}]}}], "type": "FeatureCollection"}
+          application/ld+json: {"@graph": [{"id": "urn:oid:2.49.0.1.840.0.404b3149af6da23b497bb9705fadc6ead564a967.005.1", "references": [{"identifier": "urn:oid:2.49.0.1.840.0.404b3149af6da23b497bb9705fadc6ead564a967.005.1"}, {"identifier": "urn:oid:2.49.0.1.840.0.404b3149af6da23b497bb9705fadc6ead564a967.005.1"}]}, {"id": "urn:oid:2.49.0.1.840.0.404b3149af6da23b497bb9705fadc6ead564a967.005.1", "references": [{"identifier": "urn:oid:2.49.0.1.840.0.404b3149af6da23b497bb9705fadc6ead564a967.005.1"}, {"identifier": "urn:oid:2.49.0.1.840.0.404b3149af6da23b497bb9705fadc6ead564a967.005.1"}, {"identifier": "urn:oid:2.49.0.1.840.0.404b3149af6da23b497bb9705fadc6ead564a967.005.1"}]}, {"id": "urn:oid:2.49.0.1.840.0.404b3149af6da23b497bb9705fadc6ead564a967.005.1", "references": [{"identifier": "urn:oid:2.49.0.1.840.0.404b3149af6da23b497bb9705fadc6ead564a967.005.1"}, {"identifier": "urn:oid:2.49.0.1.840.0.404b3149af6da23b497bb9705fadc6ead564a967.005.1"}, {"identifier": "urn:oid:2.49.0.1.840.0.404b3149af6da23b497bb9705fadc6ead564a967.005.1"}]}]}
+        "404":
+          application/json: {"key": "<value>"}
+        "401":
+          application/json: {"key": "<value>"}
+        "408":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "429":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "400":
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "urn:noaa:nws:api:UnexpectedProblem", "key": "<value>"}
+        "504":
+          application/json: {"key": "<value>"}
+        "501":
+          application/json: {"key": "<value>"}
+        "500":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "510":
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "urn:noaa:nws:api:UnexpectedProblem", "key": "<value>", "key1": "<value>"}
+        "511":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+  get_active_alerts_by_marine_region:
+    speakeasy-default-get-active-alerts-by-marine-region:
+      parameters:
+        path:
+          region: "GL"
+      responses:
+        "200":
+          application/geo+json: {"features": [{"properties": {"id": "urn:oid:2.49.0.1.840.0.404b3149af6da23b497bb9705fadc6ead564a967.005.1", "references": [{"identifier": "urn:oid:2.49.0.1.840.0.404b3149af6da23b497bb9705fadc6ead564a967.005.1"}, {"identifier": "urn:oid:2.49.0.1.840.0.404b3149af6da23b497bb9705fadc6ead564a967.005.1"}, {"identifier": "urn:oid:2.49.0.1.840.0.404b3149af6da23b497bb9705fadc6ead564a967.005.1"}]}}, {"properties": {"id": "urn:oid:2.49.0.1.840.0.404b3149af6da23b497bb9705fadc6ead564a967.005.1", "references": [{"identifier": "urn:oid:2.49.0.1.840.0.404b3149af6da23b497bb9705fadc6ead564a967.005.1"}]}}], "type": "FeatureCollection"}
+          application/ld+json: {"@graph": [{"id": "urn:oid:2.49.0.1.840.0.404b3149af6da23b497bb9705fadc6ead564a967.005.1", "references": [{"identifier": "urn:oid:2.49.0.1.840.0.404b3149af6da23b497bb9705fadc6ead564a967.005.1"}, {"identifier": "urn:oid:2.49.0.1.840.0.404b3149af6da23b497bb9705fadc6ead564a967.005.1"}]}, {"id": "urn:oid:2.49.0.1.840.0.404b3149af6da23b497bb9705fadc6ead564a967.005.1", "references": [{"identifier": "urn:oid:2.49.0.1.840.0.404b3149af6da23b497bb9705fadc6ead564a967.005.1"}, {"identifier": "urn:oid:2.49.0.1.840.0.404b3149af6da23b497bb9705fadc6ead564a967.005.1"}]}, {"id": "urn:oid:2.49.0.1.840.0.404b3149af6da23b497bb9705fadc6ead564a967.005.1", "references": [{"identifier": "urn:oid:2.49.0.1.840.0.404b3149af6da23b497bb9705fadc6ead564a967.005.1"}, {"identifier": "urn:oid:2.49.0.1.840.0.404b3149af6da23b497bb9705fadc6ead564a967.005.1"}, {"identifier": "urn:oid:2.49.0.1.840.0.404b3149af6da23b497bb9705fadc6ead564a967.005.1"}]}]}
+        "404":
+          application/json: {"key": "<value>"}
+        "401":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "408":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "429":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "400":
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "urn:noaa:nws:api:UnexpectedProblem", "key": "<value>", "key1": "<value>"}
+        "504":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "501":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "500":
+          application/json: {"key": "<value>"}
+        "510":
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "urn:noaa:nws:api:UnexpectedProblem", "key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "511":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+  get_active_alerts_count:
+    speakeasy-default-get-active-alerts-count:
+      responses:
+        "200":
+          application/ld+json: {}
+        "404":
+          application/json: {"key": "<value>"}
+        "401":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "408":
+          application/json: {"key": "<value>"}
+        "429":
+          application/json: {"key": "<value>"}
+        "400":
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "urn:noaa:nws:api:UnexpectedProblem", "key": "<value>"}
+        "504":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "501":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "500":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "510":
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "urn:noaa:nws:api:UnexpectedProblem", "key": "<value>", "key1": "<value>"}
+        "511":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+  get_active_alerts_by_zone:
+    speakeasy-default-get-active-alerts-by-zone:
+      parameters:
+        path:
+          zoneId: "<id>"
+      responses:
+        "200":
+          application/geo+json: {"features": [], "type": "FeatureCollection"}
+          application/ld+json: {"@graph": [{"id": "urn:oid:2.49.0.1.840.0.404b3149af6da23b497bb9705fadc6ead564a967.005.1", "references": [{"identifier": "urn:oid:2.49.0.1.840.0.404b3149af6da23b497bb9705fadc6ead564a967.005.1"}, {"identifier": "urn:oid:2.49.0.1.840.0.404b3149af6da23b497bb9705fadc6ead564a967.005.1"}]}, {"id": "urn:oid:2.49.0.1.840.0.404b3149af6da23b497bb9705fadc6ead564a967.005.1", "references": [{"identifier": "urn:oid:2.49.0.1.840.0.404b3149af6da23b497bb9705fadc6ead564a967.005.1"}, {"identifier": "urn:oid:2.49.0.1.840.0.404b3149af6da23b497bb9705fadc6ead564a967.005.1"}, {"identifier": "urn:oid:2.49.0.1.840.0.404b3149af6da23b497bb9705fadc6ead564a967.005.1"}]}, {"id": "urn:oid:2.49.0.1.840.0.404b3149af6da23b497bb9705fadc6ead564a967.005.1", "references": [{"identifier": "urn:oid:2.49.0.1.840.0.404b3149af6da23b497bb9705fadc6ead564a967.005.1"}, {"identifier": "urn:oid:2.49.0.1.840.0.404b3149af6da23b497bb9705fadc6ead564a967.005.1"}, {"identifier": "urn:oid:2.49.0.1.840.0.404b3149af6da23b497bb9705fadc6ead564a967.005.1"}]}]}
+        "404":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "401":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "408":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "429":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "400":
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "urn:noaa:nws:api:UnexpectedProblem", "key": "<value>"}
+        "504":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "501":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "500":
+          application/json: {"key": "<value>"}
+        "510":
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "urn:noaa:nws:api:UnexpectedProblem", "key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "511":
+          application/json: {"key": "<value>"}
+  get_cwas_by_cwsu_for_date_and_sequence:
+    speakeasy-default-get-cwas-by-cwsu-for-date-and-sequence:
+      parameters:
+        path:
+          cwsuId: "ZSE"
+          date: "2025-02-23"
+          sequence: 510643
+      responses:
+        "200":
+          application/geo+json: {"geometry": {"coordinates": [[], [[1727.75, 5493.41, 3765.94], [4784.56, 3148.98, 8197.75], [5624.88]], []], "type": "Polygon"}, "properties": {}, "type": "Feature"}
+          application/vnd.noaa.uswx+xml: "0x5d7B058DBf"
+        "404":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "401":
+          application/json: {"key": "<value>"}
+        "408":
+          application/json: {"key": "<value>"}
+        "429":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "400":
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "urn:noaa:nws:api:UnexpectedProblem", "key": "<value>"}
+        "504":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "501":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "500":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "510":
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "urn:noaa:nws:api:UnexpectedProblem", "key": "<value>"}
+        "511":
+          application/json: {"key": "<value>"}
+  get_sigmets_by_atsu_for_date:
+    speakeasy-default-get-sigmets-by-atsu-for-date:
+      parameters:
+        path:
+          atsu: "KKCI"
+          date: "2025-02-23"
+      responses:
+        "200":
+          application/geo+json: {"features": [], "type": "FeatureCollection"}
+        "404":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "401":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "408":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "429":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "400":
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "urn:noaa:nws:api:UnexpectedProblem", "key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "504":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "501":
+          application/json: {"key": "<value>"}
+        "500":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "510":
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "urn:noaa:nws:api:UnexpectedProblem", "key": "<value>"}
+        "511":
+          application/json: {"key": "<value>"}
+  get_cwas_by_cwsu:
+    speakeasy-default-get-cwas-by-cwsu:
+      parameters:
+        path:
+          cwsuId: "ZDC"
+      responses:
+        "200":
+          application/geo+json: {"features": [], "type": "FeatureCollection"}
+        "404":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "401":
+          application/json: {"key": "<value>"}
+        "408":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "429":
+          application/json: {"key": "<value>"}
+        "400":
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "urn:noaa:nws:api:UnexpectedProblem", "key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "504":
+          application/json: {"key": "<value>"}
+        "501":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "500":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "510":
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "urn:noaa:nws:api:UnexpectedProblem", "key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "511":
+          application/json: {"key": "<value>"}
+  get_sigmets_by_atsu:
+    speakeasy-default-get-sigmets-by-atsu:
+      parameters:
+        path:
+          atsu: "KKCI"
+      responses:
+        "200":
+          application/geo+json: {"features": [], "type": "FeatureCollection"}
+        "404":
+          application/json: {"key": "<value>"}
+        "401":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "408":
+          application/json: {"key": "<value>"}
+        "429":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "400":
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "urn:noaa:nws:api:UnexpectedProblem", "key": "<value>"}
+        "504":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "501":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "500":
+          application/json: {"key": "<value>"}
+        "510":
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "urn:noaa:nws:api:UnexpectedProblem", "key": "<value>"}
+        "511":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+  get_active_alerts_by_area:
+    speakeasy-default-get-active-alerts-by-area:
+      parameters:
+        path:
+          area: "VT"
+      responses:
+        "200":
+          application/geo+json: {"features": [{"properties": {"id": "urn:oid:2.49.0.1.840.0.404b3149af6da23b497bb9705fadc6ead564a967.005.1", "references": [{"identifier": "urn:oid:2.49.0.1.840.0.404b3149af6da23b497bb9705fadc6ead564a967.005.1"}, {"identifier": "urn:oid:2.49.0.1.840.0.404b3149af6da23b497bb9705fadc6ead564a967.005.1"}]}}, {"properties": {"id": "urn:oid:2.49.0.1.840.0.404b3149af6da23b497bb9705fadc6ead564a967.005.1", "references": [{"identifier": "urn:oid:2.49.0.1.840.0.404b3149af6da23b497bb9705fadc6ead564a967.005.1"}, {"identifier": "urn:oid:2.49.0.1.840.0.404b3149af6da23b497bb9705fadc6ead564a967.005.1"}, {"identifier": "urn:oid:2.49.0.1.840.0.404b3149af6da23b497bb9705fadc6ead564a967.005.1"}]}}], "type": "FeatureCollection"}
+          application/ld+json: {"@graph": [{"id": "urn:oid:2.49.0.1.840.0.404b3149af6da23b497bb9705fadc6ead564a967.005.1", "references": [{"identifier": "urn:oid:2.49.0.1.840.0.404b3149af6da23b497bb9705fadc6ead564a967.005.1"}, {"identifier": "urn:oid:2.49.0.1.840.0.404b3149af6da23b497bb9705fadc6ead564a967.005.1"}, {"identifier": "urn:oid:2.49.0.1.840.0.404b3149af6da23b497bb9705fadc6ead564a967.005.1"}]}]}
+        "404":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "401":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "408":
+          application/json: {"key": "<value>"}
+        "429":
+          application/json: {"key": "<value>"}
+        "400":
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "urn:noaa:nws:api:UnexpectedProblem", "key": "<value>", "key1": "<value>"}
+        "504":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "501":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "500":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "510":
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "urn:noaa:nws:api:UnexpectedProblem", "key": "<value>"}
+        "511":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+  get_sigmets:
+    speakeasy-default-get-sigmets:
+      parameters:
+        query:
+          start: "0419"
+          end: "0419"
+          date: "2025-02-23"
+          atsu: "KKCI"
+          sequence: "29W"
+      responses:
+        "200":
+          application/geo+json: {"features": [{"geometry": {"coordinates": [[[], [], [[2443.77], [], [2997.34]]], [[[8291.74, 2597.42, 4647.72]], [[3138.35, 5380.71, 426.56]]], [[], [[5827.29], [2930.04, 1880.85]], [[4163.85, 2302.83, 1537.99], []]]], "type": "MultiPolygon"}, "properties": {"atsu": "KKCI"}, "type": "Feature"}], "type": "FeatureCollection"}
+        "404":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "401":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "408":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "429":
+          application/json: {"key": "<value>"}
+        "400":
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "urn:noaa:nws:api:UnexpectedProblem", "key": "<value>", "key1": "<value>"}
+        "504":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "501":
+          application/json: {"key": "<value>"}
+        "500":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "510":
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "urn:noaa:nws:api:UnexpectedProblem", "key": "<value>"}
+        "511":
+          application/json: {"key": "<value>", "key1": "<value>"}
+  get_alert_types:
+    speakeasy-default-get-alert-types:
+      responses:
+        "200":
+          application/ld+json: {}
+        "404":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "401":
+          application/json: {"key": "<value>"}
+        "408":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "429":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "400":
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "urn:noaa:nws:api:UnexpectedProblem", "key": "<value>", "key1": "<value>"}
+        "504":
+          application/json: {"key": "<value>"}
+        "501":
+          application/json: {"key": "<value>"}
+        "500":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "510":
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "urn:noaa:nws:api:UnexpectedProblem", "key": "<value>"}
+        "511":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+  get_forecast:
+    speakeasy-default-get-forecast:
+      parameters:
+        path:
+          wfo: "LOT"
+          gridpoint: "<value>"
+        query:
+          units: "us"
+        header: {}
+      responses:
+        "200":
+          application/geo+json: {"geometry": {"coordinates": [[[9699.61, 4580.49], [2627.95]], []], "type": "MultiLineString"}, "properties": {"periods": [{"name": "Tuesday Night"}, {"name": "Tuesday Night"}, {"name": "Tuesday Night"}], "units": "us", "validTimes": "2007-03-01T13:00:00Z/2008-05-11T15:30:00Z"}, "type": "Feature"}
+          application/ld+json: {"@context": ["<value>", "<value>", "<value>"], "geometry": "<value>", "periods": [{"name": "Tuesday Night"}], "units": "us", "validTimes": "2007-03-01T13:00:00Z/2008-05-11T15:30:00Z"}
+          application/vnd.noaa.dwml+xml: "0x462cB8Adc7"
+        "404":
+          application/json: {"key": "<value>"}
+        "401":
+          application/json: {"key": "<value>"}
+        "408":
+          application/json: {"key": "<value>"}
+        "429":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "400":
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "urn:noaa:nws:api:UnexpectedProblem", "key": "<value>"}
+        "504":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "501":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "500":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "510":
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "urn:noaa:nws:api:UnexpectedProblem", "key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "511":
+          application/json: {"key": "<value>"}
+  get_hourly_forecast:
+    speakeasy-default-get-hourly-forecast:
+      parameters:
+        path:
+          wfo: "LOT"
+          gridpoint: "<value>"
+        query:
+          units: "us"
+        header: {}
+      responses:
+        "200":
+          application/geo+json: {"geometry": {"coordinates": [[], [[9843.7, 7424.27, 1268.16], [6120.2], [8374.63, 8968.52]], [[], [9175.44, 705.95]]], "type": "Polygon"}, "properties": {"periods": [{"name": "Tuesday Night"}, {"name": "Tuesday Night"}, {"name": "Tuesday Night"}], "units": "us", "validTimes": "2007-03-01T13:00:00Z/2008-05-11T15:30:00Z"}, "type": "Feature"}
+          application/ld+json: {"@context": [{}], "geometry": "<value>", "periods": [{"name": "Tuesday Night"}], "units": "us", "validTimes": "2007-03-01T13:00:00Z/2008-05-11T15:30:00Z"}
+          application/vnd.noaa.dwml+xml: "0x4c90cF212c"
+        "404":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "401":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "408":
+          application/json: {"key": "<value>"}
+        "429":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "400":
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "urn:noaa:nws:api:UnexpectedProblem", "key": "<value>", "key1": "<value>"}
+        "504":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "501":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "500":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "510":
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "urn:noaa:nws:api:UnexpectedProblem", "key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "511":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+  get_latest_observation:
+    "":
+      parameters:
+        path:
+          stationId: "KORD"
+        query: {}
+      responses:
+        "200":
+          application/geo+json: {"geometry": {"coordinates": [[], [77.99, 133.45], [9230.5, 2869.43]], "type": "MultiPoint"}, "properties": {}, "type": "Feature"}
+          application/vnd.noaa.obs+xml: "0x45DE7cFC6a"
+          application/vnd.noaa.uswx+xml: "0x3B1Df22674"
+        "404":
+          application/json: {"key": "<value>"}
+        "401":
+          application/json: {"key": "<value>"}
+        "408":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "429":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "400":
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "about:blank", "key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "504":
+          application/json: {"key": "<value>"}
+        "501":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "500":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "510":
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "about:blank", "key": "<value>", "key1": "<value>"}
+        "511":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+  get_observation:
+    "":
+      parameters:
+        path:
+          stationId: "KORD"
+          timestamp: "2024-07-10T15:49:23.313Z"
+      responses:
+        "200":
+          application/geo+json: {"geometry": {"coordinates": [[[8967.4, 6291.82, 4460.02]]], "type": "MultiLineString"}, "properties": {}, "type": "Feature"}
+          application/vnd.noaa.obs+xml: "0x6E5968a22b"
+          application/vnd.noaa.uswx+xml: "0x84b64BfB05"
+        "404":
+          application/json: {"key": "<value>"}
+        "401":
+          application/json: {"key": "<value>"}
+        "408":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "429":
+          application/json: {"key": "<value>"}
+        "400":
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "about:blank", "key": "<value>"}
+        "504":
+          application/json: {"key": "<value>"}
+        "501":
+          application/json: {"key": "<value>"}
+        "500":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "510":
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "about:blank", "key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "511":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+  get_office_info:
+    speakeasy-default-get-office-info:
+      parameters:
+        path:
+          officeId: "GGW"
+      responses:
+        "200":
+          application/ld+json: {}
+        "404":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "401":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "408":
+          application/json: {"key": "<value>"}
+        "429":
+          application/json: {"key": "<value>"}
+        "400":
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "urn:noaa:nws:api:UnexpectedProblem", "key": "<value>", "key1": "<value>"}
+        "504":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "501":
+          application/json: {"key": "<value>"}
+        "500":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "510":
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "urn:noaa:nws:api:UnexpectedProblem", "key": "<value>", "key1": "<value>"}
+        "511":
+          application/json: {"key": "<value>"}
+  get_lat_long_info:
+    speakeasy-default-get-lat-long-info:
+      parameters:
+        path:
+          point: "<value>"
+      responses:
+        "200":
+          application/geo+json: {"geometry": {"coordinates": [[9521.45, 738.82]], "type": "LineString"}, "properties": {"cwa": "LOT", "gridId": "LOT"}, "type": "Feature"}
+          application/ld+json: {"@context": [{}], "cwa": "LOT", "geometry": "<value>", "gridId": "LOT"}
+        "404":
+          application/json: {"key": "<value>"}
+        "401":
+          application/json: {"key": "<value>"}
+        "408":
+          application/json: {"key": "<value>"}
+        "429":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "400":
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "urn:noaa:nws:api:UnexpectedProblem", "key": "<value>", "key1": "<value>"}
+        "504":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "501":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "500":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "510":
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "urn:noaa:nws:api:UnexpectedProblem", "key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "511":
+          application/json: {"key": "<value>"}
+  get_forecast_raw:
+    speakeasy-default-get-forecast-raw:
+      parameters:
+        path:
+          wfo: "LOT"
+          gridpoint: "<value>"
+      responses:
+        "200":
+          application/geo+json: {"geometry": {"coordinates": [6946.82, 6339.66], "type": "Point"}, "properties": {"hazards": {"values": [{"validTime": "2007-03-01T13:00:00Z/2008-05-11T15:30:00Z", "value": []}, {"validTime": "2007-03-01T13:00:00Z/2008-05-11T15:30:00Z", "value": []}, {"validTime": "2007-03-01T13:00:00Z/2008-05-11T15:30:00Z", "value": [{"event_number": 509009, "phenomenon": "<value>", "significance": "<value>"}]}]}, "validTimes": "2007-03-01T13:00:00Z/2008-05-11T15:30:00Z", "weather": {"values": [{"validTime": "2007-03-01T13:00:00Z/2008-05-11T15:30:00Z", "value": []}, {"validTime": "2007-03-01T13:00:00Z/2008-05-11T15:30:00Z", "value": []}, {"validTime": "2007-03-01T13:00:00Z/2008-05-11T15:30:00Z", "value": [{"attributes": ["small_hail", "gusty_wind"], "coverage": "brief", "intensity": "moderate", "visibility": {}, "weather": "rain_showers"}, {"attributes": ["tornadoes"], "coverage": "areas", "intensity": "light", "visibility": {}, "weather": "smoke"}]}]}, "key": {"values": []}}, "type": "Feature"}
+          application/ld+json: {"hazards": {"values": [{"validTime": "2007-03-01T13:00:00Z/2008-05-11T15:30:00Z", "value": []}]}, "validTimes": "2007-03-01T13:00:00Z/2008-05-11T15:30:00Z", "weather": {"values": [{"validTime": "2007-03-01T13:00:00Z/2008-05-11T15:30:00Z", "value": []}]}, "key": {"values": [{"validTime": "2007-03-01T13:00:00Z/2008-05-11T15:30:00Z", "value": 1933.96}]}, "key1": {"values": [{"validTime": "2007-03-01T13:00:00Z/2008-05-11T15:30:00Z", "value": 8846.25}]}, "key2": {"values": [{"validTime": "2007-03-01T13:00:00Z/2008-05-11T15:30:00Z", "value": 930.06}, {"validTime": "2007-03-01T13:00:00Z/2008-05-11T15:30:00Z", "value": 4882.49}]}}
+        "404":
+          application/json: {"key": "<value>"}
+        "401":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "408":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "429":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "400":
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "urn:noaa:nws:api:UnexpectedProblem", "key": "<value>"}
+        "504":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "501":
+          application/json: {"key": "<value>"}
+        "500":
+          application/json: {"key": "<value>"}
+        "510":
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "urn:noaa:nws:api:UnexpectedProblem", "key": "<value>", "key1": "<value>"}
+        "511":
+          application/json: {"key": "<value>", "key1": "<value>"}
+  get_zone_info:
+    speakeasy-default-get-zone-info:
+      parameters:
+        path:
+          type: "county"
+          zoneId: "<id>"
+        query: {}
+      responses:
+        "200":
+          application/geo+json: {"geometry": {"coordinates": [4189.38], "type": "Point"}, "properties": {"state": "CA", "type": "county"}, "type": "Feature"}
+          application/ld+json: {"state": "CA", "type": "county"}
+        "404":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "401":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "408":
+          application/json: {"key": "<value>"}
+        "429":
+          application/json: {"key": "<value>"}
+        "400":
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "urn:noaa:nws:api:UnexpectedProblem", "key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "504":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "501":
+          application/json: {"key": "<value>"}
+        "500":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "510":
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "urn:noaa:nws:api:UnexpectedProblem", "key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "511":
+          application/json: {"key": "<value>", "key1": "<value>"}
+  get_zone_stations:
+    speakeasy-default-get-zone-stations:
+      parameters:
+        path:
+          zoneId: "<id>"
+        query:
+          limit: 500
+      responses:
+        "200":
+          application/geo+json: {"features": [{}], "type": "FeatureCollection"}
+          application/ld+json: {}
+        "404":
+          application/json: {"key": "<value>"}
+        "401":
+          application/json: {"key": "<value>"}
+        "408":
+          application/json: {"key": "<value>"}
+        "429":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "400":
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "urn:noaa:nws:api:UnexpectedProblem", "key": "<value>", "key1": "<value>"}
+        "504":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "501":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "500":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "510":
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "urn:noaa:nws:api:UnexpectedProblem", "key": "<value>"}
+        "511":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+  get_zones_by_type:
+    speakeasy-default-get-zones-by-type:
+      parameters:
+        path:
+          type: "county"
+        query:
+          region: ["GL", "GL", "GL"]
+          type: ["county"]
+      responses:
+        "200":
+          application/geo+json: {"features": [{"properties": {"state": "", "type": "county"}}], "type": "FeatureCollection"}
+          application/ld+json: {"@graph": [{"state": "CA", "type": "county"}]}
+        "404":
+          application/json: {"key": "<value>"}
+        "401":
+          application/json: {"key": "<value>"}
+        "408":
+          application/json: {"key": "<value>"}
+        "429":
+          application/json: {"key": "<value>"}
+        "400":
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "urn:noaa:nws:api:UnexpectedProblem", "key": "<value>", "key1": "<value>"}
+        "504":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "501":
+          application/json: {"key": "<value>"}
+        "500":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "510":
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "urn:noaa:nws:api:UnexpectedProblem", "key": "<value>"}
+        "511":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+  get_gridpoint_observation_stations:
+    speakeasy-default-get-gridpoint-observation-stations:
+      parameters:
+        path:
+          wfo: "LOT"
+          gridpoint: "<value>"
+        query:
+          limit: 500
+      responses:
+        "200":
+          application/geo+json: {"features": [{}], "type": "FeatureCollection"}
+          application/ld+json: {}
+        "404":
+          application/json: {"key": "<value>"}
+        "401":
+          application/json: {"key": "<value>"}
+        "408":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "429":
+          application/json: {"key": "<value>"}
+        "400":
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "urn:noaa:nws:api:UnexpectedProblem", "key": "<value>", "key1": "<value>"}
+        "504":
+          application/json: {"key": "<value>"}
+        "501":
+          application/json: {"key": "<value>"}
+        "500":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "510":
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "urn:noaa:nws:api:UnexpectedProblem", "key": "<value>", "key1": "<value>"}
+        "511":
+          application/json: {"key": "<value>"}
+  get_observation_stations:
+    speakeasy-default-get-observation-stations:
+      parameters:
+        query:
+          limit: 500
+      responses:
+        "200":
+          application/geo+json: {"features": [{}], "type": "FeatureCollection"}
+          application/ld+json: {}
+        "404":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "401":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "408":
+          application/json: {"key": "<value>"}
+        "429":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "400":
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "urn:noaa:nws:api:UnexpectedProblem", "key": "<value>", "key1": "<value>"}
+        "504":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "501":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "500":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "510":
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "urn:noaa:nws:api:UnexpectedProblem", "key": "<value>", "key1": "<value>"}
+        "511":
+          application/json: {"key": "<value>", "key1": "<value>"}
+  get_zone_observations:
+    speakeasy-default-get-zone-observations:
+      parameters:
+        path:
+          zoneId: "<id>"
+        query:
+          start: "0419"
+          end: "0419"
+          limit: 500
+      responses:
+        "200":
+          application/geo+json: {"features": [{}, {}], "type": "FeatureCollection"}
+          application/ld+json: {}
+        "404":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "401":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "408":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "429":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "400":
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "urn:noaa:nws:api:UnexpectedProblem", "key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "504":
+          application/json: {"key": "<value>"}
+        "501":
+          application/json: {"key": "<value>"}
+        "500":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "510":
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "urn:noaa:nws:api:UnexpectedProblem", "key": "<value>"}
+        "511":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+  get_zones:
+    speakeasy-default-get-zones:
+      parameters:
+        query:
+          region: ["GL"]
+          type: ["county"]
+      responses:
+        "200":
+          application/geo+json: {"features": [{"properties": {"state": "CA", "type": "county"}}, {"properties": {"state": "CA", "type": "county"}}, {"properties": {"state": "CA", "type": "county"}}], "type": "FeatureCollection"}
+          application/ld+json: {"@graph": [{"state": "CA", "type": "county"}, {"state": "", "type": "county"}, {"state": "CA", "type": "county"}]}
+        "404":
+          application/json: {"key": "<value>"}
+        "401":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "408":
+          application/json: {"key": "<value>"}
+        "429":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "400":
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "urn:noaa:nws:api:UnexpectedProblem", "key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "504":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "501":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "500":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "510":
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "urn:noaa:nws:api:UnexpectedProblem", "key": "<value>"}
+        "511":
+          application/json: {"key": "<value>"}
+  get_tafs:
+    "":
+      parameters:
+        path:
+          stationId: "KORD"
+      responses:
+        "200":
+          application/ld+json: "<value>"
+        "404":
+          application/json: {"key": "<value>"}
+        "401":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "408":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "429":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "400":
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "about:blank", "key": "<value>"}
+        "504":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "501":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "500":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "510":
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "about:blank", "key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "511":
+          application/json: {"key": "<value>"}
+  get_product:
+    speakeasy-default-get-product:
+      parameters:
+        path:
+          productId: "<id>"
+      responses:
+        "200":
+          application/ld+json: {}
+        "404":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "401":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "408":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "429":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "400":
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "urn:noaa:nws:api:UnexpectedProblem", "key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "504":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "501":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "500":
+          application/json: {"key": "<value>"}
+        "510":
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "urn:noaa:nws:api:UnexpectedProblem", "key": "<value>"}
+        "511":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+  get_products_by_type_and_location:
+    speakeasy-default-get-products-by-type-and-location:
+      parameters:
+        path:
+          typeId: "AFD"
+          locationId: "LOT"
+      responses:
+        "200":
+          application/ld+json: {}
+        "404":
+          application/json: {"key": "<value>"}
+        "401":
+          application/json: {"key": "<value>"}
+        "408":
+          application/json: {"key": "<value>"}
+        "429":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "400":
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "urn:noaa:nws:api:UnexpectedProblem", "key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "504":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "501":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "500":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "510":
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "urn:noaa:nws:api:UnexpectedProblem", "key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "511":
+          application/json: {"key": "<value>"}
+  get_products_by_type:
+    speakeasy-default-get-products-by-type:
+      parameters:
+        path:
+          typeId: "<id>"
+      responses:
+        "200":
+          application/ld+json: {}
+        "404":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "401":
+          application/json: {"key": "<value>"}
+        "408":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "429":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "400":
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "urn:noaa:nws:api:UnexpectedProblem", "key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "504":
+          application/json: {"key": "<value>"}
+        "501":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "500":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "510":
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "urn:noaa:nws:api:UnexpectedProblem", "key": "<value>", "key1": "<value>"}
+        "511":
+          application/json: {"key": "<value>", "key1": "<value>"}
+  get_glossary_terms:
+    speakeasy-default-get-glossary-terms:
+      responses:
+        "200":
+          application/ld+json: {}
+        "404":
+          application/json: {"key": "<value>"}
+        "401":
+          application/json: {"key": "<value>"}
+        "408":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "429":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "400":
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "urn:noaa:nws:api:UnexpectedProblem", "key": "<value>"}
+        "504":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "501":
+          application/json: {"key": "<value>"}
+        "500":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "510":
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "urn:noaa:nws:api:UnexpectedProblem", "key": "<value>", "key1": "<value>"}
+        "511":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+  get_product_locations:
+    speakeasy-default-get-product-locations:
+      responses:
+        "200":
+          application/ld+json: {}
+        "404":
+          application/json: {"key": "<value>"}
+        "401":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "408":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "429":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "400":
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "urn:noaa:nws:api:UnexpectedProblem", "key": "<value>", "key1": "<value>"}
+        "504":
+          application/json: {"key": "<value>"}
+        "501":
+          application/json: {"key": "<value>"}
+        "500":
+          application/json: {"key": "<value>"}
+        "510":
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "urn:noaa:nws:api:UnexpectedProblem", "key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "511":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+  get_locations_by_product_type:
+    speakeasy-default-get-locations-by-product-type:
+      parameters:
+        path:
+          typeId: "<id>"
+      responses:
+        "200":
+          application/ld+json: {}
+        "404":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "401":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "408":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "429":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "400":
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "urn:noaa:nws:api:UnexpectedProblem", "key": "<value>", "key1": "<value>"}
+        "504":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "501":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "500":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "510":
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "urn:noaa:nws:api:UnexpectedProblem", "key": "<value>", "key1": "<value>"}
+        "511":
+          application/json: {"key": "<value>"}
+  get_office_headlines:
+    speakeasy-default-get-office-headlines:
+      parameters:
+        path:
+          officeId: "BOU"
+      responses:
+        "200":
+          application/ld+json: {"@context": [{}], "@graph": [{}]}
+        "404":
+          application/json: {"key": "<value>"}
+        "401":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "408":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "429":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "400":
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "urn:noaa:nws:api:UnexpectedProblem", "key": "<value>", "key1": "<value>"}
+        "504":
+          application/json: {"key": "<value>"}
+        "501":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "500":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "510":
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "urn:noaa:nws:api:UnexpectedProblem", "key": "<value>"}
+        "511":
+          application/json: {"key": "<value>"}
+  get_products:
+    speakeasy-default-get-products:
+      parameters:
+        query:
+          start: "0419"
+          end: "0419"
+          limit: 500
+      responses:
+        "200":
+          application/ld+json: {}
+        "404":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "401":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "408":
+          application/json: {"key": "<value>"}
+        "429":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "400":
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "urn:noaa:nws:api:UnexpectedProblem", "key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "504":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "501":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "500":
+          application/json: {"key": "<value>"}
+        "510":
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "urn:noaa:nws:api:UnexpectedProblem", "key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "511":
+          application/json: {"key": "<value>", "key1": "<value>"}
+  get_product_types:
+    speakeasy-default-get-product-types:
+      responses:
+        "200":
+          application/ld+json: {}
+        "404":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "401":
+          application/json: {"key": "<value>"}
+        "408":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "429":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "400":
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "urn:noaa:nws:api:UnexpectedProblem", "key": "<value>", "key1": "<value>"}
+        "504":
+          application/json: {"key": "<value>"}
+        "501":
+          application/json: {"key": "<value>"}
+        "500":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "510":
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "urn:noaa:nws:api:UnexpectedProblem", "key": "<value>"}
+        "511":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+  get_product_types_by_location:
+    speakeasy-default-get-product-types-by-location:
+      parameters:
+        path:
+          locationId: "<id>"
+      responses:
+        "200":
+          application/ld+json: {}
+        "404":
+          application/json: {"key": "<value>"}
+        "401":
+          application/json: {"key": "<value>"}
+        "408":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "429":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "400":
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "urn:noaa:nws:api:UnexpectedProblem", "key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "504":
+          application/json: {"key": "<value>"}
+        "501":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "500":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "510":
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "urn:noaa:nws:api:UnexpectedProblem", "key": "<value>"}
+        "511":
+          application/json: {"key": "<value>"}
+  get_radar_profiler_info:
+    speakeasy-default-get-radar-profiler-info:
+      parameters:
+        path:
+          stationId: "<id>"
+        query:
+          time: "2007-03-01T13:00:00Z/2008-05-11T15:30:00Z"
+          interval: "P2DT12H"
+      responses:
+        "200":
+          application/ld+json: "<value>"
+        "404":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "401":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "408":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "429":
+          application/json: {"key": "<value>"}
+        "400":
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "urn:noaa:nws:api:UnexpectedProblem", "key": "<value>"}
+        "504":
+          application/json: {"key": "<value>"}
+        "501":
+          application/json: {"key": "<value>"}
+        "500":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "510":
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "urn:noaa:nws:api:UnexpectedProblem", "key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "511":
+          application/json: {"key": "<value>", "key1": "<value>"}
+  get_radar_station_queue:
+    speakeasy-default-get-radar-station-queue:
+      parameters:
+        path:
+          host: "faraway-hierarchy.biz"
+        query:
+          limit: 500
+          arrived: "2007-03-01T13:00:00Z/2008-05-11T15:30:00Z"
+          created: "2007-03-01T13:00:00Z/2008-05-11T15:30:00Z"
+          published: "2007-03-01T13:00:00Z/2008-05-11T15:30:00Z"
+      responses:
+        "200":
+          application/ld+json: "<value>"
+        "404":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "401":
+          application/json: {"key": "<value>"}
+        "408":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "429":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "400":
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "urn:noaa:nws:api:UnexpectedProblem", "key": "<value>", "key1": "<value>"}
+        "504":
+          application/json: {"key": "<value>"}
+        "501":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "500":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "510":
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "urn:noaa:nws:api:UnexpectedProblem", "key": "<value>"}
+        "511":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+  get_radar_station_info:
+    speakeasy-default-get-radar-station-info:
+      parameters:
+        path:
+          stationId: "<id>"
+        query: {}
+      responses:
+        "200":
+          application/geo+json: "<value>"
+          application/ld+json: "<value>"
+        "404":
+          application/json: {"key": "<value>"}
+        "401":
+          application/json: {"key": "<value>"}
+        "408":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "429":
+          application/json: {"key": "<value>"}
+        "400":
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "urn:noaa:nws:api:UnexpectedProblem", "key": "<value>", "key1": "<value>"}
+        "504":
+          application/json: {"key": "<value>"}
+        "501":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "500":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "510":
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "urn:noaa:nws:api:UnexpectedProblem", "key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "511":
+          application/json: {"key": "<value>", "key1": "<value>"}
+  get_radar_server:
+    speakeasy-default-get-radar-server:
+      parameters:
+        path:
+          id: "<id>"
+        query: {}
+      responses:
+        "200":
+          application/ld+json: "<value>"
+        "404":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "401":
+          application/json: {"key": "<value>"}
+        "408":
+          application/json: {"key": "<value>"}
+        "429":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "400":
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "urn:noaa:nws:api:UnexpectedProblem", "key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "504":
+          application/json: {"key": "<value>"}
+        "501":
+          application/json: {"key": "<value>"}
+        "500":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "510":
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "urn:noaa:nws:api:UnexpectedProblem", "key": "<value>", "key1": "<value>"}
+        "511":
+          application/json: {"key": "<value>", "key1": "<value>"}
+  get_radar_station_alarms:
+    speakeasy-default-get-radar-station-alarms:
+      parameters:
+        path:
+          stationId: "<id>"
+      responses:
+        "200":
+          application/ld+json: "<value>"
+        "404":
+          application/json: {"key": "<value>"}
+        "401":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "408":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "429":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "400":
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "urn:noaa:nws:api:UnexpectedProblem", "key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "504":
+          application/json: {"key": "<value>"}
+        "501":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "500":
+          application/json: {"key": "<value>"}
+        "510":
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "urn:noaa:nws:api:UnexpectedProblem", "key": "<value>"}
+        "511":
+          application/json: {"key": "<value>"}
+  get_radar_servers:
+    speakeasy-default-get-radar-servers:
+      responses:
+        "200":
+          application/ld+json: "<value>"
+        "404":
+          application/json: {"key": "<value>"}
+        "401":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "408":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "429":
+          application/json: {"key": "<value>"}
+        "400":
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "urn:noaa:nws:api:UnexpectedProblem", "key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "504":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "501":
+          application/json: {"key": "<value>"}
+        "500":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "510":
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "urn:noaa:nws:api:UnexpectedProblem", "key": "<value>", "key1": "<value>"}
+        "511":
+          application/json: {"key": "<value>", "key1": "<value>"}
+  get_radar_stations:
+    speakeasy-default-get-radar-stations:
+      responses:
+        "200":
+          application/geo+json: "<value>"
+          application/ld+json: "<value>"
+        "404":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "401":
+          application/json: {"key": "<value>"}
+        "408":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "429":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "400":
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "urn:noaa:nws:api:UnexpectedProblem", "key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "504":
+          application/json: {"key": "<value>"}
+        "501":
+          application/json: {"key": "<value>"}
+        "500":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "510":
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "urn:noaa:nws:api:UnexpectedProblem", "key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "511":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+  get_observations:
+    "":
+      parameters:
+        path:
+          stationId: "KORD"
+        query:
+          start: "0419"
+          end: "0419"
+          limit: 500
+      responses:
+        "200":
+          application/geo+json: {"features": [{}, {}], "type": "FeatureCollection"}
+        "404":
+          application/json: {"key": "<value>"}
+        "401":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "408":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "429":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "400":
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "about:blank", "key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "504":
+          application/json: {"key": "<value>", "key1": "<value>"}
+        "501":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "500":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "510":
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "about:blank", "key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "511":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+  get_observation_station_info:
+    "":
+      parameters:
+        path:
+          stationId: "KORD"
+      responses:
+        "200":
+          application/geo+json: {"geometry": {"coordinates": [[[1535.72, 6064.28], [2621.49, 1771.41], [602.42, 1611.48, 6707.95]], [[9164.56], [2679.25], [9978.1, 4386.65]]], "type": "MultiLineString"}, "properties": {}, "type": "Feature"}
+          application/ld+json: {"@context": ["<value>", "<value>"], "geometry": "<value>"}
+        "404":
+          application/json: {"key": "<value>"}
+        "401":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "408":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "429":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "400":
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "about:blank", "key": "<value>", "key1": "<value>"}
+        "504":
+          application/json: {"key": "<value>"}
+        "501":
+          application/json: {"key": "<value>", "key1": "<value>", "key2": "<value>"}
+        "500":
+          application/json: {"key": "<value>"}
+        "510":
+          application/problem+json: {"correlationId": "493c3a1d-f87e-407f-ae2c-24483f5aab63", "detail": "An unexpected problem has occurred.", "instance": "urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63", "status": 500, "title": "Unexpected Problem", "type": "about:blank", "key": "<value>", "key1": "<value>", "key2": "<value>"}
         "511":
           application/json: {"key": "<value>"}
 examplesVersion: 1.0.1

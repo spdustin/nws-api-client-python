@@ -1,0 +1,9 @@
+# GetProductTypesByLocationResponse
+
+
+## Fields
+
+| Field                                                                                        | Type                                                                                         | Required                                                                                     | Description                                                                                  |
+| -------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| `headers`                                                                                    | Dict[str, List[*str*]]                                                                       | :heavy_check_mark:                                                                           | N/A                                                                                          |
+| `result`                                                                                     | [components.TextProductTypeCollection](../../models/components/textproducttypecollection.md) | :heavy_check_mark:                                                                           | N/A                                                                                          |

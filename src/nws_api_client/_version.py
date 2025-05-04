@@ -3,10 +3,10 @@
 import importlib.metadata
 
 __title__: str = "nws-api-client"
-__version__: str = "0.11.0"
-__openapi_doc_version__: str = "2.0.0"
-__gen_version__: str = "2.596.2"
-__user_agent__: str = "speakeasy-sdk/python 0.11.0 2.596.2 2.0.0 nws-api-client"
+__version__: str = "0.13.1"
+__openapi_doc_version__: str = "3.1.0"
+__gen_version__: str = "2.597.9"
+__user_agent__: str = "speakeasy-sdk/python 0.13.1 2.597.9 3.1.0 nws-api-client"
 
 try:
     if __package__ is not None:

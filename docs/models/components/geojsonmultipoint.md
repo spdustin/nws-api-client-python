@@ -1,0 +1,10 @@
+# GeoJSONMultiPoint
+
+
+## Fields
+
+| Field                                                                                        | Type                                                                                         | Required                                                                                     | Description                                                                                  |
+| -------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| `bbox`                                                                                       | List[*float*]                                                                                | :heavy_minus_sign:                                                                           | A GeoJSON bounding box. Please refer to IETF RFC 7946 for information on the GeoJSON format. |
+| `coordinates`                                                                                | List[List[*float*]]                                                                          | :heavy_check_mark:                                                                           | N/A                                                                                          |
+| `type`                                                                                       | [components.TypeMultiPoint](../../models/components/typemultipoint.md)                       | :heavy_check_mark:                                                                           | N/A                                                                                          |

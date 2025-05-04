@@ -1,0 +1,11 @@
+# ObservationStationCollectionJSONLd
+
+
+## Fields
+
+| Field                                                                                    | Type                                                                                     | Required                                                                                 | Description                                                                              |
+| ---------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| `at_context`                                                                             | [Optional[components.JSONLdContextUnion]](../../models/components/jsonldcontextunion.md) | :heavy_minus_sign:                                                                       | N/A                                                                                      |
+| `at_graph`                                                                               | List[[components.ObservationStation](../../models/components/observationstation.md)]     | :heavy_minus_sign:                                                                       | N/A                                                                                      |
+| `observation_stations`                                                                   | List[*str*]                                                                              | :heavy_minus_sign:                                                                       | N/A                                                                                      |
+| `pagination`                                                                             | [Optional[components.PaginationInfo]](../../models/components/paginationinfo.md)         | :heavy_minus_sign:                                                                       | Links for retrieving more data from paged data sets                                      |

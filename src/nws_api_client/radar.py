@@ -2,86 +2,46 @@
 
 from .basesdk import BaseSDK
 from enum import Enum
-from nws_api_client import errors, models, utils
+from nws_api_client import utils
 from nws_api_client._hooks import HookContext
+from nws_api_client.models import components, errors, operations
 from nws_api_client.types import OptionalNullable, UNSET
 from nws_api_client.utils import get_security_from_env
 from typing import Any, List, Mapping, Optional
 
 
-class GetQueueMetadataAcceptEnum(str, Enum):
-    APPLICATION_LD_PLUS_JSON = "application/ld+json"
-    APPLICATION_PROBLEM_PLUS_JSON = "application/problem+json"
-
-
-class GetServerMetadataAcceptEnum(str, Enum):
-    APPLICATION_LD_PLUS_JSON = "application/ld+json"
-    APPLICATION_PROBLEM_PLUS_JSON = "application/problem+json"
-
-
-class GetStationAlarmsMetadataAcceptEnum(str, Enum):
-    APPLICATION_LD_PLUS_JSON = "application/ld+json"
-    APPLICATION_PROBLEM_PLUS_JSON = "application/problem+json"
-
-
-class GetStationMetadataAcceptEnum(str, Enum):
+class GetRadarStationAcceptEnum(str, Enum):
     APPLICATION_GEO_PLUS_JSON = "application/geo+json"
     APPLICATION_LD_PLUS_JSON = "application/ld+json"
-    APPLICATION_PROBLEM_PLUS_JSON = "application/problem+json"
-
-
-class GetWindProfilerMetadataAcceptEnum(str, Enum):
-    APPLICATION_LD_PLUS_JSON = "application/ld+json"
-    APPLICATION_PROBLEM_PLUS_JSON = "application/problem+json"
-
-
-class ListServersAcceptEnum(str, Enum):
-    APPLICATION_LD_PLUS_JSON = "application/ld+json"
-    APPLICATION_PROBLEM_PLUS_JSON = "application/problem+json"
 
 
 class ListStationsAcceptEnum(str, Enum):
     APPLICATION_GEO_PLUS_JSON = "application/geo+json"
     APPLICATION_LD_PLUS_JSON = "application/ld+json"
-    APPLICATION_PROBLEM_PLUS_JSON = "application/problem+json"
 
 
 class Radar(BaseSDK):
     r"""Operations related to radar stations"""
 
-    def get_queue_metadata(
+    def get_profiler(
         self,
         *,
-        host: str,
-        limit: Optional[int] = None,
-        arrived: Optional[str] = None,
-        created: Optional[str] = None,
-        published: Optional[str] = None,
-        station: Optional[str] = None,
-        type_: Optional[str] = None,
-        feed: Optional[str] = None,
-        resolution: Optional[int] = None,
+        station_id: str,
+        time: Optional[str] = None,
+        interval: Optional[str] = None,
         retries: OptionalNullable[utils.RetryConfig] = UNSET,
         server_url: Optional[str] = None,
         timeout_ms: Optional[int] = None,
-        accept_header_override: Optional[GetQueueMetadataAcceptEnum] = None,
         http_headers: Optional[Mapping[str, str]] = None,
-    ) -> models.GetRadarQueueMetadataResponse:
-        r"""Returns metadata about a given radar queue
+    ) -> operations.GetRadarProfilerInfoResponse:
+        r"""Returns metadata about a given radar wind profiler
 
-        :param host: LDM host
-        :param limit: Record limit
-        :param arrived: Range for arrival time
-        :param created: Range for creation time
-        :param published: Range for publish time
-        :param station: Station identifier
-        :param type: Record type
-        :param feed: Originating product feed
-        :param resolution: Resolution version
+        :param station_id: Profiler station ID
+        :param time: Time interval
+        :param interval: Averaging interval
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
         :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
-        :param accept_header_override: Override the default accept header for this method
         :param http_headers: Additional headers to set or replace on requests.
         """
         base_url = None
@@ -94,7 +54,237 @@ class Radar(BaseSDK):
         else:
             base_url = self._get_url(base_url, url_variables)
 
-        request = models.GetRadarQueueMetadataRequest(
+        request = operations.GetRadarProfilerInfoRequest(
+            station_id=station_id,
+            time=time,
+            interval=interval,
+        )
+
+        req = self._build_request(
+            method="GET",
+            path="/radar/profilers/{stationId}",
+            base_url=base_url,
+            url_variables=url_variables,
+            request=request,
+            request_body_required=False,
+            request_has_path_params=True,
+            request_has_query_params=True,
+            user_agent_header="user-agent",
+            accept_header_value="application/ld+json",
+            http_headers=http_headers,
+            security=self.sdk_configuration.security,
+            timeout_ms=timeout_ms,
+        )
+
+        if retries == UNSET:
+            if self.sdk_configuration.retry_config is not UNSET:
+                retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(500, 60000, 1.5, 3600000), True
+                )
+
+        retry_config = None
+        if isinstance(retries, utils.RetryConfig):
+            retry_config = (retries, ["5XX"])
+
+        http_res = self.do_request(
+            hook_ctx=HookContext(
+                base_url=base_url or "",
+                operation_id="get_radar_profiler_info",
+                oauth2_scopes=[],
+                security_source=get_security_from_env(
+                    self.sdk_configuration.security, components.Security
+                ),
+            ),
+            request=req,
+            error_status_codes=["400", "4XX", "5XX"],
+            retry_config=retry_config,
+        )
+
+        response_data: Any = None
+        if utils.match_response(http_res, "200", "application/ld+json"):
+            return operations.GetRadarProfilerInfoResponse(
+                result=utils.unmarshal_json(http_res.text, Any), headers={}
+            )
+        if utils.match_response(http_res, "400", "application/problem+json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.ProblemDetailErrorData
+            )
+            raise errors.ProblemDetailError(data=response_data)
+        if utils.match_response(http_res, "4XX", "*"):
+            http_res_text = utils.stream_to_text(http_res)
+            raise errors.NWSAPIError(
+                "API error occurred", http_res.status_code, http_res_text, http_res
+            )
+        if utils.match_response(http_res, "5XX", "*"):
+            http_res_text = utils.stream_to_text(http_res)
+            raise errors.NWSAPIError(
+                "API error occurred", http_res.status_code, http_res_text, http_res
+            )
+
+        content_type = http_res.headers.get("Content-Type")
+        http_res_text = utils.stream_to_text(http_res)
+        raise errors.NWSAPIError(
+            f"Unexpected response received (code: {http_res.status_code}, type: {content_type})",
+            http_res.status_code,
+            http_res_text,
+            http_res,
+        )
+
+    async def get_profiler_async(
+        self,
+        *,
+        station_id: str,
+        time: Optional[str] = None,
+        interval: Optional[str] = None,
+        retries: OptionalNullable[utils.RetryConfig] = UNSET,
+        server_url: Optional[str] = None,
+        timeout_ms: Optional[int] = None,
+        http_headers: Optional[Mapping[str, str]] = None,
+    ) -> operations.GetRadarProfilerInfoResponse:
+        r"""Returns metadata about a given radar wind profiler
+
+        :param station_id: Profiler station ID
+        :param time: Time interval
+        :param interval: Averaging interval
+        :param retries: Override the default retry configuration for this method
+        :param server_url: Override the default server URL for this method
+        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param http_headers: Additional headers to set or replace on requests.
+        """
+        base_url = None
+        url_variables = None
+        if timeout_ms is None:
+            timeout_ms = self.sdk_configuration.timeout_ms
+
+        if server_url is not None:
+            base_url = server_url
+        else:
+            base_url = self._get_url(base_url, url_variables)
+
+        request = operations.GetRadarProfilerInfoRequest(
+            station_id=station_id,
+            time=time,
+            interval=interval,
+        )
+
+        req = self._build_request_async(
+            method="GET",
+            path="/radar/profilers/{stationId}",
+            base_url=base_url,
+            url_variables=url_variables,
+            request=request,
+            request_body_required=False,
+            request_has_path_params=True,
+            request_has_query_params=True,
+            user_agent_header="user-agent",
+            accept_header_value="application/ld+json",
+            http_headers=http_headers,
+            security=self.sdk_configuration.security,
+            timeout_ms=timeout_ms,
+        )
+
+        if retries == UNSET:
+            if self.sdk_configuration.retry_config is not UNSET:
+                retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(500, 60000, 1.5, 3600000), True
+                )
+
+        retry_config = None
+        if isinstance(retries, utils.RetryConfig):
+            retry_config = (retries, ["5XX"])
+
+        http_res = await self.do_request_async(
+            hook_ctx=HookContext(
+                base_url=base_url or "",
+                operation_id="get_radar_profiler_info",
+                oauth2_scopes=[],
+                security_source=get_security_from_env(
+                    self.sdk_configuration.security, components.Security
+                ),
+            ),
+            request=req,
+            error_status_codes=["400", "4XX", "5XX"],
+            retry_config=retry_config,
+        )
+
+        response_data: Any = None
+        if utils.match_response(http_res, "200", "application/ld+json"):
+            return operations.GetRadarProfilerInfoResponse(
+                result=utils.unmarshal_json(http_res.text, Any), headers={}
+            )
+        if utils.match_response(http_res, "400", "application/problem+json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.ProblemDetailErrorData
+            )
+            raise errors.ProblemDetailError(data=response_data)
+        if utils.match_response(http_res, "4XX", "*"):
+            http_res_text = await utils.stream_to_text_async(http_res)
+            raise errors.NWSAPIError(
+                "API error occurred", http_res.status_code, http_res_text, http_res
+            )
+        if utils.match_response(http_res, "5XX", "*"):
+            http_res_text = await utils.stream_to_text_async(http_res)
+            raise errors.NWSAPIError(
+                "API error occurred", http_res.status_code, http_res_text, http_res
+            )
+
+        content_type = http_res.headers.get("Content-Type")
+        http_res_text = await utils.stream_to_text_async(http_res)
+        raise errors.NWSAPIError(
+            f"Unexpected response received (code: {http_res.status_code}, type: {content_type})",
+            http_res.status_code,
+            http_res_text,
+            http_res,
+        )
+
+    def get_queue(
+        self,
+        *,
+        host: str,
+        limit: Optional[int] = 500,
+        arrived: Optional[str] = None,
+        created: Optional[str] = None,
+        published: Optional[str] = None,
+        station: Optional[str] = None,
+        type_: Optional[str] = None,
+        feed: Optional[str] = None,
+        resolution: Optional[int] = None,
+        retries: OptionalNullable[utils.RetryConfig] = UNSET,
+        server_url: Optional[str] = None,
+        timeout_ms: Optional[int] = None,
+        http_headers: Optional[Mapping[str, str]] = None,
+    ) -> operations.GetRadarStationQueueResponse:
+        r"""Returns metadata about a given radar queue
+
+        :param host: LDM host
+        :param limit: Limit
+        :param arrived: Range for arrival time
+        :param created: Range for creation time
+        :param published: Range for publish time
+        :param station: Station identifier
+        :param type: Record type
+        :param feed: Originating product feed
+        :param resolution: Resolution version
+        :param retries: Override the default retry configuration for this method
+        :param server_url: Override the default server URL for this method
+        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param http_headers: Additional headers to set or replace on requests.
+        """
+        base_url = None
+        url_variables = None
+        if timeout_ms is None:
+            timeout_ms = self.sdk_configuration.timeout_ms
+
+        if server_url is not None:
+            base_url = server_url
+        else:
+            base_url = self._get_url(base_url, url_variables)
+
+        request = operations.GetRadarStationQueueRequest(
             host=host,
             limit=limit,
             arrived=arrived,
@@ -116,9 +306,7 @@ class Radar(BaseSDK):
             request_has_path_params=True,
             request_has_query_params=True,
             user_agent_header="user-agent",
-            accept_header_value=accept_header_override.value
-            if accept_header_override is not None
-            else "application/ld+json;q=1, application/problem+json;q=0",
+            accept_header_value="application/ld+json",
             http_headers=http_headers,
             security=self.sdk_configuration.security,
             timeout_ms=timeout_ms,
@@ -139,133 +327,52 @@ class Radar(BaseSDK):
         http_res = self.do_request(
             hook_ctx=HookContext(
                 base_url=base_url or "",
-                operation_id="get_radar_queue_metadata",
+                operation_id="get_radar_station_queue",
                 oauth2_scopes=[],
                 security_source=get_security_from_env(
-                    self.sdk_configuration.security, models.Security
+                    self.sdk_configuration.security, components.Security
                 ),
             ),
             request=req,
-            error_status_codes=[
-                "400",
-                "401",
-                "403",
-                "404",
-                "407",
-                "408",
-                "413",
-                "414",
-                "415",
-                "422",
-                "429",
-                "431",
-                "4XX",
-                "500",
-                "501",
-                "502",
-                "503",
-                "504",
-                "505",
-                "506",
-                "507",
-                "508",
-                "510",
-                "511",
-                "5XX",
-            ],
+            error_status_codes=["400", "4XX", "5XX"],
             retry_config=retry_config,
         )
 
         response_data: Any = None
         if utils.match_response(http_res, "200", "application/ld+json"):
-            return models.GetRadarQueueMetadataResponse(
-                result=utils.unmarshal_json(http_res.text, Any),
-                headers=utils.get_response_headers(http_res.headers),
+            return operations.GetRadarStationQueueResponse(
+                result=utils.unmarshal_json(http_res.text, Any), headers={}
             )
-        if utils.match_response(http_res, "404", "application/json"):
+        if utils.match_response(http_res, "400", "application/problem+json"):
             response_data = utils.unmarshal_json(
-                http_res.text, errors.NotFoundErrorData
+                http_res.text, errors.ProblemDetailErrorData
             )
-            raise errors.NotFoundError(data=response_data)
-        if utils.match_response(http_res, ["401", "403", "407"], "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.UnauthorizedErrorData
-            )
-            raise errors.UnauthorizedError(data=response_data)
-        if utils.match_response(http_res, "408", "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.TimeoutErrorTData
-            )
-            raise errors.TimeoutErrorT(data=response_data)
-        if utils.match_response(http_res, "429", "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.RateLimitedErrorData
-            )
-            raise errors.RateLimitedError(data=response_data)
-        if utils.match_response(
-            http_res, ["400", "413", "414", "415", "422", "431"], "application/json"
-        ):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.BadRequestErrorData
-            )
-            raise errors.BadRequestError(data=response_data)
-        if utils.match_response(http_res, "504", "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.TimeoutErrorTData
-            )
-            raise errors.TimeoutErrorT(data=response_data)
-        if utils.match_response(http_res, ["501", "505"], "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.NotFoundErrorData
-            )
-            raise errors.NotFoundError(data=response_data)
-        if utils.match_response(
-            http_res, ["500", "502", "503", "506", "507", "508"], "application/json"
-        ):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.InternalServerErrorData
-            )
-            raise errors.InternalServerError(data=response_data)
-        if utils.match_response(http_res, "510", "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.BadRequestErrorData
-            )
-            raise errors.BadRequestError(data=response_data)
-        if utils.match_response(http_res, "511", "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.UnauthorizedErrorData
-            )
-            raise errors.UnauthorizedError(data=response_data)
+            raise errors.ProblemDetailError(data=response_data)
         if utils.match_response(http_res, "4XX", "*"):
             http_res_text = utils.stream_to_text(http_res)
-            raise errors.APIError(
+            raise errors.NWSAPIError(
                 "API error occurred", http_res.status_code, http_res_text, http_res
             )
         if utils.match_response(http_res, "5XX", "*"):
             http_res_text = utils.stream_to_text(http_res)
-            raise errors.APIError(
+            raise errors.NWSAPIError(
                 "API error occurred", http_res.status_code, http_res_text, http_res
-            )
-        if utils.match_response(http_res, "default", "application/problem+json"):
-            return models.GetRadarQueueMetadataResponse(
-                result=utils.unmarshal_json(http_res.text, models.ProblemDetail),
-                headers=utils.get_response_headers(http_res.headers),
             )
 
         content_type = http_res.headers.get("Content-Type")
         http_res_text = utils.stream_to_text(http_res)
-        raise errors.APIError(
+        raise errors.NWSAPIError(
             f"Unexpected response received (code: {http_res.status_code}, type: {content_type})",
             http_res.status_code,
             http_res_text,
             http_res,
         )
 
-    async def get_queue_metadata_async(
+    async def get_queue_async(
         self,
         *,
         host: str,
-        limit: Optional[int] = None,
+        limit: Optional[int] = 500,
         arrived: Optional[str] = None,
         created: Optional[str] = None,
         published: Optional[str] = None,
@@ -276,13 +383,12 @@ class Radar(BaseSDK):
         retries: OptionalNullable[utils.RetryConfig] = UNSET,
         server_url: Optional[str] = None,
         timeout_ms: Optional[int] = None,
-        accept_header_override: Optional[GetQueueMetadataAcceptEnum] = None,
         http_headers: Optional[Mapping[str, str]] = None,
-    ) -> models.GetRadarQueueMetadataResponse:
+    ) -> operations.GetRadarStationQueueResponse:
         r"""Returns metadata about a given radar queue
 
         :param host: LDM host
-        :param limit: Record limit
+        :param limit: Limit
         :param arrived: Range for arrival time
         :param created: Range for creation time
         :param published: Range for publish time
@@ -293,7 +399,6 @@ class Radar(BaseSDK):
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
         :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
-        :param accept_header_override: Override the default accept header for this method
         :param http_headers: Additional headers to set or replace on requests.
         """
         base_url = None
@@ -306,7 +411,7 @@ class Radar(BaseSDK):
         else:
             base_url = self._get_url(base_url, url_variables)
 
-        request = models.GetRadarQueueMetadataRequest(
+        request = operations.GetRadarStationQueueRequest(
             host=host,
             limit=limit,
             arrived=arrived,
@@ -328,9 +433,7 @@ class Radar(BaseSDK):
             request_has_path_params=True,
             request_has_query_params=True,
             user_agent_header="user-agent",
-            accept_header_value=accept_header_override.value
-            if accept_header_override is not None
-            else "application/ld+json;q=1, application/problem+json;q=0",
+            accept_header_value="application/ld+json",
             http_headers=http_headers,
             security=self.sdk_configuration.security,
             timeout_ms=timeout_ms,
@@ -351,887 +454,48 @@ class Radar(BaseSDK):
         http_res = await self.do_request_async(
             hook_ctx=HookContext(
                 base_url=base_url or "",
-                operation_id="get_radar_queue_metadata",
+                operation_id="get_radar_station_queue",
                 oauth2_scopes=[],
                 security_source=get_security_from_env(
-                    self.sdk_configuration.security, models.Security
+                    self.sdk_configuration.security, components.Security
                 ),
             ),
             request=req,
-            error_status_codes=[
-                "400",
-                "401",
-                "403",
-                "404",
-                "407",
-                "408",
-                "413",
-                "414",
-                "415",
-                "422",
-                "429",
-                "431",
-                "4XX",
-                "500",
-                "501",
-                "502",
-                "503",
-                "504",
-                "505",
-                "506",
-                "507",
-                "508",
-                "510",
-                "511",
-                "5XX",
-            ],
+            error_status_codes=["400", "4XX", "5XX"],
             retry_config=retry_config,
         )
 
         response_data: Any = None
         if utils.match_response(http_res, "200", "application/ld+json"):
-            return models.GetRadarQueueMetadataResponse(
-                result=utils.unmarshal_json(http_res.text, Any),
-                headers=utils.get_response_headers(http_res.headers),
+            return operations.GetRadarStationQueueResponse(
+                result=utils.unmarshal_json(http_res.text, Any), headers={}
             )
-        if utils.match_response(http_res, "404", "application/json"):
+        if utils.match_response(http_res, "400", "application/problem+json"):
             response_data = utils.unmarshal_json(
-                http_res.text, errors.NotFoundErrorData
+                http_res.text, errors.ProblemDetailErrorData
             )
-            raise errors.NotFoundError(data=response_data)
-        if utils.match_response(http_res, ["401", "403", "407"], "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.UnauthorizedErrorData
-            )
-            raise errors.UnauthorizedError(data=response_data)
-        if utils.match_response(http_res, "408", "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.TimeoutErrorTData
-            )
-            raise errors.TimeoutErrorT(data=response_data)
-        if utils.match_response(http_res, "429", "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.RateLimitedErrorData
-            )
-            raise errors.RateLimitedError(data=response_data)
-        if utils.match_response(
-            http_res, ["400", "413", "414", "415", "422", "431"], "application/json"
-        ):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.BadRequestErrorData
-            )
-            raise errors.BadRequestError(data=response_data)
-        if utils.match_response(http_res, "504", "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.TimeoutErrorTData
-            )
-            raise errors.TimeoutErrorT(data=response_data)
-        if utils.match_response(http_res, ["501", "505"], "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.NotFoundErrorData
-            )
-            raise errors.NotFoundError(data=response_data)
-        if utils.match_response(
-            http_res, ["500", "502", "503", "506", "507", "508"], "application/json"
-        ):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.InternalServerErrorData
-            )
-            raise errors.InternalServerError(data=response_data)
-        if utils.match_response(http_res, "510", "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.BadRequestErrorData
-            )
-            raise errors.BadRequestError(data=response_data)
-        if utils.match_response(http_res, "511", "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.UnauthorizedErrorData
-            )
-            raise errors.UnauthorizedError(data=response_data)
+            raise errors.ProblemDetailError(data=response_data)
         if utils.match_response(http_res, "4XX", "*"):
             http_res_text = await utils.stream_to_text_async(http_res)
-            raise errors.APIError(
+            raise errors.NWSAPIError(
                 "API error occurred", http_res.status_code, http_res_text, http_res
             )
         if utils.match_response(http_res, "5XX", "*"):
             http_res_text = await utils.stream_to_text_async(http_res)
-            raise errors.APIError(
+            raise errors.NWSAPIError(
                 "API error occurred", http_res.status_code, http_res_text, http_res
-            )
-        if utils.match_response(http_res, "default", "application/problem+json"):
-            return models.GetRadarQueueMetadataResponse(
-                result=utils.unmarshal_json(http_res.text, models.ProblemDetail),
-                headers=utils.get_response_headers(http_res.headers),
             )
 
         content_type = http_res.headers.get("Content-Type")
         http_res_text = await utils.stream_to_text_async(http_res)
-        raise errors.APIError(
+        raise errors.NWSAPIError(
             f"Unexpected response received (code: {http_res.status_code}, type: {content_type})",
             http_res.status_code,
             http_res_text,
             http_res,
         )
 
-    def get_server_metadata(
-        self,
-        *,
-        id: str,
-        reporting_host: Optional[str] = None,
-        retries: OptionalNullable[utils.RetryConfig] = UNSET,
-        server_url: Optional[str] = None,
-        timeout_ms: Optional[int] = None,
-        accept_header_override: Optional[GetServerMetadataAcceptEnum] = None,
-        http_headers: Optional[Mapping[str, str]] = None,
-    ) -> models.GetRadarServerMetadataResponse:
-        r"""Returns metadata about a given radar server
-
-        :param id: Server ID
-        :param reporting_host: Show records from specific reporting host
-        :param retries: Override the default retry configuration for this method
-        :param server_url: Override the default server URL for this method
-        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
-        :param accept_header_override: Override the default accept header for this method
-        :param http_headers: Additional headers to set or replace on requests.
-        """
-        base_url = None
-        url_variables = None
-        if timeout_ms is None:
-            timeout_ms = self.sdk_configuration.timeout_ms
-
-        if server_url is not None:
-            base_url = server_url
-        else:
-            base_url = self._get_url(base_url, url_variables)
-
-        request = models.GetRadarServerMetadataRequest(
-            id=id,
-            reporting_host=reporting_host,
-        )
-
-        req = self._build_request(
-            method="GET",
-            path="/radar/servers/{id}",
-            base_url=base_url,
-            url_variables=url_variables,
-            request=request,
-            request_body_required=False,
-            request_has_path_params=True,
-            request_has_query_params=True,
-            user_agent_header="user-agent",
-            accept_header_value=accept_header_override.value
-            if accept_header_override is not None
-            else "application/ld+json;q=1, application/problem+json;q=0",
-            http_headers=http_headers,
-            security=self.sdk_configuration.security,
-            timeout_ms=timeout_ms,
-        )
-
-        if retries == UNSET:
-            if self.sdk_configuration.retry_config is not UNSET:
-                retries = self.sdk_configuration.retry_config
-            else:
-                retries = utils.RetryConfig(
-                    "backoff", utils.BackoffStrategy(500, 60000, 1.5, 3600000), True
-                )
-
-        retry_config = None
-        if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["5XX"])
-
-        http_res = self.do_request(
-            hook_ctx=HookContext(
-                base_url=base_url or "",
-                operation_id="get_radar_server_metadata",
-                oauth2_scopes=[],
-                security_source=get_security_from_env(
-                    self.sdk_configuration.security, models.Security
-                ),
-            ),
-            request=req,
-            error_status_codes=[
-                "400",
-                "401",
-                "403",
-                "404",
-                "407",
-                "408",
-                "413",
-                "414",
-                "415",
-                "422",
-                "429",
-                "431",
-                "4XX",
-                "500",
-                "501",
-                "502",
-                "503",
-                "504",
-                "505",
-                "506",
-                "507",
-                "508",
-                "510",
-                "511",
-                "5XX",
-            ],
-            retry_config=retry_config,
-        )
-
-        response_data: Any = None
-        if utils.match_response(http_res, "200", "application/ld+json"):
-            return models.GetRadarServerMetadataResponse(
-                result=utils.unmarshal_json(http_res.text, Any),
-                headers=utils.get_response_headers(http_res.headers),
-            )
-        if utils.match_response(http_res, "404", "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.NotFoundErrorData
-            )
-            raise errors.NotFoundError(data=response_data)
-        if utils.match_response(http_res, ["401", "403", "407"], "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.UnauthorizedErrorData
-            )
-            raise errors.UnauthorizedError(data=response_data)
-        if utils.match_response(http_res, "408", "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.TimeoutErrorTData
-            )
-            raise errors.TimeoutErrorT(data=response_data)
-        if utils.match_response(http_res, "429", "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.RateLimitedErrorData
-            )
-            raise errors.RateLimitedError(data=response_data)
-        if utils.match_response(
-            http_res, ["400", "413", "414", "415", "422", "431"], "application/json"
-        ):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.BadRequestErrorData
-            )
-            raise errors.BadRequestError(data=response_data)
-        if utils.match_response(http_res, "504", "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.TimeoutErrorTData
-            )
-            raise errors.TimeoutErrorT(data=response_data)
-        if utils.match_response(http_res, ["501", "505"], "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.NotFoundErrorData
-            )
-            raise errors.NotFoundError(data=response_data)
-        if utils.match_response(
-            http_res, ["500", "502", "503", "506", "507", "508"], "application/json"
-        ):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.InternalServerErrorData
-            )
-            raise errors.InternalServerError(data=response_data)
-        if utils.match_response(http_res, "510", "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.BadRequestErrorData
-            )
-            raise errors.BadRequestError(data=response_data)
-        if utils.match_response(http_res, "511", "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.UnauthorizedErrorData
-            )
-            raise errors.UnauthorizedError(data=response_data)
-        if utils.match_response(http_res, "4XX", "*"):
-            http_res_text = utils.stream_to_text(http_res)
-            raise errors.APIError(
-                "API error occurred", http_res.status_code, http_res_text, http_res
-            )
-        if utils.match_response(http_res, "5XX", "*"):
-            http_res_text = utils.stream_to_text(http_res)
-            raise errors.APIError(
-                "API error occurred", http_res.status_code, http_res_text, http_res
-            )
-        if utils.match_response(http_res, "default", "application/problem+json"):
-            return models.GetRadarServerMetadataResponse(
-                result=utils.unmarshal_json(http_res.text, models.ProblemDetail),
-                headers=utils.get_response_headers(http_res.headers),
-            )
-
-        content_type = http_res.headers.get("Content-Type")
-        http_res_text = utils.stream_to_text(http_res)
-        raise errors.APIError(
-            f"Unexpected response received (code: {http_res.status_code}, type: {content_type})",
-            http_res.status_code,
-            http_res_text,
-            http_res,
-        )
-
-    async def get_server_metadata_async(
-        self,
-        *,
-        id: str,
-        reporting_host: Optional[str] = None,
-        retries: OptionalNullable[utils.RetryConfig] = UNSET,
-        server_url: Optional[str] = None,
-        timeout_ms: Optional[int] = None,
-        accept_header_override: Optional[GetServerMetadataAcceptEnum] = None,
-        http_headers: Optional[Mapping[str, str]] = None,
-    ) -> models.GetRadarServerMetadataResponse:
-        r"""Returns metadata about a given radar server
-
-        :param id: Server ID
-        :param reporting_host: Show records from specific reporting host
-        :param retries: Override the default retry configuration for this method
-        :param server_url: Override the default server URL for this method
-        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
-        :param accept_header_override: Override the default accept header for this method
-        :param http_headers: Additional headers to set or replace on requests.
-        """
-        base_url = None
-        url_variables = None
-        if timeout_ms is None:
-            timeout_ms = self.sdk_configuration.timeout_ms
-
-        if server_url is not None:
-            base_url = server_url
-        else:
-            base_url = self._get_url(base_url, url_variables)
-
-        request = models.GetRadarServerMetadataRequest(
-            id=id,
-            reporting_host=reporting_host,
-        )
-
-        req = self._build_request_async(
-            method="GET",
-            path="/radar/servers/{id}",
-            base_url=base_url,
-            url_variables=url_variables,
-            request=request,
-            request_body_required=False,
-            request_has_path_params=True,
-            request_has_query_params=True,
-            user_agent_header="user-agent",
-            accept_header_value=accept_header_override.value
-            if accept_header_override is not None
-            else "application/ld+json;q=1, application/problem+json;q=0",
-            http_headers=http_headers,
-            security=self.sdk_configuration.security,
-            timeout_ms=timeout_ms,
-        )
-
-        if retries == UNSET:
-            if self.sdk_configuration.retry_config is not UNSET:
-                retries = self.sdk_configuration.retry_config
-            else:
-                retries = utils.RetryConfig(
-                    "backoff", utils.BackoffStrategy(500, 60000, 1.5, 3600000), True
-                )
-
-        retry_config = None
-        if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["5XX"])
-
-        http_res = await self.do_request_async(
-            hook_ctx=HookContext(
-                base_url=base_url or "",
-                operation_id="get_radar_server_metadata",
-                oauth2_scopes=[],
-                security_source=get_security_from_env(
-                    self.sdk_configuration.security, models.Security
-                ),
-            ),
-            request=req,
-            error_status_codes=[
-                "400",
-                "401",
-                "403",
-                "404",
-                "407",
-                "408",
-                "413",
-                "414",
-                "415",
-                "422",
-                "429",
-                "431",
-                "4XX",
-                "500",
-                "501",
-                "502",
-                "503",
-                "504",
-                "505",
-                "506",
-                "507",
-                "508",
-                "510",
-                "511",
-                "5XX",
-            ],
-            retry_config=retry_config,
-        )
-
-        response_data: Any = None
-        if utils.match_response(http_res, "200", "application/ld+json"):
-            return models.GetRadarServerMetadataResponse(
-                result=utils.unmarshal_json(http_res.text, Any),
-                headers=utils.get_response_headers(http_res.headers),
-            )
-        if utils.match_response(http_res, "404", "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.NotFoundErrorData
-            )
-            raise errors.NotFoundError(data=response_data)
-        if utils.match_response(http_res, ["401", "403", "407"], "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.UnauthorizedErrorData
-            )
-            raise errors.UnauthorizedError(data=response_data)
-        if utils.match_response(http_res, "408", "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.TimeoutErrorTData
-            )
-            raise errors.TimeoutErrorT(data=response_data)
-        if utils.match_response(http_res, "429", "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.RateLimitedErrorData
-            )
-            raise errors.RateLimitedError(data=response_data)
-        if utils.match_response(
-            http_res, ["400", "413", "414", "415", "422", "431"], "application/json"
-        ):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.BadRequestErrorData
-            )
-            raise errors.BadRequestError(data=response_data)
-        if utils.match_response(http_res, "504", "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.TimeoutErrorTData
-            )
-            raise errors.TimeoutErrorT(data=response_data)
-        if utils.match_response(http_res, ["501", "505"], "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.NotFoundErrorData
-            )
-            raise errors.NotFoundError(data=response_data)
-        if utils.match_response(
-            http_res, ["500", "502", "503", "506", "507", "508"], "application/json"
-        ):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.InternalServerErrorData
-            )
-            raise errors.InternalServerError(data=response_data)
-        if utils.match_response(http_res, "510", "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.BadRequestErrorData
-            )
-            raise errors.BadRequestError(data=response_data)
-        if utils.match_response(http_res, "511", "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.UnauthorizedErrorData
-            )
-            raise errors.UnauthorizedError(data=response_data)
-        if utils.match_response(http_res, "4XX", "*"):
-            http_res_text = await utils.stream_to_text_async(http_res)
-            raise errors.APIError(
-                "API error occurred", http_res.status_code, http_res_text, http_res
-            )
-        if utils.match_response(http_res, "5XX", "*"):
-            http_res_text = await utils.stream_to_text_async(http_res)
-            raise errors.APIError(
-                "API error occurred", http_res.status_code, http_res_text, http_res
-            )
-        if utils.match_response(http_res, "default", "application/problem+json"):
-            return models.GetRadarServerMetadataResponse(
-                result=utils.unmarshal_json(http_res.text, models.ProblemDetail),
-                headers=utils.get_response_headers(http_res.headers),
-            )
-
-        content_type = http_res.headers.get("Content-Type")
-        http_res_text = await utils.stream_to_text_async(http_res)
-        raise errors.APIError(
-            f"Unexpected response received (code: {http_res.status_code}, type: {content_type})",
-            http_res.status_code,
-            http_res_text,
-            http_res,
-        )
-
-    def get_station_alarms_metadata(
-        self,
-        *,
-        station_id: str,
-        retries: OptionalNullable[utils.RetryConfig] = UNSET,
-        server_url: Optional[str] = None,
-        timeout_ms: Optional[int] = None,
-        accept_header_override: Optional[GetStationAlarmsMetadataAcceptEnum] = None,
-        http_headers: Optional[Mapping[str, str]] = None,
-    ) -> models.GetRadarStationAlarmsMetadataResponse:
-        r"""Returns metadata about a given radar station alarms
-
-        :param station_id: Radar station ID
-        :param retries: Override the default retry configuration for this method
-        :param server_url: Override the default server URL for this method
-        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
-        :param accept_header_override: Override the default accept header for this method
-        :param http_headers: Additional headers to set or replace on requests.
-        """
-        base_url = None
-        url_variables = None
-        if timeout_ms is None:
-            timeout_ms = self.sdk_configuration.timeout_ms
-
-        if server_url is not None:
-            base_url = server_url
-        else:
-            base_url = self._get_url(base_url, url_variables)
-
-        request = models.GetRadarStationAlarmsMetadataRequest(
-            station_id=station_id,
-        )
-
-        req = self._build_request(
-            method="GET",
-            path="/radar/stations/{stationId}/alarms",
-            base_url=base_url,
-            url_variables=url_variables,
-            request=request,
-            request_body_required=False,
-            request_has_path_params=True,
-            request_has_query_params=True,
-            user_agent_header="user-agent",
-            accept_header_value=accept_header_override.value
-            if accept_header_override is not None
-            else "application/ld+json;q=1, application/problem+json;q=0",
-            http_headers=http_headers,
-            security=self.sdk_configuration.security,
-            timeout_ms=timeout_ms,
-        )
-
-        if retries == UNSET:
-            if self.sdk_configuration.retry_config is not UNSET:
-                retries = self.sdk_configuration.retry_config
-            else:
-                retries = utils.RetryConfig(
-                    "backoff", utils.BackoffStrategy(500, 60000, 1.5, 3600000), True
-                )
-
-        retry_config = None
-        if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["5XX"])
-
-        http_res = self.do_request(
-            hook_ctx=HookContext(
-                base_url=base_url or "",
-                operation_id="get_radar_station_alarms_metadata",
-                oauth2_scopes=[],
-                security_source=get_security_from_env(
-                    self.sdk_configuration.security, models.Security
-                ),
-            ),
-            request=req,
-            error_status_codes=[
-                "400",
-                "401",
-                "403",
-                "404",
-                "407",
-                "408",
-                "413",
-                "414",
-                "415",
-                "422",
-                "429",
-                "431",
-                "4XX",
-                "500",
-                "501",
-                "502",
-                "503",
-                "504",
-                "505",
-                "506",
-                "507",
-                "508",
-                "510",
-                "511",
-                "5XX",
-            ],
-            retry_config=retry_config,
-        )
-
-        response_data: Any = None
-        if utils.match_response(http_res, "200", "application/ld+json"):
-            return models.GetRadarStationAlarmsMetadataResponse(
-                result=utils.unmarshal_json(http_res.text, Any),
-                headers=utils.get_response_headers(http_res.headers),
-            )
-        if utils.match_response(http_res, "404", "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.NotFoundErrorData
-            )
-            raise errors.NotFoundError(data=response_data)
-        if utils.match_response(http_res, ["401", "403", "407"], "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.UnauthorizedErrorData
-            )
-            raise errors.UnauthorizedError(data=response_data)
-        if utils.match_response(http_res, "408", "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.TimeoutErrorTData
-            )
-            raise errors.TimeoutErrorT(data=response_data)
-        if utils.match_response(http_res, "429", "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.RateLimitedErrorData
-            )
-            raise errors.RateLimitedError(data=response_data)
-        if utils.match_response(
-            http_res, ["400", "413", "414", "415", "422", "431"], "application/json"
-        ):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.BadRequestErrorData
-            )
-            raise errors.BadRequestError(data=response_data)
-        if utils.match_response(http_res, "504", "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.TimeoutErrorTData
-            )
-            raise errors.TimeoutErrorT(data=response_data)
-        if utils.match_response(http_res, ["501", "505"], "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.NotFoundErrorData
-            )
-            raise errors.NotFoundError(data=response_data)
-        if utils.match_response(
-            http_res, ["500", "502", "503", "506", "507", "508"], "application/json"
-        ):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.InternalServerErrorData
-            )
-            raise errors.InternalServerError(data=response_data)
-        if utils.match_response(http_res, "510", "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.BadRequestErrorData
-            )
-            raise errors.BadRequestError(data=response_data)
-        if utils.match_response(http_res, "511", "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.UnauthorizedErrorData
-            )
-            raise errors.UnauthorizedError(data=response_data)
-        if utils.match_response(http_res, "4XX", "*"):
-            http_res_text = utils.stream_to_text(http_res)
-            raise errors.APIError(
-                "API error occurred", http_res.status_code, http_res_text, http_res
-            )
-        if utils.match_response(http_res, "5XX", "*"):
-            http_res_text = utils.stream_to_text(http_res)
-            raise errors.APIError(
-                "API error occurred", http_res.status_code, http_res_text, http_res
-            )
-        if utils.match_response(http_res, "default", "application/problem+json"):
-            return models.GetRadarStationAlarmsMetadataResponse(
-                result=utils.unmarshal_json(http_res.text, models.ProblemDetail),
-                headers=utils.get_response_headers(http_res.headers),
-            )
-
-        content_type = http_res.headers.get("Content-Type")
-        http_res_text = utils.stream_to_text(http_res)
-        raise errors.APIError(
-            f"Unexpected response received (code: {http_res.status_code}, type: {content_type})",
-            http_res.status_code,
-            http_res_text,
-            http_res,
-        )
-
-    async def get_station_alarms_metadata_async(
-        self,
-        *,
-        station_id: str,
-        retries: OptionalNullable[utils.RetryConfig] = UNSET,
-        server_url: Optional[str] = None,
-        timeout_ms: Optional[int] = None,
-        accept_header_override: Optional[GetStationAlarmsMetadataAcceptEnum] = None,
-        http_headers: Optional[Mapping[str, str]] = None,
-    ) -> models.GetRadarStationAlarmsMetadataResponse:
-        r"""Returns metadata about a given radar station alarms
-
-        :param station_id: Radar station ID
-        :param retries: Override the default retry configuration for this method
-        :param server_url: Override the default server URL for this method
-        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
-        :param accept_header_override: Override the default accept header for this method
-        :param http_headers: Additional headers to set or replace on requests.
-        """
-        base_url = None
-        url_variables = None
-        if timeout_ms is None:
-            timeout_ms = self.sdk_configuration.timeout_ms
-
-        if server_url is not None:
-            base_url = server_url
-        else:
-            base_url = self._get_url(base_url, url_variables)
-
-        request = models.GetRadarStationAlarmsMetadataRequest(
-            station_id=station_id,
-        )
-
-        req = self._build_request_async(
-            method="GET",
-            path="/radar/stations/{stationId}/alarms",
-            base_url=base_url,
-            url_variables=url_variables,
-            request=request,
-            request_body_required=False,
-            request_has_path_params=True,
-            request_has_query_params=True,
-            user_agent_header="user-agent",
-            accept_header_value=accept_header_override.value
-            if accept_header_override is not None
-            else "application/ld+json;q=1, application/problem+json;q=0",
-            http_headers=http_headers,
-            security=self.sdk_configuration.security,
-            timeout_ms=timeout_ms,
-        )
-
-        if retries == UNSET:
-            if self.sdk_configuration.retry_config is not UNSET:
-                retries = self.sdk_configuration.retry_config
-            else:
-                retries = utils.RetryConfig(
-                    "backoff", utils.BackoffStrategy(500, 60000, 1.5, 3600000), True
-                )
-
-        retry_config = None
-        if isinstance(retries, utils.RetryConfig):
-            retry_config = (retries, ["5XX"])
-
-        http_res = await self.do_request_async(
-            hook_ctx=HookContext(
-                base_url=base_url or "",
-                operation_id="get_radar_station_alarms_metadata",
-                oauth2_scopes=[],
-                security_source=get_security_from_env(
-                    self.sdk_configuration.security, models.Security
-                ),
-            ),
-            request=req,
-            error_status_codes=[
-                "400",
-                "401",
-                "403",
-                "404",
-                "407",
-                "408",
-                "413",
-                "414",
-                "415",
-                "422",
-                "429",
-                "431",
-                "4XX",
-                "500",
-                "501",
-                "502",
-                "503",
-                "504",
-                "505",
-                "506",
-                "507",
-                "508",
-                "510",
-                "511",
-                "5XX",
-            ],
-            retry_config=retry_config,
-        )
-
-        response_data: Any = None
-        if utils.match_response(http_res, "200", "application/ld+json"):
-            return models.GetRadarStationAlarmsMetadataResponse(
-                result=utils.unmarshal_json(http_res.text, Any),
-                headers=utils.get_response_headers(http_res.headers),
-            )
-        if utils.match_response(http_res, "404", "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.NotFoundErrorData
-            )
-            raise errors.NotFoundError(data=response_data)
-        if utils.match_response(http_res, ["401", "403", "407"], "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.UnauthorizedErrorData
-            )
-            raise errors.UnauthorizedError(data=response_data)
-        if utils.match_response(http_res, "408", "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.TimeoutErrorTData
-            )
-            raise errors.TimeoutErrorT(data=response_data)
-        if utils.match_response(http_res, "429", "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.RateLimitedErrorData
-            )
-            raise errors.RateLimitedError(data=response_data)
-        if utils.match_response(
-            http_res, ["400", "413", "414", "415", "422", "431"], "application/json"
-        ):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.BadRequestErrorData
-            )
-            raise errors.BadRequestError(data=response_data)
-        if utils.match_response(http_res, "504", "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.TimeoutErrorTData
-            )
-            raise errors.TimeoutErrorT(data=response_data)
-        if utils.match_response(http_res, ["501", "505"], "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.NotFoundErrorData
-            )
-            raise errors.NotFoundError(data=response_data)
-        if utils.match_response(
-            http_res, ["500", "502", "503", "506", "507", "508"], "application/json"
-        ):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.InternalServerErrorData
-            )
-            raise errors.InternalServerError(data=response_data)
-        if utils.match_response(http_res, "510", "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.BadRequestErrorData
-            )
-            raise errors.BadRequestError(data=response_data)
-        if utils.match_response(http_res, "511", "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.UnauthorizedErrorData
-            )
-            raise errors.UnauthorizedError(data=response_data)
-        if utils.match_response(http_res, "4XX", "*"):
-            http_res_text = await utils.stream_to_text_async(http_res)
-            raise errors.APIError(
-                "API error occurred", http_res.status_code, http_res_text, http_res
-            )
-        if utils.match_response(http_res, "5XX", "*"):
-            http_res_text = await utils.stream_to_text_async(http_res)
-            raise errors.APIError(
-                "API error occurred", http_res.status_code, http_res_text, http_res
-            )
-        if utils.match_response(http_res, "default", "application/problem+json"):
-            return models.GetRadarStationAlarmsMetadataResponse(
-                result=utils.unmarshal_json(http_res.text, models.ProblemDetail),
-                headers=utils.get_response_headers(http_res.headers),
-            )
-
-        content_type = http_res.headers.get("Content-Type")
-        http_res_text = await utils.stream_to_text_async(http_res)
-        raise errors.APIError(
-            f"Unexpected response received (code: {http_res.status_code}, type: {content_type})",
-            http_res.status_code,
-            http_res_text,
-            http_res,
-        )
-
-    def get_station_metadata(
+    def get_radar_station(
         self,
         *,
         station_id: str,
@@ -1240,9 +504,9 @@ class Radar(BaseSDK):
         retries: OptionalNullable[utils.RetryConfig] = UNSET,
         server_url: Optional[str] = None,
         timeout_ms: Optional[int] = None,
-        accept_header_override: Optional[GetStationMetadataAcceptEnum] = None,
+        accept_header_override: Optional[GetRadarStationAcceptEnum] = None,
         http_headers: Optional[Mapping[str, str]] = None,
-    ) -> models.GetRadarStationMetadataResponse:
+    ) -> operations.GetRadarStationInfoResponse:
         r"""Returns metadata about a given radar station
 
         :param station_id: Radar station ID
@@ -1264,7 +528,7 @@ class Radar(BaseSDK):
         else:
             base_url = self._get_url(base_url, url_variables)
 
-        request = models.GetRadarStationMetadataRequest(
+        request = operations.GetRadarStationInfoRequest(
             station_id=station_id,
             reporting_host=reporting_host,
             host=host,
@@ -1282,7 +546,7 @@ class Radar(BaseSDK):
             user_agent_header="user-agent",
             accept_header_value=accept_header_override.value
             if accept_header_override is not None
-            else "application/geo+json;q=1, application/ld+json;q=0.7, application/problem+json;q=0",
+            else "application/geo+json;q=1, application/ld+json;q=0",
             http_headers=http_headers,
             security=self.sdk_configuration.security,
             timeout_ms=timeout_ms,
@@ -1303,134 +567,52 @@ class Radar(BaseSDK):
         http_res = self.do_request(
             hook_ctx=HookContext(
                 base_url=base_url or "",
-                operation_id="get_radar_station_metadata",
+                operation_id="get_radar_station_info",
                 oauth2_scopes=[],
                 security_source=get_security_from_env(
-                    self.sdk_configuration.security, models.Security
+                    self.sdk_configuration.security, components.Security
                 ),
             ),
             request=req,
-            error_status_codes=[
-                "400",
-                "401",
-                "403",
-                "404",
-                "407",
-                "408",
-                "413",
-                "414",
-                "415",
-                "422",
-                "429",
-                "431",
-                "4XX",
-                "500",
-                "501",
-                "502",
-                "503",
-                "504",
-                "505",
-                "506",
-                "507",
-                "508",
-                "510",
-                "511",
-                "5XX",
-            ],
+            error_status_codes=["400", "4XX", "5XX"],
             retry_config=retry_config,
         )
 
         response_data: Any = None
         if utils.match_response(http_res, "200", "application/geo+json"):
-            return models.GetRadarStationMetadataResponse(
-                result=utils.unmarshal_json(http_res.text, Any),
-                headers=utils.get_response_headers(http_res.headers),
+            return operations.GetRadarStationInfoResponse(
+                result=utils.unmarshal_json(http_res.text, Any), headers={}
             )
         if utils.match_response(http_res, "200", "application/ld+json"):
-            return models.GetRadarStationMetadataResponse(
-                result=utils.unmarshal_json(http_res.text, Any),
-                headers=utils.get_response_headers(http_res.headers),
+            return operations.GetRadarStationInfoResponse(
+                result=utils.unmarshal_json(http_res.text, Any), headers={}
             )
-        if utils.match_response(http_res, "404", "application/json"):
+        if utils.match_response(http_res, "400", "application/problem+json"):
             response_data = utils.unmarshal_json(
-                http_res.text, errors.NotFoundErrorData
+                http_res.text, errors.ProblemDetailErrorData
             )
-            raise errors.NotFoundError(data=response_data)
-        if utils.match_response(http_res, ["401", "403", "407"], "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.UnauthorizedErrorData
-            )
-            raise errors.UnauthorizedError(data=response_data)
-        if utils.match_response(http_res, "408", "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.TimeoutErrorTData
-            )
-            raise errors.TimeoutErrorT(data=response_data)
-        if utils.match_response(http_res, "429", "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.RateLimitedErrorData
-            )
-            raise errors.RateLimitedError(data=response_data)
-        if utils.match_response(
-            http_res, ["400", "413", "414", "415", "422", "431"], "application/json"
-        ):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.BadRequestErrorData
-            )
-            raise errors.BadRequestError(data=response_data)
-        if utils.match_response(http_res, "504", "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.TimeoutErrorTData
-            )
-            raise errors.TimeoutErrorT(data=response_data)
-        if utils.match_response(http_res, ["501", "505"], "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.NotFoundErrorData
-            )
-            raise errors.NotFoundError(data=response_data)
-        if utils.match_response(
-            http_res, ["500", "502", "503", "506", "507", "508"], "application/json"
-        ):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.InternalServerErrorData
-            )
-            raise errors.InternalServerError(data=response_data)
-        if utils.match_response(http_res, "510", "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.BadRequestErrorData
-            )
-            raise errors.BadRequestError(data=response_data)
-        if utils.match_response(http_res, "511", "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.UnauthorizedErrorData
-            )
-            raise errors.UnauthorizedError(data=response_data)
+            raise errors.ProblemDetailError(data=response_data)
         if utils.match_response(http_res, "4XX", "*"):
             http_res_text = utils.stream_to_text(http_res)
-            raise errors.APIError(
+            raise errors.NWSAPIError(
                 "API error occurred", http_res.status_code, http_res_text, http_res
             )
         if utils.match_response(http_res, "5XX", "*"):
             http_res_text = utils.stream_to_text(http_res)
-            raise errors.APIError(
+            raise errors.NWSAPIError(
                 "API error occurred", http_res.status_code, http_res_text, http_res
-            )
-        if utils.match_response(http_res, "default", "application/problem+json"):
-            return models.GetRadarStationMetadataResponse(
-                result=utils.unmarshal_json(http_res.text, models.ProblemDetail),
-                headers=utils.get_response_headers(http_res.headers),
             )
 
         content_type = http_res.headers.get("Content-Type")
         http_res_text = utils.stream_to_text(http_res)
-        raise errors.APIError(
+        raise errors.NWSAPIError(
             f"Unexpected response received (code: {http_res.status_code}, type: {content_type})",
             http_res.status_code,
             http_res_text,
             http_res,
         )
 
-    async def get_station_metadata_async(
+    async def get_radar_station_async(
         self,
         *,
         station_id: str,
@@ -1439,9 +621,9 @@ class Radar(BaseSDK):
         retries: OptionalNullable[utils.RetryConfig] = UNSET,
         server_url: Optional[str] = None,
         timeout_ms: Optional[int] = None,
-        accept_header_override: Optional[GetStationMetadataAcceptEnum] = None,
+        accept_header_override: Optional[GetRadarStationAcceptEnum] = None,
         http_headers: Optional[Mapping[str, str]] = None,
-    ) -> models.GetRadarStationMetadataResponse:
+    ) -> operations.GetRadarStationInfoResponse:
         r"""Returns metadata about a given radar station
 
         :param station_id: Radar station ID
@@ -1463,7 +645,7 @@ class Radar(BaseSDK):
         else:
             base_url = self._get_url(base_url, url_variables)
 
-        request = models.GetRadarStationMetadataRequest(
+        request = operations.GetRadarStationInfoRequest(
             station_id=station_id,
             reporting_host=reporting_host,
             host=host,
@@ -1481,7 +663,7 @@ class Radar(BaseSDK):
             user_agent_header="user-agent",
             accept_header_value=accept_header_override.value
             if accept_header_override is not None
-            else "application/geo+json;q=1, application/ld+json;q=0.7, application/problem+json;q=0",
+            else "application/geo+json;q=1, application/ld+json;q=0",
             http_headers=http_headers,
             security=self.sdk_configuration.security,
             timeout_ms=timeout_ms,
@@ -1502,154 +684,68 @@ class Radar(BaseSDK):
         http_res = await self.do_request_async(
             hook_ctx=HookContext(
                 base_url=base_url or "",
-                operation_id="get_radar_station_metadata",
+                operation_id="get_radar_station_info",
                 oauth2_scopes=[],
                 security_source=get_security_from_env(
-                    self.sdk_configuration.security, models.Security
+                    self.sdk_configuration.security, components.Security
                 ),
             ),
             request=req,
-            error_status_codes=[
-                "400",
-                "401",
-                "403",
-                "404",
-                "407",
-                "408",
-                "413",
-                "414",
-                "415",
-                "422",
-                "429",
-                "431",
-                "4XX",
-                "500",
-                "501",
-                "502",
-                "503",
-                "504",
-                "505",
-                "506",
-                "507",
-                "508",
-                "510",
-                "511",
-                "5XX",
-            ],
+            error_status_codes=["400", "4XX", "5XX"],
             retry_config=retry_config,
         )
 
         response_data: Any = None
         if utils.match_response(http_res, "200", "application/geo+json"):
-            return models.GetRadarStationMetadataResponse(
-                result=utils.unmarshal_json(http_res.text, Any),
-                headers=utils.get_response_headers(http_res.headers),
+            return operations.GetRadarStationInfoResponse(
+                result=utils.unmarshal_json(http_res.text, Any), headers={}
             )
         if utils.match_response(http_res, "200", "application/ld+json"):
-            return models.GetRadarStationMetadataResponse(
-                result=utils.unmarshal_json(http_res.text, Any),
-                headers=utils.get_response_headers(http_res.headers),
+            return operations.GetRadarStationInfoResponse(
+                result=utils.unmarshal_json(http_res.text, Any), headers={}
             )
-        if utils.match_response(http_res, "404", "application/json"):
+        if utils.match_response(http_res, "400", "application/problem+json"):
             response_data = utils.unmarshal_json(
-                http_res.text, errors.NotFoundErrorData
+                http_res.text, errors.ProblemDetailErrorData
             )
-            raise errors.NotFoundError(data=response_data)
-        if utils.match_response(http_res, ["401", "403", "407"], "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.UnauthorizedErrorData
-            )
-            raise errors.UnauthorizedError(data=response_data)
-        if utils.match_response(http_res, "408", "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.TimeoutErrorTData
-            )
-            raise errors.TimeoutErrorT(data=response_data)
-        if utils.match_response(http_res, "429", "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.RateLimitedErrorData
-            )
-            raise errors.RateLimitedError(data=response_data)
-        if utils.match_response(
-            http_res, ["400", "413", "414", "415", "422", "431"], "application/json"
-        ):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.BadRequestErrorData
-            )
-            raise errors.BadRequestError(data=response_data)
-        if utils.match_response(http_res, "504", "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.TimeoutErrorTData
-            )
-            raise errors.TimeoutErrorT(data=response_data)
-        if utils.match_response(http_res, ["501", "505"], "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.NotFoundErrorData
-            )
-            raise errors.NotFoundError(data=response_data)
-        if utils.match_response(
-            http_res, ["500", "502", "503", "506", "507", "508"], "application/json"
-        ):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.InternalServerErrorData
-            )
-            raise errors.InternalServerError(data=response_data)
-        if utils.match_response(http_res, "510", "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.BadRequestErrorData
-            )
-            raise errors.BadRequestError(data=response_data)
-        if utils.match_response(http_res, "511", "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.UnauthorizedErrorData
-            )
-            raise errors.UnauthorizedError(data=response_data)
+            raise errors.ProblemDetailError(data=response_data)
         if utils.match_response(http_res, "4XX", "*"):
             http_res_text = await utils.stream_to_text_async(http_res)
-            raise errors.APIError(
+            raise errors.NWSAPIError(
                 "API error occurred", http_res.status_code, http_res_text, http_res
             )
         if utils.match_response(http_res, "5XX", "*"):
             http_res_text = await utils.stream_to_text_async(http_res)
-            raise errors.APIError(
+            raise errors.NWSAPIError(
                 "API error occurred", http_res.status_code, http_res_text, http_res
-            )
-        if utils.match_response(http_res, "default", "application/problem+json"):
-            return models.GetRadarStationMetadataResponse(
-                result=utils.unmarshal_json(http_res.text, models.ProblemDetail),
-                headers=utils.get_response_headers(http_res.headers),
             )
 
         content_type = http_res.headers.get("Content-Type")
         http_res_text = await utils.stream_to_text_async(http_res)
-        raise errors.APIError(
+        raise errors.NWSAPIError(
             f"Unexpected response received (code: {http_res.status_code}, type: {content_type})",
             http_res.status_code,
             http_res_text,
             http_res,
         )
 
-    def get_wind_profiler_metadata(
+    def get_server(
         self,
         *,
-        station_id: str,
-        time: Optional[str] = None,
-        interval: Optional[str] = None,
+        id: str,
+        reporting_host: Optional[str] = None,
         retries: OptionalNullable[utils.RetryConfig] = UNSET,
         server_url: Optional[str] = None,
         timeout_ms: Optional[int] = None,
-        accept_header_override: Optional[GetWindProfilerMetadataAcceptEnum] = None,
         http_headers: Optional[Mapping[str, str]] = None,
-    ) -> models.GetRadarWindProfilerMetadataResponse:
-        r"""Returns metadata about a given radar wind profiler
+    ) -> operations.GetRadarServerResponse:
+        r"""Returns metadata about a given radar server
 
-        :param station_id: Profiler station ID
-        :param time: Time interval
-        :param interval: Averaging interval
+        :param id: Server ID
+        :param reporting_host: Show records from specific reporting host
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
         :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
-        :param accept_header_override: Override the default accept header for this method
         :param http_headers: Additional headers to set or replace on requests.
         """
         base_url = None
@@ -1662,15 +758,14 @@ class Radar(BaseSDK):
         else:
             base_url = self._get_url(base_url, url_variables)
 
-        request = models.GetRadarWindProfilerMetadataRequest(
-            station_id=station_id,
-            time=time,
-            interval=interval,
+        request = operations.GetRadarServerRequest(
+            id=id,
+            reporting_host=reporting_host,
         )
 
         req = self._build_request(
             method="GET",
-            path="/radar/profilers/{stationId}",
+            path="/radar/servers/{id}",
             base_url=base_url,
             url_variables=url_variables,
             request=request,
@@ -1678,9 +773,7 @@ class Radar(BaseSDK):
             request_has_path_params=True,
             request_has_query_params=True,
             user_agent_header="user-agent",
-            accept_header_value=accept_header_override.value
-            if accept_header_override is not None
-            else "application/ld+json;q=1, application/problem+json;q=0",
+            accept_header_value="application/ld+json",
             http_headers=http_headers,
             security=self.sdk_configuration.security,
             timeout_ms=timeout_ms,
@@ -1701,149 +794,64 @@ class Radar(BaseSDK):
         http_res = self.do_request(
             hook_ctx=HookContext(
                 base_url=base_url or "",
-                operation_id="get_radar_wind_profiler_metadata",
+                operation_id="get_radar_server",
                 oauth2_scopes=[],
                 security_source=get_security_from_env(
-                    self.sdk_configuration.security, models.Security
+                    self.sdk_configuration.security, components.Security
                 ),
             ),
             request=req,
-            error_status_codes=[
-                "400",
-                "401",
-                "403",
-                "404",
-                "407",
-                "408",
-                "413",
-                "414",
-                "415",
-                "422",
-                "429",
-                "431",
-                "4XX",
-                "500",
-                "501",
-                "502",
-                "503",
-                "504",
-                "505",
-                "506",
-                "507",
-                "508",
-                "510",
-                "511",
-                "5XX",
-            ],
+            error_status_codes=["400", "4XX", "5XX"],
             retry_config=retry_config,
         )
 
         response_data: Any = None
         if utils.match_response(http_res, "200", "application/ld+json"):
-            return models.GetRadarWindProfilerMetadataResponse(
-                result=utils.unmarshal_json(http_res.text, Any),
-                headers=utils.get_response_headers(http_res.headers),
+            return operations.GetRadarServerResponse(
+                result=utils.unmarshal_json(http_res.text, Any), headers={}
             )
-        if utils.match_response(http_res, "404", "application/json"):
+        if utils.match_response(http_res, "400", "application/problem+json"):
             response_data = utils.unmarshal_json(
-                http_res.text, errors.NotFoundErrorData
+                http_res.text, errors.ProblemDetailErrorData
             )
-            raise errors.NotFoundError(data=response_data)
-        if utils.match_response(http_res, ["401", "403", "407"], "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.UnauthorizedErrorData
-            )
-            raise errors.UnauthorizedError(data=response_data)
-        if utils.match_response(http_res, "408", "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.TimeoutErrorTData
-            )
-            raise errors.TimeoutErrorT(data=response_data)
-        if utils.match_response(http_res, "429", "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.RateLimitedErrorData
-            )
-            raise errors.RateLimitedError(data=response_data)
-        if utils.match_response(
-            http_res, ["400", "413", "414", "415", "422", "431"], "application/json"
-        ):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.BadRequestErrorData
-            )
-            raise errors.BadRequestError(data=response_data)
-        if utils.match_response(http_res, "504", "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.TimeoutErrorTData
-            )
-            raise errors.TimeoutErrorT(data=response_data)
-        if utils.match_response(http_res, ["501", "505"], "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.NotFoundErrorData
-            )
-            raise errors.NotFoundError(data=response_data)
-        if utils.match_response(
-            http_res, ["500", "502", "503", "506", "507", "508"], "application/json"
-        ):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.InternalServerErrorData
-            )
-            raise errors.InternalServerError(data=response_data)
-        if utils.match_response(http_res, "510", "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.BadRequestErrorData
-            )
-            raise errors.BadRequestError(data=response_data)
-        if utils.match_response(http_res, "511", "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.UnauthorizedErrorData
-            )
-            raise errors.UnauthorizedError(data=response_data)
+            raise errors.ProblemDetailError(data=response_data)
         if utils.match_response(http_res, "4XX", "*"):
             http_res_text = utils.stream_to_text(http_res)
-            raise errors.APIError(
+            raise errors.NWSAPIError(
                 "API error occurred", http_res.status_code, http_res_text, http_res
             )
         if utils.match_response(http_res, "5XX", "*"):
             http_res_text = utils.stream_to_text(http_res)
-            raise errors.APIError(
+            raise errors.NWSAPIError(
                 "API error occurred", http_res.status_code, http_res_text, http_res
-            )
-        if utils.match_response(http_res, "default", "application/problem+json"):
-            return models.GetRadarWindProfilerMetadataResponse(
-                result=utils.unmarshal_json(http_res.text, models.ProblemDetail),
-                headers=utils.get_response_headers(http_res.headers),
             )
 
         content_type = http_res.headers.get("Content-Type")
         http_res_text = utils.stream_to_text(http_res)
-        raise errors.APIError(
+        raise errors.NWSAPIError(
             f"Unexpected response received (code: {http_res.status_code}, type: {content_type})",
             http_res.status_code,
             http_res_text,
             http_res,
         )
 
-    async def get_wind_profiler_metadata_async(
+    async def get_server_async(
         self,
         *,
-        station_id: str,
-        time: Optional[str] = None,
-        interval: Optional[str] = None,
+        id: str,
+        reporting_host: Optional[str] = None,
         retries: OptionalNullable[utils.RetryConfig] = UNSET,
         server_url: Optional[str] = None,
         timeout_ms: Optional[int] = None,
-        accept_header_override: Optional[GetWindProfilerMetadataAcceptEnum] = None,
         http_headers: Optional[Mapping[str, str]] = None,
-    ) -> models.GetRadarWindProfilerMetadataResponse:
-        r"""Returns metadata about a given radar wind profiler
+    ) -> operations.GetRadarServerResponse:
+        r"""Returns metadata about a given radar server
 
-        :param station_id: Profiler station ID
-        :param time: Time interval
-        :param interval: Averaging interval
+        :param id: Server ID
+        :param reporting_host: Show records from specific reporting host
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
         :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
-        :param accept_header_override: Override the default accept header for this method
         :param http_headers: Additional headers to set or replace on requests.
         """
         base_url = None
@@ -1856,15 +864,14 @@ class Radar(BaseSDK):
         else:
             base_url = self._get_url(base_url, url_variables)
 
-        request = models.GetRadarWindProfilerMetadataRequest(
-            station_id=station_id,
-            time=time,
-            interval=interval,
+        request = operations.GetRadarServerRequest(
+            id=id,
+            reporting_host=reporting_host,
         )
 
         req = self._build_request_async(
             method="GET",
-            path="/radar/profilers/{stationId}",
+            path="/radar/servers/{id}",
             base_url=base_url,
             url_variables=url_variables,
             request=request,
@@ -1872,9 +879,7 @@ class Radar(BaseSDK):
             request_has_path_params=True,
             request_has_query_params=True,
             user_agent_header="user-agent",
-            accept_header_value=accept_header_override.value
-            if accept_header_override is not None
-            else "application/ld+json;q=1, application/problem+json;q=0",
+            accept_header_value="application/ld+json",
             http_headers=http_headers,
             security=self.sdk_configuration.security,
             timeout_ms=timeout_ms,
@@ -1895,122 +900,247 @@ class Radar(BaseSDK):
         http_res = await self.do_request_async(
             hook_ctx=HookContext(
                 base_url=base_url or "",
-                operation_id="get_radar_wind_profiler_metadata",
+                operation_id="get_radar_server",
                 oauth2_scopes=[],
                 security_source=get_security_from_env(
-                    self.sdk_configuration.security, models.Security
+                    self.sdk_configuration.security, components.Security
                 ),
             ),
             request=req,
-            error_status_codes=[
-                "400",
-                "401",
-                "403",
-                "404",
-                "407",
-                "408",
-                "413",
-                "414",
-                "415",
-                "422",
-                "429",
-                "431",
-                "4XX",
-                "500",
-                "501",
-                "502",
-                "503",
-                "504",
-                "505",
-                "506",
-                "507",
-                "508",
-                "510",
-                "511",
-                "5XX",
-            ],
+            error_status_codes=["400", "4XX", "5XX"],
             retry_config=retry_config,
         )
 
         response_data: Any = None
         if utils.match_response(http_res, "200", "application/ld+json"):
-            return models.GetRadarWindProfilerMetadataResponse(
-                result=utils.unmarshal_json(http_res.text, Any),
-                headers=utils.get_response_headers(http_res.headers),
+            return operations.GetRadarServerResponse(
+                result=utils.unmarshal_json(http_res.text, Any), headers={}
             )
-        if utils.match_response(http_res, "404", "application/json"):
+        if utils.match_response(http_res, "400", "application/problem+json"):
             response_data = utils.unmarshal_json(
-                http_res.text, errors.NotFoundErrorData
+                http_res.text, errors.ProblemDetailErrorData
             )
-            raise errors.NotFoundError(data=response_data)
-        if utils.match_response(http_res, ["401", "403", "407"], "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.UnauthorizedErrorData
-            )
-            raise errors.UnauthorizedError(data=response_data)
-        if utils.match_response(http_res, "408", "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.TimeoutErrorTData
-            )
-            raise errors.TimeoutErrorT(data=response_data)
-        if utils.match_response(http_res, "429", "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.RateLimitedErrorData
-            )
-            raise errors.RateLimitedError(data=response_data)
-        if utils.match_response(
-            http_res, ["400", "413", "414", "415", "422", "431"], "application/json"
-        ):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.BadRequestErrorData
-            )
-            raise errors.BadRequestError(data=response_data)
-        if utils.match_response(http_res, "504", "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.TimeoutErrorTData
-            )
-            raise errors.TimeoutErrorT(data=response_data)
-        if utils.match_response(http_res, ["501", "505"], "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.NotFoundErrorData
-            )
-            raise errors.NotFoundError(data=response_data)
-        if utils.match_response(
-            http_res, ["500", "502", "503", "506", "507", "508"], "application/json"
-        ):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.InternalServerErrorData
-            )
-            raise errors.InternalServerError(data=response_data)
-        if utils.match_response(http_res, "510", "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.BadRequestErrorData
-            )
-            raise errors.BadRequestError(data=response_data)
-        if utils.match_response(http_res, "511", "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.UnauthorizedErrorData
-            )
-            raise errors.UnauthorizedError(data=response_data)
+            raise errors.ProblemDetailError(data=response_data)
         if utils.match_response(http_res, "4XX", "*"):
             http_res_text = await utils.stream_to_text_async(http_res)
-            raise errors.APIError(
+            raise errors.NWSAPIError(
                 "API error occurred", http_res.status_code, http_res_text, http_res
             )
         if utils.match_response(http_res, "5XX", "*"):
             http_res_text = await utils.stream_to_text_async(http_res)
-            raise errors.APIError(
+            raise errors.NWSAPIError(
                 "API error occurred", http_res.status_code, http_res_text, http_res
-            )
-        if utils.match_response(http_res, "default", "application/problem+json"):
-            return models.GetRadarWindProfilerMetadataResponse(
-                result=utils.unmarshal_json(http_res.text, models.ProblemDetail),
-                headers=utils.get_response_headers(http_res.headers),
             )
 
         content_type = http_res.headers.get("Content-Type")
         http_res_text = await utils.stream_to_text_async(http_res)
-        raise errors.APIError(
+        raise errors.NWSAPIError(
+            f"Unexpected response received (code: {http_res.status_code}, type: {content_type})",
+            http_res.status_code,
+            http_res_text,
+            http_res,
+        )
+
+    def get_station_alarms(
+        self,
+        *,
+        station_id: str,
+        retries: OptionalNullable[utils.RetryConfig] = UNSET,
+        server_url: Optional[str] = None,
+        timeout_ms: Optional[int] = None,
+        http_headers: Optional[Mapping[str, str]] = None,
+    ) -> operations.GetRadarStationAlarmsResponse:
+        r"""Returns metadata about a given radar station alarms
+
+        :param station_id: Radar station ID
+        :param retries: Override the default retry configuration for this method
+        :param server_url: Override the default server URL for this method
+        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param http_headers: Additional headers to set or replace on requests.
+        """
+        base_url = None
+        url_variables = None
+        if timeout_ms is None:
+            timeout_ms = self.sdk_configuration.timeout_ms
+
+        if server_url is not None:
+            base_url = server_url
+        else:
+            base_url = self._get_url(base_url, url_variables)
+
+        request = operations.GetRadarStationAlarmsRequest(
+            station_id=station_id,
+        )
+
+        req = self._build_request(
+            method="GET",
+            path="/radar/stations/{stationId}/alarms",
+            base_url=base_url,
+            url_variables=url_variables,
+            request=request,
+            request_body_required=False,
+            request_has_path_params=True,
+            request_has_query_params=True,
+            user_agent_header="user-agent",
+            accept_header_value="application/ld+json",
+            http_headers=http_headers,
+            security=self.sdk_configuration.security,
+            timeout_ms=timeout_ms,
+        )
+
+        if retries == UNSET:
+            if self.sdk_configuration.retry_config is not UNSET:
+                retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(500, 60000, 1.5, 3600000), True
+                )
+
+        retry_config = None
+        if isinstance(retries, utils.RetryConfig):
+            retry_config = (retries, ["5XX"])
+
+        http_res = self.do_request(
+            hook_ctx=HookContext(
+                base_url=base_url or "",
+                operation_id="get_radar_station_alarms",
+                oauth2_scopes=[],
+                security_source=get_security_from_env(
+                    self.sdk_configuration.security, components.Security
+                ),
+            ),
+            request=req,
+            error_status_codes=["400", "4XX", "5XX"],
+            retry_config=retry_config,
+        )
+
+        response_data: Any = None
+        if utils.match_response(http_res, "200", "application/ld+json"):
+            return operations.GetRadarStationAlarmsResponse(
+                result=utils.unmarshal_json(http_res.text, Any), headers={}
+            )
+        if utils.match_response(http_res, "400", "application/problem+json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.ProblemDetailErrorData
+            )
+            raise errors.ProblemDetailError(data=response_data)
+        if utils.match_response(http_res, "4XX", "*"):
+            http_res_text = utils.stream_to_text(http_res)
+            raise errors.NWSAPIError(
+                "API error occurred", http_res.status_code, http_res_text, http_res
+            )
+        if utils.match_response(http_res, "5XX", "*"):
+            http_res_text = utils.stream_to_text(http_res)
+            raise errors.NWSAPIError(
+                "API error occurred", http_res.status_code, http_res_text, http_res
+            )
+
+        content_type = http_res.headers.get("Content-Type")
+        http_res_text = utils.stream_to_text(http_res)
+        raise errors.NWSAPIError(
+            f"Unexpected response received (code: {http_res.status_code}, type: {content_type})",
+            http_res.status_code,
+            http_res_text,
+            http_res,
+        )
+
+    async def get_station_alarms_async(
+        self,
+        *,
+        station_id: str,
+        retries: OptionalNullable[utils.RetryConfig] = UNSET,
+        server_url: Optional[str] = None,
+        timeout_ms: Optional[int] = None,
+        http_headers: Optional[Mapping[str, str]] = None,
+    ) -> operations.GetRadarStationAlarmsResponse:
+        r"""Returns metadata about a given radar station alarms
+
+        :param station_id: Radar station ID
+        :param retries: Override the default retry configuration for this method
+        :param server_url: Override the default server URL for this method
+        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param http_headers: Additional headers to set or replace on requests.
+        """
+        base_url = None
+        url_variables = None
+        if timeout_ms is None:
+            timeout_ms = self.sdk_configuration.timeout_ms
+
+        if server_url is not None:
+            base_url = server_url
+        else:
+            base_url = self._get_url(base_url, url_variables)
+
+        request = operations.GetRadarStationAlarmsRequest(
+            station_id=station_id,
+        )
+
+        req = self._build_request_async(
+            method="GET",
+            path="/radar/stations/{stationId}/alarms",
+            base_url=base_url,
+            url_variables=url_variables,
+            request=request,
+            request_body_required=False,
+            request_has_path_params=True,
+            request_has_query_params=True,
+            user_agent_header="user-agent",
+            accept_header_value="application/ld+json",
+            http_headers=http_headers,
+            security=self.sdk_configuration.security,
+            timeout_ms=timeout_ms,
+        )
+
+        if retries == UNSET:
+            if self.sdk_configuration.retry_config is not UNSET:
+                retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(500, 60000, 1.5, 3600000), True
+                )
+
+        retry_config = None
+        if isinstance(retries, utils.RetryConfig):
+            retry_config = (retries, ["5XX"])
+
+        http_res = await self.do_request_async(
+            hook_ctx=HookContext(
+                base_url=base_url or "",
+                operation_id="get_radar_station_alarms",
+                oauth2_scopes=[],
+                security_source=get_security_from_env(
+                    self.sdk_configuration.security, components.Security
+                ),
+            ),
+            request=req,
+            error_status_codes=["400", "4XX", "5XX"],
+            retry_config=retry_config,
+        )
+
+        response_data: Any = None
+        if utils.match_response(http_res, "200", "application/ld+json"):
+            return operations.GetRadarStationAlarmsResponse(
+                result=utils.unmarshal_json(http_res.text, Any), headers={}
+            )
+        if utils.match_response(http_res, "400", "application/problem+json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, errors.ProblemDetailErrorData
+            )
+            raise errors.ProblemDetailError(data=response_data)
+        if utils.match_response(http_res, "4XX", "*"):
+            http_res_text = await utils.stream_to_text_async(http_res)
+            raise errors.NWSAPIError(
+                "API error occurred", http_res.status_code, http_res_text, http_res
+            )
+        if utils.match_response(http_res, "5XX", "*"):
+            http_res_text = await utils.stream_to_text_async(http_res)
+            raise errors.NWSAPIError(
+                "API error occurred", http_res.status_code, http_res_text, http_res
+            )
+
+        content_type = http_res.headers.get("Content-Type")
+        http_res_text = await utils.stream_to_text_async(http_res)
+        raise errors.NWSAPIError(
             f"Unexpected response received (code: {http_res.status_code}, type: {content_type})",
             http_res.status_code,
             http_res_text,
@@ -2024,16 +1154,14 @@ class Radar(BaseSDK):
         retries: OptionalNullable[utils.RetryConfig] = UNSET,
         server_url: Optional[str] = None,
         timeout_ms: Optional[int] = None,
-        accept_header_override: Optional[ListServersAcceptEnum] = None,
         http_headers: Optional[Mapping[str, str]] = None,
-    ) -> models.ListRadarServersResponse:
+    ) -> operations.GetRadarServersResponse:
         r"""Returns a list of radar servers
 
         :param reporting_host: Show records from specific reporting host
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
         :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
-        :param accept_header_override: Override the default accept header for this method
         :param http_headers: Additional headers to set or replace on requests.
         """
         base_url = None
@@ -2046,7 +1174,7 @@ class Radar(BaseSDK):
         else:
             base_url = self._get_url(base_url, url_variables)
 
-        request = models.ListRadarServersRequest(
+        request = operations.GetRadarServersRequest(
             reporting_host=reporting_host,
         )
 
@@ -2060,9 +1188,7 @@ class Radar(BaseSDK):
             request_has_path_params=False,
             request_has_query_params=True,
             user_agent_header="user-agent",
-            accept_header_value=accept_header_override.value
-            if accept_header_override is not None
-            else "application/ld+json;q=1, application/problem+json;q=0",
+            accept_header_value="application/ld+json",
             http_headers=http_headers,
             security=self.sdk_configuration.security,
             timeout_ms=timeout_ms,
@@ -2083,122 +1209,41 @@ class Radar(BaseSDK):
         http_res = self.do_request(
             hook_ctx=HookContext(
                 base_url=base_url or "",
-                operation_id="list_radar_servers",
+                operation_id="get_radar_servers",
                 oauth2_scopes=[],
                 security_source=get_security_from_env(
-                    self.sdk_configuration.security, models.Security
+                    self.sdk_configuration.security, components.Security
                 ),
             ),
             request=req,
-            error_status_codes=[
-                "400",
-                "401",
-                "403",
-                "404",
-                "407",
-                "408",
-                "413",
-                "414",
-                "415",
-                "422",
-                "429",
-                "431",
-                "4XX",
-                "500",
-                "501",
-                "502",
-                "503",
-                "504",
-                "505",
-                "506",
-                "507",
-                "508",
-                "510",
-                "511",
-                "5XX",
-            ],
+            error_status_codes=["400", "4XX", "5XX"],
             retry_config=retry_config,
         )
 
         response_data: Any = None
         if utils.match_response(http_res, "200", "application/ld+json"):
-            return models.ListRadarServersResponse(
-                result=utils.unmarshal_json(http_res.text, Any),
-                headers=utils.get_response_headers(http_res.headers),
+            return operations.GetRadarServersResponse(
+                result=utils.unmarshal_json(http_res.text, Any), headers={}
             )
-        if utils.match_response(http_res, "404", "application/json"):
+        if utils.match_response(http_res, "400", "application/problem+json"):
             response_data = utils.unmarshal_json(
-                http_res.text, errors.NotFoundErrorData
+                http_res.text, errors.ProblemDetailErrorData
             )
-            raise errors.NotFoundError(data=response_data)
-        if utils.match_response(http_res, ["401", "403", "407"], "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.UnauthorizedErrorData
-            )
-            raise errors.UnauthorizedError(data=response_data)
-        if utils.match_response(http_res, "408", "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.TimeoutErrorTData
-            )
-            raise errors.TimeoutErrorT(data=response_data)
-        if utils.match_response(http_res, "429", "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.RateLimitedErrorData
-            )
-            raise errors.RateLimitedError(data=response_data)
-        if utils.match_response(
-            http_res, ["400", "413", "414", "415", "422", "431"], "application/json"
-        ):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.BadRequestErrorData
-            )
-            raise errors.BadRequestError(data=response_data)
-        if utils.match_response(http_res, "504", "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.TimeoutErrorTData
-            )
-            raise errors.TimeoutErrorT(data=response_data)
-        if utils.match_response(http_res, ["501", "505"], "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.NotFoundErrorData
-            )
-            raise errors.NotFoundError(data=response_data)
-        if utils.match_response(
-            http_res, ["500", "502", "503", "506", "507", "508"], "application/json"
-        ):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.InternalServerErrorData
-            )
-            raise errors.InternalServerError(data=response_data)
-        if utils.match_response(http_res, "510", "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.BadRequestErrorData
-            )
-            raise errors.BadRequestError(data=response_data)
-        if utils.match_response(http_res, "511", "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.UnauthorizedErrorData
-            )
-            raise errors.UnauthorizedError(data=response_data)
+            raise errors.ProblemDetailError(data=response_data)
         if utils.match_response(http_res, "4XX", "*"):
             http_res_text = utils.stream_to_text(http_res)
-            raise errors.APIError(
+            raise errors.NWSAPIError(
                 "API error occurred", http_res.status_code, http_res_text, http_res
             )
         if utils.match_response(http_res, "5XX", "*"):
             http_res_text = utils.stream_to_text(http_res)
-            raise errors.APIError(
+            raise errors.NWSAPIError(
                 "API error occurred", http_res.status_code, http_res_text, http_res
-            )
-        if utils.match_response(http_res, "default", "application/problem+json"):
-            return models.ListRadarServersResponse(
-                result=utils.unmarshal_json(http_res.text, models.ProblemDetail),
-                headers=utils.get_response_headers(http_res.headers),
             )
 
         content_type = http_res.headers.get("Content-Type")
         http_res_text = utils.stream_to_text(http_res)
-        raise errors.APIError(
+        raise errors.NWSAPIError(
             f"Unexpected response received (code: {http_res.status_code}, type: {content_type})",
             http_res.status_code,
             http_res_text,
@@ -2212,16 +1257,14 @@ class Radar(BaseSDK):
         retries: OptionalNullable[utils.RetryConfig] = UNSET,
         server_url: Optional[str] = None,
         timeout_ms: Optional[int] = None,
-        accept_header_override: Optional[ListServersAcceptEnum] = None,
         http_headers: Optional[Mapping[str, str]] = None,
-    ) -> models.ListRadarServersResponse:
+    ) -> operations.GetRadarServersResponse:
         r"""Returns a list of radar servers
 
         :param reporting_host: Show records from specific reporting host
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
         :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
-        :param accept_header_override: Override the default accept header for this method
         :param http_headers: Additional headers to set or replace on requests.
         """
         base_url = None
@@ -2234,7 +1277,7 @@ class Radar(BaseSDK):
         else:
             base_url = self._get_url(base_url, url_variables)
 
-        request = models.ListRadarServersRequest(
+        request = operations.GetRadarServersRequest(
             reporting_host=reporting_host,
         )
 
@@ -2248,9 +1291,7 @@ class Radar(BaseSDK):
             request_has_path_params=False,
             request_has_query_params=True,
             user_agent_header="user-agent",
-            accept_header_value=accept_header_override.value
-            if accept_header_override is not None
-            else "application/ld+json;q=1, application/problem+json;q=0",
+            accept_header_value="application/ld+json",
             http_headers=http_headers,
             security=self.sdk_configuration.security,
             timeout_ms=timeout_ms,
@@ -2271,122 +1312,41 @@ class Radar(BaseSDK):
         http_res = await self.do_request_async(
             hook_ctx=HookContext(
                 base_url=base_url or "",
-                operation_id="list_radar_servers",
+                operation_id="get_radar_servers",
                 oauth2_scopes=[],
                 security_source=get_security_from_env(
-                    self.sdk_configuration.security, models.Security
+                    self.sdk_configuration.security, components.Security
                 ),
             ),
             request=req,
-            error_status_codes=[
-                "400",
-                "401",
-                "403",
-                "404",
-                "407",
-                "408",
-                "413",
-                "414",
-                "415",
-                "422",
-                "429",
-                "431",
-                "4XX",
-                "500",
-                "501",
-                "502",
-                "503",
-                "504",
-                "505",
-                "506",
-                "507",
-                "508",
-                "510",
-                "511",
-                "5XX",
-            ],
+            error_status_codes=["400", "4XX", "5XX"],
             retry_config=retry_config,
         )
 
         response_data: Any = None
         if utils.match_response(http_res, "200", "application/ld+json"):
-            return models.ListRadarServersResponse(
-                result=utils.unmarshal_json(http_res.text, Any),
-                headers=utils.get_response_headers(http_res.headers),
+            return operations.GetRadarServersResponse(
+                result=utils.unmarshal_json(http_res.text, Any), headers={}
             )
-        if utils.match_response(http_res, "404", "application/json"):
+        if utils.match_response(http_res, "400", "application/problem+json"):
             response_data = utils.unmarshal_json(
-                http_res.text, errors.NotFoundErrorData
+                http_res.text, errors.ProblemDetailErrorData
             )
-            raise errors.NotFoundError(data=response_data)
-        if utils.match_response(http_res, ["401", "403", "407"], "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.UnauthorizedErrorData
-            )
-            raise errors.UnauthorizedError(data=response_data)
-        if utils.match_response(http_res, "408", "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.TimeoutErrorTData
-            )
-            raise errors.TimeoutErrorT(data=response_data)
-        if utils.match_response(http_res, "429", "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.RateLimitedErrorData
-            )
-            raise errors.RateLimitedError(data=response_data)
-        if utils.match_response(
-            http_res, ["400", "413", "414", "415", "422", "431"], "application/json"
-        ):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.BadRequestErrorData
-            )
-            raise errors.BadRequestError(data=response_data)
-        if utils.match_response(http_res, "504", "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.TimeoutErrorTData
-            )
-            raise errors.TimeoutErrorT(data=response_data)
-        if utils.match_response(http_res, ["501", "505"], "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.NotFoundErrorData
-            )
-            raise errors.NotFoundError(data=response_data)
-        if utils.match_response(
-            http_res, ["500", "502", "503", "506", "507", "508"], "application/json"
-        ):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.InternalServerErrorData
-            )
-            raise errors.InternalServerError(data=response_data)
-        if utils.match_response(http_res, "510", "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.BadRequestErrorData
-            )
-            raise errors.BadRequestError(data=response_data)
-        if utils.match_response(http_res, "511", "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.UnauthorizedErrorData
-            )
-            raise errors.UnauthorizedError(data=response_data)
+            raise errors.ProblemDetailError(data=response_data)
         if utils.match_response(http_res, "4XX", "*"):
             http_res_text = await utils.stream_to_text_async(http_res)
-            raise errors.APIError(
+            raise errors.NWSAPIError(
                 "API error occurred", http_res.status_code, http_res_text, http_res
             )
         if utils.match_response(http_res, "5XX", "*"):
             http_res_text = await utils.stream_to_text_async(http_res)
-            raise errors.APIError(
+            raise errors.NWSAPIError(
                 "API error occurred", http_res.status_code, http_res_text, http_res
-            )
-        if utils.match_response(http_res, "default", "application/problem+json"):
-            return models.ListRadarServersResponse(
-                result=utils.unmarshal_json(http_res.text, models.ProblemDetail),
-                headers=utils.get_response_headers(http_res.headers),
             )
 
         content_type = http_res.headers.get("Content-Type")
         http_res_text = await utils.stream_to_text_async(http_res)
-        raise errors.APIError(
+        raise errors.NWSAPIError(
             f"Unexpected response received (code: {http_res.status_code}, type: {content_type})",
             http_res.status_code,
             http_res_text,
@@ -2404,11 +1364,11 @@ class Radar(BaseSDK):
         timeout_ms: Optional[int] = None,
         accept_header_override: Optional[ListStationsAcceptEnum] = None,
         http_headers: Optional[Mapping[str, str]] = None,
-    ) -> models.ListRadarStationsResponse:
+    ) -> operations.GetRadarStationsResponse:
         r"""Returns a list of radar stations
 
         :param station_type: Limit results to a specific station type or types
-        :param reporting_host: Show RDA and latency info from specific reporting host
+        :param reporting_host: Show records from specific reporting host
         :param host: Show latency info from specific LDM host
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -2426,7 +1386,7 @@ class Radar(BaseSDK):
         else:
             base_url = self._get_url(base_url, url_variables)
 
-        request = models.ListRadarStationsRequest(
+        request = operations.GetRadarStationsRequest(
             station_type=station_type,
             reporting_host=reporting_host,
             host=host,
@@ -2444,7 +1404,7 @@ class Radar(BaseSDK):
             user_agent_header="user-agent",
             accept_header_value=accept_header_override.value
             if accept_header_override is not None
-            else "application/geo+json;q=1, application/ld+json;q=0.7, application/problem+json;q=0",
+            else "application/geo+json;q=1, application/ld+json;q=0",
             http_headers=http_headers,
             security=self.sdk_configuration.security,
             timeout_ms=timeout_ms,
@@ -2465,127 +1425,45 @@ class Radar(BaseSDK):
         http_res = self.do_request(
             hook_ctx=HookContext(
                 base_url=base_url or "",
-                operation_id="list_radar_stations",
+                operation_id="get_radar_stations",
                 oauth2_scopes=[],
                 security_source=get_security_from_env(
-                    self.sdk_configuration.security, models.Security
+                    self.sdk_configuration.security, components.Security
                 ),
             ),
             request=req,
-            error_status_codes=[
-                "400",
-                "401",
-                "403",
-                "404",
-                "407",
-                "408",
-                "413",
-                "414",
-                "415",
-                "422",
-                "429",
-                "431",
-                "4XX",
-                "500",
-                "501",
-                "502",
-                "503",
-                "504",
-                "505",
-                "506",
-                "507",
-                "508",
-                "510",
-                "511",
-                "5XX",
-            ],
+            error_status_codes=["400", "4XX", "5XX"],
             retry_config=retry_config,
         )
 
         response_data: Any = None
         if utils.match_response(http_res, "200", "application/geo+json"):
-            return models.ListRadarStationsResponse(
-                result=utils.unmarshal_json(http_res.text, Any),
-                headers=utils.get_response_headers(http_res.headers),
+            return operations.GetRadarStationsResponse(
+                result=utils.unmarshal_json(http_res.text, Any), headers={}
             )
         if utils.match_response(http_res, "200", "application/ld+json"):
-            return models.ListRadarStationsResponse(
-                result=utils.unmarshal_json(http_res.text, Any),
-                headers=utils.get_response_headers(http_res.headers),
+            return operations.GetRadarStationsResponse(
+                result=utils.unmarshal_json(http_res.text, Any), headers={}
             )
-        if utils.match_response(http_res, "404", "application/json"):
+        if utils.match_response(http_res, "400", "application/problem+json"):
             response_data = utils.unmarshal_json(
-                http_res.text, errors.NotFoundErrorData
+                http_res.text, errors.ProblemDetailErrorData
             )
-            raise errors.NotFoundError(data=response_data)
-        if utils.match_response(http_res, ["401", "403", "407"], "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.UnauthorizedErrorData
-            )
-            raise errors.UnauthorizedError(data=response_data)
-        if utils.match_response(http_res, "408", "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.TimeoutErrorTData
-            )
-            raise errors.TimeoutErrorT(data=response_data)
-        if utils.match_response(http_res, "429", "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.RateLimitedErrorData
-            )
-            raise errors.RateLimitedError(data=response_data)
-        if utils.match_response(
-            http_res, ["400", "413", "414", "415", "422", "431"], "application/json"
-        ):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.BadRequestErrorData
-            )
-            raise errors.BadRequestError(data=response_data)
-        if utils.match_response(http_res, "504", "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.TimeoutErrorTData
-            )
-            raise errors.TimeoutErrorT(data=response_data)
-        if utils.match_response(http_res, ["501", "505"], "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.NotFoundErrorData
-            )
-            raise errors.NotFoundError(data=response_data)
-        if utils.match_response(
-            http_res, ["500", "502", "503", "506", "507", "508"], "application/json"
-        ):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.InternalServerErrorData
-            )
-            raise errors.InternalServerError(data=response_data)
-        if utils.match_response(http_res, "510", "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.BadRequestErrorData
-            )
-            raise errors.BadRequestError(data=response_data)
-        if utils.match_response(http_res, "511", "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.UnauthorizedErrorData
-            )
-            raise errors.UnauthorizedError(data=response_data)
+            raise errors.ProblemDetailError(data=response_data)
         if utils.match_response(http_res, "4XX", "*"):
             http_res_text = utils.stream_to_text(http_res)
-            raise errors.APIError(
+            raise errors.NWSAPIError(
                 "API error occurred", http_res.status_code, http_res_text, http_res
             )
         if utils.match_response(http_res, "5XX", "*"):
             http_res_text = utils.stream_to_text(http_res)
-            raise errors.APIError(
+            raise errors.NWSAPIError(
                 "API error occurred", http_res.status_code, http_res_text, http_res
-            )
-        if utils.match_response(http_res, "default", "application/problem+json"):
-            return models.ListRadarStationsResponse(
-                result=utils.unmarshal_json(http_res.text, models.ProblemDetail),
-                headers=utils.get_response_headers(http_res.headers),
             )
 
         content_type = http_res.headers.get("Content-Type")
         http_res_text = utils.stream_to_text(http_res)
-        raise errors.APIError(
+        raise errors.NWSAPIError(
             f"Unexpected response received (code: {http_res.status_code}, type: {content_type})",
             http_res.status_code,
             http_res_text,
@@ -2603,11 +1481,11 @@ class Radar(BaseSDK):
         timeout_ms: Optional[int] = None,
         accept_header_override: Optional[ListStationsAcceptEnum] = None,
         http_headers: Optional[Mapping[str, str]] = None,
-    ) -> models.ListRadarStationsResponse:
+    ) -> operations.GetRadarStationsResponse:
         r"""Returns a list of radar stations
 
         :param station_type: Limit results to a specific station type or types
-        :param reporting_host: Show RDA and latency info from specific reporting host
+        :param reporting_host: Show records from specific reporting host
         :param host: Show latency info from specific LDM host
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
@@ -2625,7 +1503,7 @@ class Radar(BaseSDK):
         else:
             base_url = self._get_url(base_url, url_variables)
 
-        request = models.ListRadarStationsRequest(
+        request = operations.GetRadarStationsRequest(
             station_type=station_type,
             reporting_host=reporting_host,
             host=host,
@@ -2643,7 +1521,7 @@ class Radar(BaseSDK):
             user_agent_header="user-agent",
             accept_header_value=accept_header_override.value
             if accept_header_override is not None
-            else "application/geo+json;q=1, application/ld+json;q=0.7, application/problem+json;q=0",
+            else "application/geo+json;q=1, application/ld+json;q=0",
             http_headers=http_headers,
             security=self.sdk_configuration.security,
             timeout_ms=timeout_ms,
@@ -2664,127 +1542,45 @@ class Radar(BaseSDK):
         http_res = await self.do_request_async(
             hook_ctx=HookContext(
                 base_url=base_url or "",
-                operation_id="list_radar_stations",
+                operation_id="get_radar_stations",
                 oauth2_scopes=[],
                 security_source=get_security_from_env(
-                    self.sdk_configuration.security, models.Security
+                    self.sdk_configuration.security, components.Security
                 ),
             ),
             request=req,
-            error_status_codes=[
-                "400",
-                "401",
-                "403",
-                "404",
-                "407",
-                "408",
-                "413",
-                "414",
-                "415",
-                "422",
-                "429",
-                "431",
-                "4XX",
-                "500",
-                "501",
-                "502",
-                "503",
-                "504",
-                "505",
-                "506",
-                "507",
-                "508",
-                "510",
-                "511",
-                "5XX",
-            ],
+            error_status_codes=["400", "4XX", "5XX"],
             retry_config=retry_config,
         )
 
         response_data: Any = None
         if utils.match_response(http_res, "200", "application/geo+json"):
-            return models.ListRadarStationsResponse(
-                result=utils.unmarshal_json(http_res.text, Any),
-                headers=utils.get_response_headers(http_res.headers),
+            return operations.GetRadarStationsResponse(
+                result=utils.unmarshal_json(http_res.text, Any), headers={}
             )
         if utils.match_response(http_res, "200", "application/ld+json"):
-            return models.ListRadarStationsResponse(
-                result=utils.unmarshal_json(http_res.text, Any),
-                headers=utils.get_response_headers(http_res.headers),
+            return operations.GetRadarStationsResponse(
+                result=utils.unmarshal_json(http_res.text, Any), headers={}
             )
-        if utils.match_response(http_res, "404", "application/json"):
+        if utils.match_response(http_res, "400", "application/problem+json"):
             response_data = utils.unmarshal_json(
-                http_res.text, errors.NotFoundErrorData
+                http_res.text, errors.ProblemDetailErrorData
             )
-            raise errors.NotFoundError(data=response_data)
-        if utils.match_response(http_res, ["401", "403", "407"], "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.UnauthorizedErrorData
-            )
-            raise errors.UnauthorizedError(data=response_data)
-        if utils.match_response(http_res, "408", "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.TimeoutErrorTData
-            )
-            raise errors.TimeoutErrorT(data=response_data)
-        if utils.match_response(http_res, "429", "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.RateLimitedErrorData
-            )
-            raise errors.RateLimitedError(data=response_data)
-        if utils.match_response(
-            http_res, ["400", "413", "414", "415", "422", "431"], "application/json"
-        ):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.BadRequestErrorData
-            )
-            raise errors.BadRequestError(data=response_data)
-        if utils.match_response(http_res, "504", "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.TimeoutErrorTData
-            )
-            raise errors.TimeoutErrorT(data=response_data)
-        if utils.match_response(http_res, ["501", "505"], "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.NotFoundErrorData
-            )
-            raise errors.NotFoundError(data=response_data)
-        if utils.match_response(
-            http_res, ["500", "502", "503", "506", "507", "508"], "application/json"
-        ):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.InternalServerErrorData
-            )
-            raise errors.InternalServerError(data=response_data)
-        if utils.match_response(http_res, "510", "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.BadRequestErrorData
-            )
-            raise errors.BadRequestError(data=response_data)
-        if utils.match_response(http_res, "511", "application/json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, errors.UnauthorizedErrorData
-            )
-            raise errors.UnauthorizedError(data=response_data)
+            raise errors.ProblemDetailError(data=response_data)
         if utils.match_response(http_res, "4XX", "*"):
             http_res_text = await utils.stream_to_text_async(http_res)
-            raise errors.APIError(
+            raise errors.NWSAPIError(
                 "API error occurred", http_res.status_code, http_res_text, http_res
             )
         if utils.match_response(http_res, "5XX", "*"):
             http_res_text = await utils.stream_to_text_async(http_res)
-            raise errors.APIError(
+            raise errors.NWSAPIError(
                 "API error occurred", http_res.status_code, http_res_text, http_res
-            )
-        if utils.match_response(http_res, "default", "application/problem+json"):
-            return models.ListRadarStationsResponse(
-                result=utils.unmarshal_json(http_res.text, models.ProblemDetail),
-                headers=utils.get_response_headers(http_res.headers),
             )
 
         content_type = http_res.headers.get("Content-Type")
         http_res_text = await utils.stream_to_text_async(http_res)
-        raise errors.APIError(
+        raise errors.NWSAPIError(
             f"Unexpected response received (code: {http_res.status_code}, type: {content_type})",
             http_res.status_code,
             http_res_text,

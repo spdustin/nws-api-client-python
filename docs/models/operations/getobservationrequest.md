@@ -1,0 +1,9 @@
+# GetObservationRequest
+
+
+## Fields
+
+| Field                                                                                  | Type                                                                                   | Required                                                                               | Description                                                                            | Example                                                                                |
+| -------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| `station_id`                                                                           | *str*                                                                                  | :heavy_check_mark:                                                                     | Observation station ID                                                                 | KORD                                                                                   |
+| `timestamp`                                                                            | [date](https://docs.python.org/3/library/datetime.html#date-objects)                   | :heavy_check_mark:                                                                     | Timestamp of requested observation (YYYY-MM-DDThh:mm:ssZ or YYYY-MM-DDThh:mm:ss+hh:mm) |                                                                                        |

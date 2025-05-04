@@ -7,13 +7,185 @@ Operations related to aviation weather
 
 ### Available Operations
 
+* [get_aviation_cwa](#get_aviation_cwa) - Returns a list of CWAs from a CWSU for a specific date and sequence
+* [get_aviation_sigmet](#get_aviation_sigmet) - Returns a specific SIGMET/AIRMET
+* [get_aviation_sigmets_by_atsu_for_date](#get_aviation_sigmets_by_atsu_for_date) - Returns a list of SIGMET/AIRMETs for the specified ATSU for the specified date
+* [get_center_weather_advisories](#get_center_weather_advisories) - Returns a list of Center Weather Advisories from a CWSU
 * [get_cwsu](#get_cwsu) - Returns metadata about a Center Weather Service Unit
-* [get_sigmet](#get_sigmet) - Returns a specific SIGMET/AIRMET
-* [get_sigmets](#get_sigmets) - Returns a list of SIGMET/AIRMETs
-* [list_cwas](#list_cwas) - Returns a list of Center Weather Advisories from a CWSU
-* [list_cwas_by_date_and_sequence](#list_cwas_by_date_and_sequence) - Returns a list of Center Weather Advisories from a CWSU
-* [list_sigmets](#list_sigmets) - Returns a list of SIGMET/AIRMETs for the specified ATSU
-* [list_sigmets_by_atsu_and_date](#list_sigmets_by_atsu_and_date) - Returns a list of SIGMET/AIRMETs for the specified ATSU for the specified date
+* [get_sigmets_by_atsu](#get_sigmets_by_atsu) - Returns a list of SIGMET/AIRMETs for the specified ATSU
+* [get_taf](#get_taf) - Returns a single Terminal Aerodrome Forecast
+* [get_tafs](#get_tafs) - Returns Terminal Aerodrome Forecasts for the specified airport station.
+* [list_sigmets](#list_sigmets) - Returns a list of SIGMET/AIRMETs
+
+## get_aviation_cwa
+
+Returns a list of CWAs from a CWSU for a specific date and sequence
+
+### Example Usage
+
+```python
+from datetime import date
+from nws_api_client import NwsAPIClient
+from nws_api_client.models import components
+import os
+
+
+with NwsAPIClient(
+    user_agent=os.getenv("NWS_API_CLIENT_USER_AGENT", ""),
+) as nac_client:
+
+    res = nac_client.aviation.get_aviation_cwa(cwsu_id=components.NWSCenterWeatherServiceUnitID.ZSE, date_=date.fromisoformat("2025-02-23"), sequence=510643)
+
+    # Handle response
+    print(res)
+
+```
+
+### Parameters
+
+| Parameter                                                                                            | Type                                                                                                 | Required                                                                                             | Description                                                                                          | Example                                                                                              |
+| ---------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| `cwsu_id`                                                                                            | [components.NWSCenterWeatherServiceUnitID](../../models/components/nwscenterweatherserviceunitid.md) | :heavy_check_mark:                                                                                   | NWS CWSU ID                                                                                          |                                                                                                      |
+| `date_`                                                                                              | [datetime](https://docs.python.org/3/library/datetime.html#datetime-objects)                         | :heavy_check_mark:                                                                                   | Date (YYYY-MM-DD format)                                                                             | 2025-02-23                                                                                           |
+| `sequence`                                                                                           | *int*                                                                                                | :heavy_check_mark:                                                                                   | Sequence number                                                                                      |                                                                                                      |
+| `retries`                                                                                            | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)                                     | :heavy_minus_sign:                                                                                   | Configuration to override the default retry behavior of the client.                                  |                                                                                                      |
+
+### Response
+
+**[operations.GetCwasByCwsuForDateAndSequenceResponse](../../models/operations/getcwasbycwsufordateandsequenceresponse.md)**
+
+### Errors
+
+| Error Type                | Status Code               | Content Type              |
+| ------------------------- | ------------------------- | ------------------------- |
+| errors.ProblemDetailError | 400                       | application/problem+json  |
+| errors.NWSAPIError        | 4XX, 5XX                  | \*/\*                     |
+
+## get_aviation_sigmet
+
+Returns a specific SIGMET/AIRMET
+
+### Example Usage
+
+```python
+from datetime import date
+from nws_api_client import NwsAPIClient
+import os
+
+
+with NwsAPIClient(
+    user_agent=os.getenv("NWS_API_CLIENT_USER_AGENT", ""),
+) as nac_client:
+
+    res = nac_client.aviation.get_aviation_sigmet(atsu="KKCI", date_=date.fromisoformat("2025-02-23"), time="0419")
+
+    # Handle response
+    print(res)
+
+```
+
+### Parameters
+
+| Parameter                                                                    | Type                                                                         | Required                                                                     | Description                                                                  | Example                                                                      |
+| ---------------------------------------------------------------------------- | ---------------------------------------------------------------------------- | ---------------------------------------------------------------------------- | ---------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| `atsu`                                                                       | *str*                                                                        | :heavy_check_mark:                                                           | ATSU identifier                                                              | KKCI                                                                         |
+| `date_`                                                                      | [datetime](https://docs.python.org/3/library/datetime.html#datetime-objects) | :heavy_check_mark:                                                           | Date (YYYY-MM-DD format)                                                     | 2025-02-23                                                                   |
+| `time`                                                                       | *str*                                                                        | :heavy_check_mark:                                                           | Time (HHMM format). This time is always specified in UTC (Zulu) time.        | 0419                                                                         |
+| `retries`                                                                    | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)             | :heavy_minus_sign:                                                           | Configuration to override the default retry behavior of the client.          |                                                                              |
+
+### Response
+
+**[operations.GetSigmetResponse](../../models/operations/getsigmetresponse.md)**
+
+### Errors
+
+| Error Type                | Status Code               | Content Type              |
+| ------------------------- | ------------------------- | ------------------------- |
+| errors.ProblemDetailError | 400                       | application/problem+json  |
+| errors.NWSAPIError        | 4XX, 5XX                  | \*/\*                     |
+
+## get_aviation_sigmets_by_atsu_for_date
+
+Returns a list of SIGMET/AIRMETs for the specified ATSU for the specified date
+
+### Example Usage
+
+```python
+from datetime import date
+from nws_api_client import NwsAPIClient
+import os
+
+
+with NwsAPIClient(
+    user_agent=os.getenv("NWS_API_CLIENT_USER_AGENT", ""),
+) as nac_client:
+
+    res = nac_client.aviation.get_aviation_sigmets_by_atsu_for_date(atsu="KKCI", date_=date.fromisoformat("2025-02-23"))
+
+    # Handle response
+    print(res)
+
+```
+
+### Parameters
+
+| Parameter                                                                    | Type                                                                         | Required                                                                     | Description                                                                  | Example                                                                      |
+| ---------------------------------------------------------------------------- | ---------------------------------------------------------------------------- | ---------------------------------------------------------------------------- | ---------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| `atsu`                                                                       | *str*                                                                        | :heavy_check_mark:                                                           | ATSU identifier                                                              | KKCI                                                                         |
+| `date_`                                                                      | [datetime](https://docs.python.org/3/library/datetime.html#datetime-objects) | :heavy_check_mark:                                                           | Date (YYYY-MM-DD format)                                                     | 2025-02-23                                                                   |
+| `retries`                                                                    | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)             | :heavy_minus_sign:                                                           | Configuration to override the default retry behavior of the client.          |                                                                              |
+
+### Response
+
+**[operations.GetSigmetsByAtsuForDateResponse](../../models/operations/getsigmetsbyatsufordateresponse.md)**
+
+### Errors
+
+| Error Type                | Status Code               | Content Type              |
+| ------------------------- | ------------------------- | ------------------------- |
+| errors.ProblemDetailError | 400                       | application/problem+json  |
+| errors.NWSAPIError        | 4XX, 5XX                  | \*/\*                     |
+
+## get_center_weather_advisories
+
+Returns a list of Center Weather Advisories from a CWSU
+
+### Example Usage
+
+```python
+from nws_api_client import NwsAPIClient
+from nws_api_client.models import components
+import os
+
+
+with NwsAPIClient(
+    user_agent=os.getenv("NWS_API_CLIENT_USER_AGENT", ""),
+) as nac_client:
+
+    res = nac_client.aviation.get_center_weather_advisories(cwsu_id=components.NWSCenterWeatherServiceUnitID.ZDC)
+
+    # Handle response
+    print(res)
+
+```
+
+### Parameters
+
+| Parameter                                                                                            | Type                                                                                                 | Required                                                                                             | Description                                                                                          |
+| ---------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| `cwsu_id`                                                                                            | [components.NWSCenterWeatherServiceUnitID](../../models/components/nwscenterweatherserviceunitid.md) | :heavy_check_mark:                                                                                   | NWS CWSU ID                                                                                          |
+| `retries`                                                                                            | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)                                     | :heavy_minus_sign:                                                                                   | Configuration to override the default retry behavior of the client.                                  |
+
+### Response
+
+**[operations.GetCwasByCwsuResponse](../../models/operations/getcwasbycwsuresponse.md)**
+
+### Errors
+
+| Error Type                | Status Code               | Content Type              |
+| ------------------------- | ------------------------- | ------------------------- |
+| errors.ProblemDetailError | 400                       | application/problem+json  |
+| errors.NWSAPIError        | 4XX, 5XX                  | \*/\*                     |
 
 ## get_cwsu
 
@@ -22,15 +194,16 @@ Returns metadata about a Center Weather Service Unit
 ### Example Usage
 
 ```python
-from nws_api_client import NwsClient, models
+from nws_api_client import NwsAPIClient
+from nws_api_client.models import components
 import os
 
 
-with NwsClient(
-    user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
-) as nws_client:
+with NwsAPIClient(
+    user_agent=os.getenv("NWS_API_CLIENT_USER_AGENT", ""),
+) as nac_client:
 
-    res = nws_client.aviation.get_cwsu(cwsu_id=models.NWSCenterWeatherServiceUnitID.ZHU)
+    res = nac_client.aviation.get_cwsu(cwsu_id=components.NWSCenterWeatherServiceUnitID.ZHU)
 
     # Handle response
     print(res)
@@ -39,253 +212,38 @@ with NwsClient(
 
 ### Parameters
 
-| Parameter                                                                             | Type                                                                                  | Required                                                                              | Description                                                                           |
-| ------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
-| `cwsu_id`                                                                             | [models.NWSCenterWeatherServiceUnitID](../../models/nwscenterweatherserviceunitid.md) | :heavy_check_mark:                                                                    | NWS CWSU ID                                                                           |
-| `retries`                                                                             | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)                      | :heavy_minus_sign:                                                                    | Configuration to override the default retry behavior of the client.                   |
+| Parameter                                                                                            | Type                                                                                                 | Required                                                                                             | Description                                                                                          |
+| ---------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| `cwsu_id`                                                                                            | [components.NWSCenterWeatherServiceUnitID](../../models/components/nwscenterweatherserviceunitid.md) | :heavy_check_mark:                                                                                   | NWS CWSU ID                                                                                          |
+| `retries`                                                                                            | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)                                     | :heavy_minus_sign:                                                                                   | Configuration to override the default retry behavior of the client.                                  |
 
 ### Response
 
-**[models.GetCwsuResponse](../../models/getcwsuresponse.md)**
+**[operations.GetCwsuResponse](../../models/operations/getcwsuresponse.md)**
 
 ### Errors
 
-| Error Type                   | Status Code                  | Content Type                 |
-| ---------------------------- | ---------------------------- | ---------------------------- |
-| errors.NotFoundError         | 404                          | application/json             |
-| errors.UnauthorizedError     | 401, 403, 407                | application/json             |
-| errors.TimeoutErrorT         | 408                          | application/json             |
-| errors.RateLimitedError      | 429                          | application/json             |
-| errors.BadRequestError       | 400, 413, 414, 415, 422, 431 | application/json             |
-| errors.TimeoutErrorT         | 504                          | application/json             |
-| errors.NotFoundError         | 501, 505                     | application/json             |
-| errors.InternalServerError   | 500, 502, 503, 506, 507, 508 | application/json             |
-| errors.BadRequestError       | 510                          | application/json             |
-| errors.UnauthorizedError     | 511                          | application/json             |
-| errors.APIError              | 4XX, 5XX                     | \*/\*                        |
+| Error Type                | Status Code               | Content Type              |
+| ------------------------- | ------------------------- | ------------------------- |
+| errors.ProblemDetailError | 400                       | application/problem+json  |
+| errors.NWSAPIError        | 4XX, 5XX                  | \*/\*                     |
 
-## get_sigmet
-
-Returns a specific SIGMET/AIRMET
-
-### Example Usage
-
-```python
-from datetime import date
-from nws_api_client import NwsClient
-import os
-
-
-with NwsClient(
-    user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
-) as nws_client:
-
-    res = nws_client.aviation.get_sigmet(atsu="<value>", date_=date.fromisoformat("2024-12-28"), time="<value>")
-
-    # Handle response
-    print(res)
-
-```
-
-### Parameters
-
-| Parameter                                                                    | Type                                                                         | Required                                                                     | Description                                                                  |
-| ---------------------------------------------------------------------------- | ---------------------------------------------------------------------------- | ---------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
-| `atsu`                                                                       | *str*                                                                        | :heavy_check_mark:                                                           | ATSU identifier                                                              |
-| `date_`                                                                      | [datetime](https://docs.python.org/3/library/datetime.html#datetime-objects) | :heavy_check_mark:                                                           | Date (YYYY-MM-DD format)                                                     |
-| `time`                                                                       | *str*                                                                        | :heavy_check_mark:                                                           | Time (HHMM format). This time is always specified in UTC (Zulu) time.        |
-| `retries`                                                                    | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)             | :heavy_minus_sign:                                                           | Configuration to override the default retry behavior of the client.          |
-
-### Response
-
-**[models.GetSigmetResponse](../../models/getsigmetresponse.md)**
-
-### Errors
-
-| Error Type                   | Status Code                  | Content Type                 |
-| ---------------------------- | ---------------------------- | ---------------------------- |
-| errors.NotFoundError         | 404                          | application/json             |
-| errors.UnauthorizedError     | 401, 403, 407                | application/json             |
-| errors.TimeoutErrorT         | 408                          | application/json             |
-| errors.RateLimitedError      | 429                          | application/json             |
-| errors.BadRequestError       | 400, 413, 414, 415, 422, 431 | application/json             |
-| errors.TimeoutErrorT         | 504                          | application/json             |
-| errors.NotFoundError         | 501, 505                     | application/json             |
-| errors.InternalServerError   | 500, 502, 503, 506, 507, 508 | application/json             |
-| errors.BadRequestError       | 510                          | application/json             |
-| errors.UnauthorizedError     | 511                          | application/json             |
-| errors.APIError              | 4XX, 5XX                     | \*/\*                        |
-
-## get_sigmets
-
-Returns a list of SIGMET/AIRMETs
-
-### Example Usage
-
-```python
-from nws_api_client import NwsClient
-import os
-
-
-with NwsClient(
-    user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
-) as nws_client:
-
-    res = nws_client.aviation.get_sigmets()
-
-    # Handle response
-    print(res)
-
-```
-
-### Parameters
-
-| Parameter                                                                    | Type                                                                         | Required                                                                     | Description                                                                  |
-| ---------------------------------------------------------------------------- | ---------------------------------------------------------------------------- | ---------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
-| `start`                                                                      | [date](https://docs.python.org/3/library/datetime.html#date-objects)         | :heavy_minus_sign:                                                           | Start time                                                                   |
-| `end`                                                                        | [date](https://docs.python.org/3/library/datetime.html#date-objects)         | :heavy_minus_sign:                                                           | End time                                                                     |
-| `date_`                                                                      | [datetime](https://docs.python.org/3/library/datetime.html#datetime-objects) | :heavy_minus_sign:                                                           | Date (YYYY-MM-DD format)                                                     |
-| `atsu`                                                                       | *Optional[str]*                                                              | :heavy_minus_sign:                                                           | ATSU identifier                                                              |
-| `sequence`                                                                   | *Optional[str]*                                                              | :heavy_minus_sign:                                                           | SIGMET sequence number                                                       |
-| `retries`                                                                    | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)             | :heavy_minus_sign:                                                           | Configuration to override the default retry behavior of the client.          |
-
-### Response
-
-**[models.ListSigmetsResponse](../../models/listsigmetsresponse.md)**
-
-### Errors
-
-| Error Type                   | Status Code                  | Content Type                 |
-| ---------------------------- | ---------------------------- | ---------------------------- |
-| errors.NotFoundError         | 404                          | application/json             |
-| errors.UnauthorizedError     | 401, 403, 407                | application/json             |
-| errors.TimeoutErrorT         | 408                          | application/json             |
-| errors.RateLimitedError      | 429                          | application/json             |
-| errors.BadRequestError       | 400, 413, 414, 415, 422, 431 | application/json             |
-| errors.TimeoutErrorT         | 504                          | application/json             |
-| errors.NotFoundError         | 501, 505                     | application/json             |
-| errors.InternalServerError   | 500, 502, 503, 506, 507, 508 | application/json             |
-| errors.BadRequestError       | 510                          | application/json             |
-| errors.UnauthorizedError     | 511                          | application/json             |
-| errors.APIError              | 4XX, 5XX                     | \*/\*                        |
-
-## list_cwas
-
-Returns a list of Center Weather Advisories from a CWSU
-
-### Example Usage
-
-```python
-from nws_api_client import NwsClient, models
-import os
-
-
-with NwsClient(
-    user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
-) as nws_client:
-
-    res = nws_client.aviation.list_cwas(cwsu_id=models.NWSCenterWeatherServiceUnitID.ZBW)
-
-    # Handle response
-    print(res)
-
-```
-
-### Parameters
-
-| Parameter                                                                             | Type                                                                                  | Required                                                                              | Description                                                                           |
-| ------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
-| `cwsu_id`                                                                             | [models.NWSCenterWeatherServiceUnitID](../../models/nwscenterweatherserviceunitid.md) | :heavy_check_mark:                                                                    | NWS CWSU ID                                                                           |
-| `retries`                                                                             | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)                      | :heavy_minus_sign:                                                                    | Configuration to override the default retry behavior of the client.                   |
-
-### Response
-
-**[models.ListCwasResponse](../../models/listcwasresponse.md)**
-
-### Errors
-
-| Error Type                   | Status Code                  | Content Type                 |
-| ---------------------------- | ---------------------------- | ---------------------------- |
-| errors.NotFoundError         | 404                          | application/json             |
-| errors.UnauthorizedError     | 401, 403, 407                | application/json             |
-| errors.TimeoutErrorT         | 408                          | application/json             |
-| errors.RateLimitedError      | 429                          | application/json             |
-| errors.BadRequestError       | 400, 413, 414, 415, 422, 431 | application/json             |
-| errors.TimeoutErrorT         | 504                          | application/json             |
-| errors.NotFoundError         | 501, 505                     | application/json             |
-| errors.InternalServerError   | 500, 502, 503, 506, 507, 508 | application/json             |
-| errors.BadRequestError       | 510                          | application/json             |
-| errors.UnauthorizedError     | 511                          | application/json             |
-| errors.APIError              | 4XX, 5XX                     | \*/\*                        |
-
-## list_cwas_by_date_and_sequence
-
-Returns a list of Center Weather Advisories from a CWSU
-
-### Example Usage
-
-```python
-from datetime import date
-from nws_api_client import NwsClient, models
-import os
-
-
-with NwsClient(
-    user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
-) as nws_client:
-
-    res = nws_client.aviation.list_cwas_by_date_and_sequence(cwsu_id=models.NWSCenterWeatherServiceUnitID.ZJX, date_=date.fromisoformat("2023-12-27"), sequence=109102)
-
-    # Handle response
-    print(res)
-
-```
-
-### Parameters
-
-| Parameter                                                                             | Type                                                                                  | Required                                                                              | Description                                                                           |
-| ------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
-| `cwsu_id`                                                                             | [models.NWSCenterWeatherServiceUnitID](../../models/nwscenterweatherserviceunitid.md) | :heavy_check_mark:                                                                    | NWS CWSU ID                                                                           |
-| `date_`                                                                               | [datetime](https://docs.python.org/3/library/datetime.html#datetime-objects)          | :heavy_check_mark:                                                                    | Date (YYYY-MM-DD format)                                                              |
-| `sequence`                                                                            | *int*                                                                                 | :heavy_check_mark:                                                                    | Sequence number                                                                       |
-| `retries`                                                                             | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)                      | :heavy_minus_sign:                                                                    | Configuration to override the default retry behavior of the client.                   |
-
-### Response
-
-**[models.ListCwasByDateAndSequenceResponse](../../models/listcwasbydateandsequenceresponse.md)**
-
-### Errors
-
-| Error Type                   | Status Code                  | Content Type                 |
-| ---------------------------- | ---------------------------- | ---------------------------- |
-| errors.NotFoundError         | 404                          | application/json             |
-| errors.UnauthorizedError     | 401, 403, 407                | application/json             |
-| errors.TimeoutErrorT         | 408                          | application/json             |
-| errors.RateLimitedError      | 429                          | application/json             |
-| errors.BadRequestError       | 400, 413, 414, 415, 422, 431 | application/json             |
-| errors.TimeoutErrorT         | 504                          | application/json             |
-| errors.NotFoundError         | 501, 505                     | application/json             |
-| errors.InternalServerError   | 500, 502, 503, 506, 507, 508 | application/json             |
-| errors.BadRequestError       | 510                          | application/json             |
-| errors.UnauthorizedError     | 511                          | application/json             |
-| errors.APIError              | 4XX, 5XX                     | \*/\*                        |
-
-## list_sigmets
+## get_sigmets_by_atsu
 
 Returns a list of SIGMET/AIRMETs for the specified ATSU
 
 ### Example Usage
 
 ```python
-from nws_api_client import NwsClient
+from nws_api_client import NwsAPIClient
 import os
 
 
-with NwsClient(
-    user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
-) as nws_client:
+with NwsAPIClient(
+    user_agent=os.getenv("NWS_API_CLIENT_USER_AGENT", ""),
+) as nac_client:
 
-    res = nws_client.aviation.list_sigmets(atsu="<value>")
+    res = nac_client.aviation.get_sigmets_by_atsu(atsu="KKCI")
 
     # Handle response
     print(res)
@@ -294,48 +252,39 @@ with NwsClient(
 
 ### Parameters
 
-| Parameter                                                           | Type                                                                | Required                                                            | Description                                                         |
-| ------------------------------------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------- |
-| `atsu`                                                              | *str*                                                               | :heavy_check_mark:                                                  | ATSU identifier                                                     |
-| `retries`                                                           | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)    | :heavy_minus_sign:                                                  | Configuration to override the default retry behavior of the client. |
+| Parameter                                                           | Type                                                                | Required                                                            | Description                                                         | Example                                                             |
+| ------------------------------------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------- |
+| `atsu`                                                              | *str*                                                               | :heavy_check_mark:                                                  | ATSU identifier                                                     | KKCI                                                                |
+| `retries`                                                           | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)    | :heavy_minus_sign:                                                  | Configuration to override the default retry behavior of the client. |                                                                     |
 
 ### Response
 
-**[models.ListSigmetsByAtsuResponse](../../models/listsigmetsbyatsuresponse.md)**
+**[operations.GetSigmetsByAtsuResponse](../../models/operations/getsigmetsbyatsuresponse.md)**
 
 ### Errors
 
-| Error Type                   | Status Code                  | Content Type                 |
-| ---------------------------- | ---------------------------- | ---------------------------- |
-| errors.NotFoundError         | 404                          | application/json             |
-| errors.UnauthorizedError     | 401, 403, 407                | application/json             |
-| errors.TimeoutErrorT         | 408                          | application/json             |
-| errors.RateLimitedError      | 429                          | application/json             |
-| errors.BadRequestError       | 400, 413, 414, 415, 422, 431 | application/json             |
-| errors.TimeoutErrorT         | 504                          | application/json             |
-| errors.NotFoundError         | 501, 505                     | application/json             |
-| errors.InternalServerError   | 500, 502, 503, 506, 507, 508 | application/json             |
-| errors.BadRequestError       | 510                          | application/json             |
-| errors.UnauthorizedError     | 511                          | application/json             |
-| errors.APIError              | 4XX, 5XX                     | \*/\*                        |
+| Error Type                | Status Code               | Content Type              |
+| ------------------------- | ------------------------- | ------------------------- |
+| errors.ProblemDetailError | 400                       | application/problem+json  |
+| errors.NWSAPIError        | 4XX, 5XX                  | \*/\*                     |
 
-## list_sigmets_by_atsu_and_date
+## get_taf
 
-Returns a list of SIGMET/AIRMETs for the specified ATSU for the specified date
+Returns a single Terminal Aerodrome Forecast
 
 ### Example Usage
 
 ```python
 from datetime import date
-from nws_api_client import NwsClient
+from nws_api_client import NwsAPIClient
 import os
 
 
-with NwsClient(
-    user_agent=os.getenv("NWSCLIENT_USER_AGENT", ""),
-) as nws_client:
+with NwsAPIClient(
+    user_agent=os.getenv("NWS_API_CLIENT_USER_AGENT", ""),
+) as nac_client:
 
-    res = nws_client.aviation.list_sigmets_by_atsu_and_date(atsu="<value>", date_=date.fromisoformat("2024-10-13"))
+    res = nac_client.aviation.get_taf(station_id="KORD", date_=date.fromisoformat("2024-02-29"), time="<value>")
 
     # Handle response
     print(res)
@@ -344,28 +293,105 @@ with NwsClient(
 
 ### Parameters
 
-| Parameter                                                                    | Type                                                                         | Required                                                                     | Description                                                                  |
-| ---------------------------------------------------------------------------- | ---------------------------------------------------------------------------- | ---------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
-| `atsu`                                                                       | *str*                                                                        | :heavy_check_mark:                                                           | ATSU identifier                                                              |
-| `date_`                                                                      | [datetime](https://docs.python.org/3/library/datetime.html#datetime-objects) | :heavy_check_mark:                                                           | Date (YYYY-MM-DD format)                                                     |
-| `retries`                                                                    | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)             | :heavy_minus_sign:                                                           | Configuration to override the default retry behavior of the client.          |
+| Parameter                                                                    | Type                                                                         | Required                                                                     | Description                                                                  | Example                                                                      |
+| ---------------------------------------------------------------------------- | ---------------------------------------------------------------------------- | ---------------------------------------------------------------------------- | ---------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| `station_id`                                                                 | *str*                                                                        | :heavy_check_mark:                                                           | Observation station ID                                                       | KORD                                                                         |
+| `date_`                                                                      | [datetime](https://docs.python.org/3/library/datetime.html#datetime-objects) | :heavy_check_mark:                                                           | Date (YYYY-MM-DD format)                                                     | 2025-02-23                                                                   |
+| `time`                                                                       | *str*                                                                        | :heavy_check_mark:                                                           | Time (HHMM format). This time is always specified in UTC (Zulu) time.        | 0419                                                                         |
+| `retries`                                                                    | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)             | :heavy_minus_sign:                                                           | Configuration to override the default retry behavior of the client.          |                                                                              |
 
 ### Response
 
-**[models.ListSigmetsByAtsuAndDateResponse](../../models/listsigmetsbyatsuanddateresponse.md)**
+**[operations.GetTafResponse](../../models/operations/gettafresponse.md)**
 
 ### Errors
 
-| Error Type                   | Status Code                  | Content Type                 |
-| ---------------------------- | ---------------------------- | ---------------------------- |
-| errors.NotFoundError         | 404                          | application/json             |
-| errors.UnauthorizedError     | 401, 403, 407                | application/json             |
-| errors.TimeoutErrorT         | 408                          | application/json             |
-| errors.RateLimitedError      | 429                          | application/json             |
-| errors.BadRequestError       | 400, 413, 414, 415, 422, 431 | application/json             |
-| errors.TimeoutErrorT         | 504                          | application/json             |
-| errors.NotFoundError         | 501, 505                     | application/json             |
-| errors.InternalServerError   | 500, 502, 503, 506, 507, 508 | application/json             |
-| errors.BadRequestError       | 510                          | application/json             |
-| errors.UnauthorizedError     | 511                          | application/json             |
-| errors.APIError              | 4XX, 5XX                     | \*/\*                        |
+| Error Type                | Status Code               | Content Type              |
+| ------------------------- | ------------------------- | ------------------------- |
+| errors.ProblemDetailError | 400                       | application/problem+json  |
+| errors.NWSAPIError        | 4XX, 5XX                  | \*/\*                     |
+
+## get_tafs
+
+Returns Terminal Aerodrome Forecasts for the specified airport station.
+
+### Example Usage
+
+```python
+from nws_api_client import NwsAPIClient
+import os
+
+
+with NwsAPIClient(
+    user_agent=os.getenv("NWS_API_CLIENT_USER_AGENT", ""),
+) as nac_client:
+
+    res = nac_client.aviation.get_tafs(station_id="KORD")
+
+    # Handle response
+    print(res)
+
+```
+
+### Parameters
+
+| Parameter                                                           | Type                                                                | Required                                                            | Description                                                         | Example                                                             |
+| ------------------------------------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------- |
+| `station_id`                                                        | *str*                                                               | :heavy_check_mark:                                                  | Observation station ID                                              | KORD                                                                |
+| `retries`                                                           | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)    | :heavy_minus_sign:                                                  | Configuration to override the default retry behavior of the client. |                                                                     |
+
+### Response
+
+**[operations.GetTafsResponse](../../models/operations/gettafsresponse.md)**
+
+### Errors
+
+| Error Type                | Status Code               | Content Type              |
+| ------------------------- | ------------------------- | ------------------------- |
+| errors.ProblemDetailError | 400                       | application/problem+json  |
+| errors.NWSAPIError        | 4XX, 5XX                  | \*/\*                     |
+
+## list_sigmets
+
+Returns a list of SIGMET/AIRMETs
+
+### Example Usage
+
+```python
+from datetime import date
+from nws_api_client import NwsAPIClient
+import os
+
+
+with NwsAPIClient(
+    user_agent=os.getenv("NWS_API_CLIENT_USER_AGENT", ""),
+) as nac_client:
+
+    res = nac_client.aviation.list_sigmets(start="0419", end="0419", date_=date.fromisoformat("2025-02-23"), atsu="KKCI", sequence="29W")
+
+    # Handle response
+    print(res)
+
+```
+
+### Parameters
+
+| Parameter                                                                    | Type                                                                         | Required                                                                     | Description                                                                  | Example                                                                      |
+| ---------------------------------------------------------------------------- | ---------------------------------------------------------------------------- | ---------------------------------------------------------------------------- | ---------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| `start`                                                                      | *Optional[str]*                                                              | :heavy_minus_sign:                                                           | Start time                                                                   | 0419                                                                         |
+| `end`                                                                        | *Optional[str]*                                                              | :heavy_minus_sign:                                                           | End time                                                                     | 0419                                                                         |
+| `date_`                                                                      | [datetime](https://docs.python.org/3/library/datetime.html#datetime-objects) | :heavy_minus_sign:                                                           | Date (YYYY-MM-DD format)                                                     | 2025-02-23                                                                   |
+| `atsu`                                                                       | *Optional[str]*                                                              | :heavy_minus_sign:                                                           | ATSU identifier                                                              | KKCI                                                                         |
+| `sequence`                                                                   | *Optional[str]*                                                              | :heavy_minus_sign:                                                           | SIGMET sequence number                                                       | 29W                                                                          |
+| `retries`                                                                    | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)             | :heavy_minus_sign:                                                           | Configuration to override the default retry behavior of the client.          |                                                                              |
+
+### Response
+
+**[operations.GetSigmetsResponse](../../models/operations/getsigmetsresponse.md)**
+
+### Errors
+
+| Error Type                | Status Code               | Content Type              |
+| ------------------------- | ------------------------- | ------------------------- |
+| errors.ProblemDetailError | 400                       | application/problem+json  |
+| errors.NWSAPIError        | 4XX, 5XX                  | \*/\*                     |

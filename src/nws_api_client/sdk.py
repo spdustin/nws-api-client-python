@@ -6,54 +6,50 @@ from .sdkconfiguration import SDKConfiguration
 from .utils.logger import Logger, get_default_logger
 from .utils.retries import RetryConfig
 import httpx
-from nws_api_client import models, utils
+from nws_api_client import utils
 from nws_api_client._hooks import SDKHooks
 from nws_api_client.alerts import Alerts
 from nws_api_client.aviation import Aviation
-from nws_api_client.glossary_sdk import GlossarySDK
-from nws_api_client.gridpoints import Gridpoints
-from nws_api_client.observations import Observations
-from nws_api_client.observationstations import Observationstations
-from nws_api_client.offices import Offices
-from nws_api_client.points import Points
+from nws_api_client.conditions import Conditions
+from nws_api_client.forecasts import Forecasts
+from nws_api_client.geographic import Geographic
+from nws_api_client.metadata import Metadata
+from nws_api_client.models import components, internal
 from nws_api_client.products import Products
 from nws_api_client.radar import Radar
+from nws_api_client.stations import Stations
 from nws_api_client.types import OptionalNullable, UNSET
-from nws_api_client.zones import Zones
 from typing import Any, Callable, Dict, Optional, Union, cast
 import weakref
 
 
-class NwsClient(BaseSDK):
-    r"""weather.gov API: OpenAPI Client SDK for National Weather Service API (NWS / weather.gov)
+class NwsAPIClient(BaseSDK):
+    r"""MODIFIED National Weather Service weather.gov API: OpenAPI Client SDK for National Weather Service API (NWS / weather.gov)
     https://www.weather.gov/documentation/services-web-api - Full API documentation
     """
 
     alerts: Alerts
-    r"""Operations related to alerts"""
+    r"""Operations related to alerts, advisories, SIGMETS, etc."""
+    geographic: Geographic
+    r"""Operations that return data specific to NWS zones, counties, states, NWS grid points, or latitude/longitude coordinates"""
     aviation: Aviation
     r"""Operations related to aviation weather"""
-    glossary: GlossarySDK
-    r"""Operations related to the glossary"""
-    gridpoints: Gridpoints
-    r"""Operations related to gridpoints (X,Y)"""
-    offices: Offices
-    r"""Operations related to offices"""
-    points: Points
-    r"""Operations related to geographic points (lat,lon)"""
     products: Products
-    r"""Operations related to products"""
+    r"""Operations related to NWS text products"""
+    forecasts: Forecasts
+    r"""Operations related to forecasts"""
+    metadata: Metadata
+    r"""Operations that return metadata about an NWS resource/entity"""
     radar: Radar
     r"""Operations related to radar stations"""
-    observationstations: Observationstations
-    r"""Operations related to observationstations"""
-    observations: Observations
-    zones: Zones
-    r"""Operations related to zones"""
+    stations: Stations
+    conditions: Conditions
+    r"""Operations related to current conditions"""
 
     def __init__(
         self,
         user_agent: Optional[Union[Optional[str], Callable[[], Optional[str]]]] = None,
+        office_id: Optional[components.NWSOfficeID] = None,
         server_idx: Optional[int] = None,
         server_url: Optional[str] = None,
         url_params: Optional[Dict[str, str]] = None,
@@ -66,6 +62,7 @@ class NwsClient(BaseSDK):
         r"""Instantiates the SDK configuring it with the provided parameters.
 
         :param user_agent: The user_agent required for authentication
+        :param office_id: Configures the office_id parameter for all supported operations
         :param server_idx: The index of the server to use for all methods
         :param server_url: The server URL to use for all methods
         :param url_params: Parameters to optionally template the server URL with
@@ -98,13 +95,21 @@ class NwsClient(BaseSDK):
         security: Any = None
         if callable(user_agent):
             # pylint: disable=unnecessary-lambda-assignment
-            security = lambda: models.Security(user_agent=user_agent())
+            security = lambda: components.Security(user_agent=user_agent())
         else:
-            security = models.Security(user_agent=user_agent)
+            security = components.Security(user_agent=user_agent)
 
         if server_url is not None:
             if url_params is not None:
                 server_url = utils.template_url(server_url, url_params)
+
+        _globals = internal.Globals(
+            office_id=utils.get_global_from_env(
+                office_id,
+                "NWS_API_CLIENT_OFFICE_ID",
+                utils.cast_partial(components.NWSOfficeID),
+            ),
+        )
 
         BaseSDK.__init__(
             self,
@@ -113,6 +118,7 @@ class NwsClient(BaseSDK):
                 client_supplied=client_supplied,
                 async_client=async_client,
                 async_client_supplied=async_client_supplied,
+                globals=_globals,
                 security=security,
                 server_url=server_url,
                 server_idx=server_idx,
@@ -148,16 +154,14 @@ class NwsClient(BaseSDK):
 
     def _init_sdks(self):
         self.alerts = Alerts(self.sdk_configuration)
+        self.geographic = Geographic(self.sdk_configuration)
         self.aviation = Aviation(self.sdk_configuration)
-        self.glossary = GlossarySDK(self.sdk_configuration)
-        self.gridpoints = Gridpoints(self.sdk_configuration)
-        self.offices = Offices(self.sdk_configuration)
-        self.points = Points(self.sdk_configuration)
         self.products = Products(self.sdk_configuration)
+        self.forecasts = Forecasts(self.sdk_configuration)
+        self.metadata = Metadata(self.sdk_configuration)
         self.radar = Radar(self.sdk_configuration)
-        self.observationstations = Observationstations(self.sdk_configuration)
-        self.observations = Observations(self.sdk_configuration)
-        self.zones = Zones(self.sdk_configuration)
+        self.stations = Stations(self.sdk_configuration)
+        self.conditions = Conditions(self.sdk_configuration)
 
     def __enter__(self):
         return self

@@ -1,0 +1,12 @@
+# SigmetCollectionGeoJSON
+
+A GeoJSON feature collection. Please refer to IETF RFC 7946 for information on the GeoJSON format.
+
+
+## Fields
+
+| Field                                                                                            | Type                                                                                             | Required                                                                                         | Description                                                                                      |
+| ------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------ |
+| `at_context`                                                                                     | [Optional[components.JSONLdContextUnion]](../../models/components/jsonldcontextunion.md)         | :heavy_minus_sign:                                                                               | N/A                                                                                              |
+| `features`                                                                                       | List[[components.SigmetGeoJSON](../../models/components/sigmetgeojson.md)]                       | :heavy_check_mark:                                                                               | N/A                                                                                              |
+| `type`                                                                                           | [components.SigmetCollectionGeoJSONType](../../models/components/sigmetcollectiongeojsontype.md) | :heavy_check_mark:                                                                               | N/A                                                                                              |
