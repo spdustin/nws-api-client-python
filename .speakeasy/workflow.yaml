@@ -6,7 +6,7 @@ sources:
             - location: ./openapi.yaml
         overlays:
             - location: ./openapi_overlay_errors.yaml
-            - location: ./openapi_overlay_operations.yaml
+            - location: ./openapi_overlay_operationids.yaml
         transformations:
             - removeUnused: true
             - cleanup: true
