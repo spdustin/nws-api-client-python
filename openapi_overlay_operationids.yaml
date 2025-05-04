@@ -26,9 +26,9 @@ actions:
       type: method-name
   - target: $["paths"]["/zones/{type}/{zoneId}/forecast"]["get"]
     update:
-      x-speakeasy-name-override: getForZone
+      x-speakeasy-name-override: getZoneForecast
     x-speakeasy-metadata:
-      after: sdk.forecasts.getForZone()
+      after: sdk.forecasts.getZoneForecast()
       before: sdk.Forecasts.get_zone_forecast()
       type: method-name
   - target: $["paths"]["/alerts/active"]["get"]
@@ -41,9 +41,9 @@ actions:
   - target: $["paths"]["/stations/{stationId}"]["get"]
     update:
       x-speakeasy-group: stations
-      x-speakeasy-name-override: get
+      x-speakeasy-name-override: getStation
     x-speakeasy-metadata:
-      after: sdk.stations.get()
+      after: sdk.stations.getStation()
       before: sdk.Metadata.get_observation_station_info()
       type: method-name
   - target: $["paths"]["/alerts/active/region/{region}"]["get"]
@@ -55,16 +55,16 @@ actions:
       type: method-name
   - target: $["paths"]["/stations"]["get"]
     update:
-      x-speakeasy-name-override: getStations
+      x-speakeasy-name-override: listObservationStations
     x-speakeasy-metadata:
-      after: sdk.metadata.getStations()
+      after: sdk.metadata.listObservationStations()
       before: sdk.Metadata.get_observation_stations()
       type: method-name
   - target: $["paths"]["/products/types"]["get"]
     update:
-      x-speakeasy-name-override: getTypes
+      x-speakeasy-name-override: listTypes
     x-speakeasy-metadata:
-      after: sdk.products.getTypes()
+      after: sdk.products.listTypes()
       before: sdk.Products.get_product_types()
       type: method-name
   - target: $["paths"]["/aviation/sigmets/{atsu}"]["get"]
@@ -118,10 +118,9 @@ actions:
       type: method-name
   - target: $["paths"]["/radar/stations/{stationId}"]["get"]
     update:
-      x-speakeasy-group: radarStations
-      x-speakeasy-name-override: get
+      x-speakeasy-name-override: getRadarStation
     x-speakeasy-metadata:
-      after: sdk.radarStations.get()
+      after: sdk.radar.getRadarStation()
       before: sdk.Radar.get_radar_station_info()
       type: method-name
   - target: $["paths"]["/products/types/{typeId}/locations"]["get"]
@@ -175,9 +174,9 @@ actions:
       type: method-name
   - target: $["paths"]["/products"]["get"]
     update:
-      x-speakeasy-name-override: list
+      x-speakeasy-name-override: listProducts
     x-speakeasy-metadata:
-      after: sdk.products.list()
+      after: sdk.products.listProducts()
       before: sdk.Products.get_products()
       type: method-name
   - target: $["paths"]["/radar/stations/{stationId}/alarms"]["get"]
@@ -189,9 +188,9 @@ actions:
       type: method-name
   - target: $["paths"]["/aviation/cwsus/{cwsuId}/cwas/{date}/{sequence}"]["get"]
     update:
-      x-speakeasy-name-override: getCwasByCwsu
+      x-speakeasy-name-override: getAviationCwa
     x-speakeasy-metadata:
-      after: sdk.alerts.getCwasByCwsu()
+      after: sdk.alerts.getAviationCwa()
       before: sdk.Alerts.get_cwas_by_cwsu_for_date_and_sequence()
       type: method-name
   - target: $["paths"]["/radar/servers"]["get"]
@@ -203,9 +202,9 @@ actions:
       type: method-name
   - target: $["paths"]["/aviation/sigmets/{atsu}/{date}/{time}"]["get"]
     update:
-      x-speakeasy-name-override: getSigmet
+      x-speakeasy-name-override: getAviationSigmet
     x-speakeasy-metadata:
-      after: sdk.alerts.getSigmet()
+      after: sdk.alerts.getAviationSigmet()
       before: sdk.Alerts.get_sigmet()
       type: method-name
   - target: $["paths"]["/offices/{officeId}/headlines/{headlineId}"]["get"]
@@ -217,16 +216,16 @@ actions:
       type: method-name
   - target: $["paths"]["/products/types/{typeId}/locations/{locationId}"]["get"]
     update:
-      x-speakeasy-name-override: listByTypeAndLocation
+      x-speakeasy-name-override: getAvailable
     x-speakeasy-metadata:
-      after: sdk.products.listByTypeAndLocation()
+      after: sdk.products.getAvailable()
       before: sdk.Products.get_products_by_type_and_location()
       type: method-name
   - target: $["paths"]["/alerts/active/zone/{zoneId}"]["get"]
     update:
-      x-speakeasy-name-override: getActiveByZone
+      x-speakeasy-name-override: getActiveForZone
     x-speakeasy-metadata:
-      after: sdk.alerts.getActiveByZone()
+      after: sdk.alerts.getActiveForZone()
       before: sdk.Alerts.get_active_alerts_by_zone()
       type: method-name
   - target: $["paths"]["/zones/{type}/{zoneId}"]["get"]
@@ -238,9 +237,9 @@ actions:
       type: method-name
   - target: $["paths"]["/alerts/{id}"]["get"]
     update:
-      x-speakeasy-name-override: getById
+      x-speakeasy-name-override: get
     x-speakeasy-metadata:
-      after: sdk.alerts.getById()
+      after: sdk.alerts.get()
       before: sdk.Alerts.get_alert()
       type: method-name
   - target: $["paths"]["/zones/forecast/{zoneId}/stations"]["get"]
@@ -252,9 +251,9 @@ actions:
       type: method-name
   - target: $["paths"]["/aviation/sigmets/{atsu}/{date}"]["get"]
     update:
-      x-speakeasy-name-override: getSigmetsByAtsuForDate
+      x-speakeasy-name-override: getAviationSigmetsByAtsuForDate
     x-speakeasy-metadata:
-      after: sdk.alerts.getSigmetsByAtsuForDate()
+      after: sdk.alerts.getAviationSigmetsByAtsuForDate()
       before: sdk.Alerts.get_sigmets_by_atsu_for_date()
       type: method-name
   - target: $["paths"]["/gridpoints/{wfo}/{gridpoint}/forecast"]["get"]
@@ -280,9 +279,9 @@ actions:
       type: method-name
   - target: $["paths"]["/products/types/{typeId}"]["get"]
     update:
-      x-speakeasy-name-override: getByType
+      x-speakeasy-name-override: listByType
     x-speakeasy-metadata:
-      after: sdk.products.getByType()
+      after: sdk.products.listByType()
       before: sdk.Products.get_products_by_type()
       type: method-name
   - target: $["paths"]["/stations/{stationId}/observations"]["get"]
@@ -302,9 +301,9 @@ actions:
       type: method-name
   - target: $["paths"]["/offices/{officeId}/headlines"]["get"]
     update:
-      x-speakeasy-name-override: getOfficeHeadlines
+      x-speakeasy-name-override: listOfficeHeadlines
     x-speakeasy-metadata:
-      after: sdk.products.getOfficeHeadlines()
+      after: sdk.products.listOfficeHeadlines()
       before: sdk.Products.get_office_headlines()
       type: method-name
   - target: $["paths"]["/products/locations/{locationId}/types"]["get"]
@@ -316,9 +315,9 @@ actions:
       type: method-name
   - target: $["paths"]["/alerts/active/area/{area}"]["get"]
     update:
-      x-speakeasy-name-override: listActiveByArea
+      x-speakeasy-name-override: listActiveForArea
     x-speakeasy-metadata:
-      after: sdk.alerts.listActiveByArea()
+      after: sdk.alerts.listActiveForArea()
       before: sdk.Alerts.get_active_alerts_by_area()
       type: method-name
   - target: $["paths"]["/products/{productId}"]["get"]
@@ -330,9 +329,9 @@ actions:
       type: method-name
   - target: $["paths"]["/products/locations"]["get"]
     update:
-      x-speakeasy-name-override: listLocations
+      x-speakeasy-name-override: listIssuingLocations
     x-speakeasy-metadata:
-      after: sdk.products.listLocations()
+      after: sdk.products.listIssuingLocations()
       before: sdk.Products.get_product_locations()
       type: method-name
   - target: $["paths"]["/aviation/cwsus/{cwsuId}"]["get"]
@@ -358,8 +357,8 @@ actions:
       type: method-name
   - target: $["paths"]["/radar/stations"]["get"]
     update:
-      x-speakeasy-name-override: getStations
+      x-speakeasy-name-override: listStations
     x-speakeasy-metadata:
-      after: sdk.radar.getStations()
+      after: sdk.radar.listStations()
       before: sdk.Radar.get_radar_stations()
       type: method-name

@@ -9,6 +9,16 @@ info:
 servers:
   - url: https://api.weather.gov
     description: Production server
+x-speakeasy-retries:
+  strategy: backoff
+  backoff:
+    initialInterval: 500 # 500 milliseconds
+    maxInterval: 60000 # 60 seconds
+    maxElapsedTime: 3600000 # 1 hour
+    exponent: 1.5
+  statusCodes:
+    - 5XX
+  retryConnectionErrors: true
 x-speakeasy-globals:
   parameters:
     - $ref: "#/components/parameters/NWSOfficeId"
@@ -155,12 +165,8 @@ paths:
             application/ld+json:
               schema:
                 $ref: "#/components/schemas/AlertJsonLd"
-            application/cap+xml:
-              schema:
-                $ref: "#/components/schemas/AlertCap"
           x-url-content-negotiation-extensions:
             json: application/geo+json
-            cap: application/cap+xml
         "400":
           $ref: "#/components/responses/ClientError"
   "/aviation/cwsus/{cwsuId}":
@@ -1532,8 +1538,6 @@ components:
               type: array
               items:
                 $ref: "#/components/schemas/Alert"
-    AlertCap:
-      type: object
     AlertGeoJson:
       allOf:
         - $ref: "#/components/schemas/GeoJsonFeature"
@@ -1592,145 +1596,83 @@ components:
         - Past
         - Unknown
       type: string
-    AlertAtomEntry:
-      type: object
-      properties:
-        id:
-          type: string
-          xml:
-            namespace: http://www.w3.org/2005/Atom
-        updated:
-          type: string
-          xml:
-            namespace: http://www.w3.org/2005/Atom
-        published:
-          type: string
-          xml:
-            namespace: http://www.w3.org/2005/Atom
-        author:
-          type: object
-          properties:
-            name:
-              type: string
-          xml:
-            namespace: http://www.w3.org/2005/Atom
-        summary:
-          type: string
-          xml:
-            namespace: http://www.w3.org/2005/Atom
-        event:
-          type: string
-          xml:
-            namespace: urn:oasis:names:tc:emergency:cap:1.2
-        sent:
-          type: string
-          xml:
-            namespace: urn:oasis:names:tc:emergency:cap:1.2
-        effective:
-          type: string
-          xml:
-            namespace: urn:oasis:names:tc:emergency:cap:1.2
-        expires:
-          type: string
-          xml:
-            namespace: urn:oasis:names:tc:emergency:cap:1.2
-        status:
-          type: string
-          xml:
-            namespace: urn:oasis:names:tc:emergency:cap:1.2
-        msgType:
-          type: string
-          xml:
-            namespace: urn:oasis:names:tc:emergency:cap:1.2
-        category:
-          type: string
-          xml:
-            namespace: urn:oasis:names:tc:emergency:cap:1.2
-        urgency:
-          type: string
-          xml:
-            namespace: urn:oasis:names:tc:emergency:cap:1.2
-        severity:
-          type: string
-          xml:
-            namespace: urn:oasis:names:tc:emergency:cap:1.2
-        certainty:
-          type: string
-          xml:
-            namespace: urn:oasis:names:tc:emergency:cap:1.2
-        areaDesc:
-          type: string
-          xml:
-            namespace: urn:oasis:names:tc:emergency:cap:1.2
-        polygon:
-          type: string
-          xml:
-            namespace: urn:oasis:names:tc:emergency:cap:1.2
-        geocode:
-          type: array
-          items:
-            $ref: "#/components/schemas/AlertXMLParameter"
-          xml:
-            namespace: urn:oasis:names:tc:emergency:cap:1.2
-        parameter:
-          type: array
-          items:
-            $ref: "#/components/schemas/AlertXMLParameter"
-          xml:
-            namespace: urn:oasis:names:tc:emergency:cap:1.2
-      description: An alert entry in an Atom feed
-      xml:
-        name: entry
-        namespace: http://www.w3.org/2005/Atom
-    AlertXMLParameter:
-      type: object
-      properties:
-        valueName:
-          type: string
-        value:
-          type: string
-    AlertAtomFeed:
-      type: object
-      properties:
-        id:
-          type: string
-          xml:
-            namespace: http://www.w3.org/2005/Atom
-        generator:
-          type: string
-          xml:
-            namespace: http://www.w3.org/2005/Atom
-        updated:
-          type: string
-          xml:
-            namespace: http://www.w3.org/2005/Atom
-        author:
-          type: object
-          properties:
-            name:
-              type: string
-              xml:
-                namespace: http://www.w3.org/2005/Atom
-          xml:
-            namespace: http://www.w3.org/2005/Atom
-        title:
-          type: string
-          xml:
-            namespace: http://www.w3.org/2005/Atom
-        entry:
-          type: array
-          items:
-            $ref: "#/components/schemas/AlertAtomEntry"
-          xml:
-            namespace: http://www.w3.org/2005/Atom
-      description: An alert feed in Atom format
-      xml:
-        name: feed
-        namespace: http://www.w3.org/2005/Atom
     AreaCode:
-      oneOf:
-        - $ref: "#/components/schemas/StateTerritoryCode"
-        - $ref: "#/components/schemas/MarineAreaCode"
+      type: string
+      enum:
+        - AL
+        - AK
+        - AS
+        - AR
+        - AZ
+        - CA
+        - CO
+        - CT
+        - DE
+        - DC
+        - FL
+        - GA
+        - GU
+        - HI
+        - ID
+        - IL
+        - IN
+        - IA
+        - KS
+        - KY
+        - LA
+        - ME
+        - MD
+        - MA
+        - MI
+        - MN
+        - MS
+        - MO
+        - MT
+        - NE
+        - NV
+        - NH
+        - NJ
+        - NM
+        - NY
+        - NC
+        - ND
+        - OH
+        - OK
+        - OR
+        - PA
+        - PR
+        - RI
+        - SC
+        - SD
+        - TN
+        - TX
+        - UT
+        - VT
+        - VI
+        - VA
+        - WA
+        - WV
+        - WI
+        - WY
+        - MP
+        - PW
+        - FM
+        - MH
+        - AM
+        - AN
+        - GM
+        - LC
+        - LE
+        - LH
+        - LM
+        - LO
+        - LS
+        - PH
+        - PK
+        - PM
+        - PS
+        - PZ
+        - SL
       description: State/territory codes and marine area codes
     ATSUIdentifier:
       pattern: ^[A-Z]{3,4}$
@@ -2646,10 +2588,146 @@ components:
       type: string
       description: Three-letter identifier for NWS National HQ.
     NWSOfficeId:
-      oneOf:
-        - $ref: "#/components/schemas/NWSForecastOfficeId"
-        - $ref: "#/components/schemas/NWSRegionalHQId"
-        - $ref: "#/components/schemas/NWSNationalHQId"
+      type: string
+      enum:
+        - ARH
+        - CRH
+        - ERH
+        - PRH
+        - SRH
+        - WRH
+        - NWS
+        - AKQ
+        - ALY
+        - BGM
+        - BOX
+        - BTV
+        - BUF
+        - CAE
+        - CAR
+        - CHS
+        - CLE
+        - CTP
+        - GSP
+        - GYX
+        - ILM
+        - ILN
+        - LWX
+        - MHX
+        - OKX
+        - PBZ
+        - PHI
+        - RAH
+        - RLX
+        - RNK
+        - ABQ
+        - AMA
+        - BMX
+        - BRO
+        - CRP
+        - EPZ
+        - EWX
+        - FFC
+        - FWD
+        - HGX
+        - HUN
+        - JAN
+        - JAX
+        - KEY
+        - LCH
+        - LIX
+        - LUB
+        - LZK
+        - MAF
+        - MEG
+        - MFL
+        - MLB
+        - MOB
+        - MRX
+        - OHX
+        - OUN
+        - SHV
+        - SJT
+        - SJU
+        - TAE
+        - TBW
+        - TSA
+        - ABR
+        - APX
+        - ARX
+        - BIS
+        - BOU
+        - CYS
+        - DDC
+        - DLH
+        - DMX
+        - DTX
+        - DVN
+        - EAX
+        - FGF
+        - FSD
+        - GID
+        - GJT
+        - GLD
+        - GRB
+        - GRR
+        - ICT
+        - ILX
+        - IND
+        - IWX
+        - JKL
+        - LBF
+        - LMK
+        - LOT
+        - LSX
+        - MKX
+        - MPX
+        - MQT
+        - OAX
+        - PAH
+        - PUB
+        - RIW
+        - SGF
+        - TOP
+        - UNR
+        - BOI
+        - BYZ
+        - EKA
+        - FGZ
+        - GGW
+        - HNX
+        - LKN
+        - LOX
+        - MFR
+        - MSO
+        - MTR
+        - OTX
+        - PDT
+        - PIH
+        - PQR
+        - PSR
+        - REV
+        - SEW
+        - SGX
+        - SLC
+        - STO
+        - TFX
+        - TWC
+        - VEF
+        - AER
+        - AFC
+        - AFG
+        - AJK
+        - ALU
+        - GUM
+        - HPA
+        - HFO
+        - PPG
+        - STU
+        - NH1
+        - NH2
+        - ONA
+        - ONP
     NWSRegionalHQId:
       enum:
         - ARH
@@ -3569,12 +3647,8 @@ components:
         application/ld+json:
           schema:
             $ref: "#/components/schemas/AlertCollectionJsonLd"
-        application/atom+xml:
-          schema:
-            $ref: "#/components/schemas/AlertAtomFeed"
       x-url-content-negotiation-extensions:
         json: application/geo+json
-        atom: application/atom+xml
     ClientError:
       description: A client error (4XX)
       headers:
@@ -3841,7 +3915,7 @@ components:
     Gridpoint:
       name: gridpoint
       in: path
-      description: Forecast gridpoint pair (X,Y) - (see https://weather-gov.github.io/api/gridpoints for more info)
+      description: Forecast gridpoint pair(see https://weather-gov.github.io/api/gridpoints for more info)
       required: true
       schema:
         type: string

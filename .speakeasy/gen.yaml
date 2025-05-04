@@ -4,7 +4,6 @@ generation:
     enabled: true
     schemaPath: openapi.yaml
   sdkClassName: NwsApiClient
-  maintainOpenAPIOrder: false
   usageSnippets:
     optionalPropertyRendering: withExample
   useClassNamesForArrayFields: true
